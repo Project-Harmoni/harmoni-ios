@@ -27,7 +27,7 @@ struct AccountView: View {
     private var accountView: some View {
         Form {
             Section(contactInfoSectionTitle) {
-                name
+                listenerName
                 email
             }
             
@@ -89,22 +89,9 @@ struct AccountView: View {
     @ViewBuilder
     private var artistView: some View {
         Section("Artist") {
-            HStack {
-                Text("Name")
-                Spacer()
-                Text("Bliss Nova")
-            }
-            HStack(spacing: 32) {
-                Text("Bio")
-                Spacer()
-                Text("Really great stuff yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada yada")
-                    .lineLimit(2)
-            }
-            HStack {
-                Text("Website")
-                Spacer()
-                Text("www.google.com")
-            }
+            artistName
+            artistBio
+            artistWebsite
             uploadView
         }
     }
@@ -158,13 +145,72 @@ private extension AccountView {
 
 private extension AccountView {
     @ViewBuilder
-    private var name: some View {
+    private var listenerName: some View {
         if isListener {
             HStack {
                 Image(systemName: "person")
                 Spacer()
-                Text(nameLabel)
+                nameBuilder
             }
+        }
+    }
+    
+    private var artistName: some View {
+        HStack {
+            Text("Name")
+            Spacer()
+            nameBuilder
+        }
+    }
+    
+    private var artistBio: some View {
+        HStack(spacing: 32) {
+            Text("Bio")
+            Spacer()
+            if isEditing {
+                ZStack(alignment: .trailing) {
+                    TextEditor(text: $viewModel.bio)
+                    Text("Bio")
+                        .foregroundStyle(.gray.secondary)
+                        .opacity(viewModel.bio.isEmpty ? 1 : 0)
+                        .allowsHitTesting(false)
+                        .padding(.trailing, 4)
+                        .padding(.bottom, 14)
+                }
+                .multilineTextAlignment(.trailing)
+            } else {
+                Text(bioLabel)
+                    .lineLimit(2)
+                    .foregroundStyle(.gray)
+            }
+        }
+    }
+    
+    private var artistWebsite: some View {
+        HStack {
+            Text("Website")
+            Spacer()
+            if isEditing {
+                TextField("Website", text: $viewModel.website)
+                    .textInputAutocapitalization(.never)
+                    .keyboardType(.URL)
+                    .multilineTextAlignment(.trailing)
+            } else {
+                Text(websiteLabel)
+                    .foregroundStyle(.gray)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var nameBuilder: some View {
+        if isEditing {
+            TextField("Name", text: $viewModel.name)
+                .textInputAutocapitalization(.words)
+                .multilineTextAlignment(.trailing)
+        } else {
+            Text(nameLabel)
+                .foregroundStyle(.gray)
         }
     }
     
@@ -173,6 +219,7 @@ private extension AccountView {
             Image(systemName: "envelope")
             Spacer()
             Text(emailLabel)
+                .foregroundStyle(.gray)
         }
     }
 }
@@ -192,6 +239,14 @@ private extension AccountView {
     
     var emailLabel: String {
         user?.email ?? ""
+    }
+    
+    var bioLabel: String {
+        artist?.biography ?? ""
+    }
+    
+    var websiteLabel: String {
+        artist?.socialLinkURL ?? ""
     }
     
     var contactInfoSectionTitle: String {

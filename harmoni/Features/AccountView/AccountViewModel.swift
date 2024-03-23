@@ -10,13 +10,19 @@ import Foundation
 import Supabase
 
 class AccountViewModel: ObservableObject {
+    /// Registered users have provided birthday and role selection
+    @Published var isRegistrationComplete: Bool = false
+    @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var user: User?
     @Published var listener: ListenerDB?
     @Published var artist: ArtistDB?
-    @Published var isSignedIn: Bool = false
-    /// Registered users have provided birthday and role selection
-    @Published var isRegistrationComplete: Bool = false
+    
+    // Editable fields
+    @Published var name: String = ""
+    @Published var bio: String = ""
+    @Published var website: String = ""
+    
     private var cancellables: Set<AnyCancellable> = []
     private let database: DBServiceProviding = DBService()
     
