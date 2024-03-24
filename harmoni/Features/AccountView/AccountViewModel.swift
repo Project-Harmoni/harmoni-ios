@@ -71,6 +71,11 @@ class AccountViewModel: ObservableObject {
         self.isSignedIn = isSignedIn
     }
     
+    @MainActor
+    private func toggleError(_ toggle: Bool) {
+        isError = toggle
+    }
+    
     func actionButtonTapped() {
         Task.detached(priority: .utility) { @MainActor [weak self] in
             guard let self else { return }
@@ -88,6 +93,19 @@ class AccountViewModel: ObservableObject {
                 dump(error)
                 self.isError = true
             }
+        }
+    }
+    
+    func logout() {
+        Task { @MainActor [weak self] in
+            await AuthManager.shared.logout()
+            self?.profileImage = nil
+            self?.profileImageItem = nil
+            self?.justChangedProfileImage = nil
+            self?.name = ""
+            self?.bio = ""
+            self?.website = ""
+            self?.tokens = 0
         }
     }
 }
@@ -217,11 +235,6 @@ private extension AccountViewModel {
             dump(error)
             return await toggleError(true)
         }
-    }
-    
-    @MainActor
-    private func toggleError(_ toggle: Bool) {
-        isError = toggle
     }
     
     var profileImageName: String? {

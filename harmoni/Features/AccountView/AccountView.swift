@@ -196,9 +196,7 @@ private extension AccountView {
     private var menu: some View {
         Menu {
             Button {
-                Task {
-                    await AuthManager.shared.logout()
-                }
+                viewModel.logout()
             } label: {
                 Text("Sign Out")
             }
