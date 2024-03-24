@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/9/24.
 //
 
+import PhotosUI
 import Supabase
 import SwiftUI
 
@@ -36,51 +37,25 @@ struct AccountView: View {
             }
             
             Section("Wallet") {
-                HStack {
-                    Text("Token Balance")
-                    Spacer()
-                    Text("10,000")
+                wallet
+            }
+            
+            Section {
+                NavigationLink("Settings") {
+                    SettingsView()
                 }
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Circle()
-                    .frame(height: 34)
-                    .foregroundStyle(.gray)
-                    .overlay {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .padding(7)
-                            .scaledToFit()
-                            .foregroundStyle(.white)
-                    }
+               profilePictureView
             }
             ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.isEditing.toggle()
-                    } label: {
-                        Text(isEditing ? "Save" : "Edit")
-                            .padding(.horizontal, isEditing ? 12 : 0)
-                            .padding(.vertical, isEditing ? 4 : 0)
-                            .tint(isEditing ? .white : .blue)
-                            .background(isEditing ? .blue : .clear)
-                            .clipShape(RoundedRectangle(cornerRadius: 25))
-                    }
+                actionButton
             }
             if !isEditing {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button {
-                            Task {
-                                await AuthManager.shared.logout()
-                            }
-                        } label: {
-                            Text("Sign Out")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                    }
+                    menu
                 }
             }
         }
@@ -144,6 +119,82 @@ private extension AccountView {
 // MARK: - View Builders
 
 private extension AccountView {
+    private var profilePictureView: some View {
+        ZStack {
+            Circle()
+                .frame(height: 34)
+                .foregroundStyle(.gray)
+                .overlay {
+                    profileImage
+                }
+            profileImagePicker
+        }
+    }
+    
+    @ViewBuilder
+    private var profileImage: some View {
+        AsyncImage(url: viewModel.profileImage) { image in
+            switch image {
+            case .empty:
+                profileImagePlaceholder
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+            case .failure(_):
+                profileImagePlaceholder
+            @unknown default:
+                profileImagePlaceholder
+            }
+        }
+    }
+    
+    private var profileImagePlaceholder: some View {
+        Image(systemName: "photo")
+            .resizable()
+            .padding(7)
+            .scaledToFit()
+            .foregroundStyle(.white)
+    }
+    
+    private var profileImagePicker: some View {
+        PhotosPicker(
+            "",
+            selection: $viewModel.profileImageItem,
+            matching: .images,
+            photoLibrary: .shared()
+        )
+        .labelsHidden()
+    }
+    
+    private var actionButton: some View {
+        Button {
+            viewModel.actionButtonTapped()
+        } label: {
+            Text(isEditing ? "Save" : "Edit")
+                .padding(.horizontal, isEditing ? 12 : 0)
+                .padding(.vertical, isEditing ? 4 : 0)
+                .tint(isEditing ? .white : .blue)
+                .background(isEditing ? .blue : .clear)
+                .clipShape(RoundedRectangle(cornerRadius: 25))
+        }
+    }
+    
+    private var menu: some View {
+        Menu {
+            Button {
+                Task {
+                    await AuthManager.shared.logout()
+                }
+            } label: {
+                Text("Sign Out")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+    }
+    
     @ViewBuilder
     private var listenerName: some View {
         if isListener {
@@ -220,6 +271,14 @@ private extension AccountView {
             Spacer()
             Text(emailLabel)
                 .foregroundStyle(.gray)
+        }
+    }
+    
+    private var wallet: some View {
+        HStack {
+            Text("Token Balance")
+            Spacer()
+            Text("\(viewModel.tokens)")
         }
     }
 }

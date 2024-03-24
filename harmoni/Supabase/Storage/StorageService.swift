@@ -10,6 +10,7 @@ import Supabase
 
 protocol StorageProviding {
     func uploadSong(_ data: Data, name: String) async throws -> String
+    func uploadImage(_ data: Data, name: String) async throws -> String
     func getMusicURL(for song: String) throws -> URL
     func getImageURL(for image: String) throws -> URL
 }
@@ -20,7 +21,21 @@ struct StorageService: StorageProviding {
             .music
             .upload(
                 path: name,
-                file: data
+                file: data,
+                options: .init(upsert: true)
+            )
+    }
+    
+    func uploadImage(_ data: Data, name: String) async throws -> String {
+        return try await Supabase.shared.client.storage
+            .images
+            .upload(
+                path: name,
+                file: data,
+                options: .init(
+                    contentType: "image/jpeg",
+                    upsert: true
+                )
             )
     }
     

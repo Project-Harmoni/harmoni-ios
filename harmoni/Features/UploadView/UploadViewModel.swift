@@ -11,7 +11,6 @@ import SwiftUI
 
 class UploadViewModel: ObservableObject {
     @Published var isShowingFileImporter: Bool = false
-    @Published var isShowingImagePicker: Bool = false
     @Published var isShowingNamePopover: Bool = false
     @Published var albumTitle: String = ""
     @Published var artistName: String = ""
