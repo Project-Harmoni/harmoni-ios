@@ -16,7 +16,7 @@ struct AccountView: View {
     
     var body: some View {
         NavigationStack {
-            if true { // isAuthorized {
+            if isAuthorized {
                 accountView
             } else {
                 AuthView()
@@ -32,7 +32,7 @@ struct AccountView: View {
                 email
             }
             
-            if true { //isArtist {
+            if isArtist {
                 artistView
             }
             
@@ -46,18 +46,23 @@ struct AccountView: View {
                 }
             }
         }
+        .refreshable {
+            await viewModel.handleAccountData()
+        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-               profilePictureView
+                profilePictureView
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 actionButton
+                if !isEditing { menu }
             }
-            if !isEditing {
-                ToolbarItem(placement: .topBarTrailing) {
-                    menu
-                }
-            }
+        }
+        .navigationTitle("Account")
+        .alert("Uh Oh!", isPresented: $viewModel.isError) {
+            Button("OK", role: .none, action: {})
+        } message: {
+            Text("Hm, that didn't work. Please try again.")
         }
     }
     
@@ -112,7 +117,7 @@ private extension AccountView {
     }
     
     var isAuthorized: Bool {
-        true //isSignedIn && isRegistrationComplete && user != nil
+        isSignedIn && isRegistrationComplete && user != nil
     }
 }
 
@@ -133,19 +138,26 @@ private extension AccountView {
     
     @ViewBuilder
     private var profileImage: some View {
-        AsyncImage(url: viewModel.profileImage) { image in
-            switch image {
-            case .empty:
-                profileImagePlaceholder
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .clipShape(Circle())
-            case .failure(_):
-                profileImagePlaceholder
-            @unknown default:
-                profileImagePlaceholder
+        if let image = viewModel.justChangedProfileImage {
+            image
+                .resizable()
+                .scaledToFill()
+                .clipShape(Circle())
+        } else {
+            AsyncImage(url: viewModel.profileImage) { image in
+                switch image {
+                case .empty:
+                    profileImagePlaceholder
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                case .failure(_):
+                    profileImagePlaceholder
+                @unknown default:
+                    profileImagePlaceholder
+                }
             }
         }
     }

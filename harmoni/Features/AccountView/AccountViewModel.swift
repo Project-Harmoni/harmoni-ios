@@ -16,11 +16,13 @@ class AccountViewModel: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var isError: Bool = false
+    @Published var isSaving: Bool = false
     @Published var user: User?
     @Published var listener: ListenerDB?
     @Published var artist: ArtistDB?
     @Published var profileImageItem: PhotosPickerItem?
     @Published var profileImage: URL?
+    @Published var justChangedProfileImage: Image?
     @Published var tokens: Int = 0
     
     // Editable fields
@@ -55,8 +57,10 @@ class AccountViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] item in
                 guard let item else { return }
-                /// handle chosen profile image
-                self?.handle(picked: item)
+                Task.detached { [weak self] in
+                    /// handle chosen profile image
+                   try await self?.handle(picked: item)
+                }
             }
             .store(in: &cancellables)
     }
@@ -67,29 +71,69 @@ class AccountViewModel: ObservableObject {
         self.isSignedIn = isSignedIn
     }
     
-    /// Convert chosen profile picture item as image
-    private func handle(picked item: PhotosPickerItem) {
-        Task { @MainActor [weak self] in
+    func actionButtonTapped() {
+        Task.detached(priority: .utility) { @MainActor [weak self] in
             guard let self else { return }
-            if let data = try? await item.loadTransferable(type: Data.self) {
-                let reducedImage = UIImage(data: data)?.aspectFitToHeight() // 200 height by default
-                let jpegData = reducedImage?.jpegData(compressionQuality: 0.2) // compress image
-                guard let jpegData else {
-                    return self.isError = true
+            do {
+                if self.isEditing {
+                    self.isSaving.toggle()
+                    try await self.upsertArtist()
+                    try await self.upsertListener()
+                    self.isSaving.toggle()
+                    self.isEditing.toggle()
+                } else {
+                    self.isEditing.toggle()
                 }
-                guard let profileImageName else { 
-                    return self.isError = true
-                }
-                self.uploadProfileImage(jpegData, name: profileImageName)
-            } else {
+            } catch {
+                dump(error)
                 self.isError = true
             }
         }
     }
+}
+
+// MARK: Upsert database
+
+private extension AccountViewModel {
+    @MainActor
+    func upsertArtist() async throws {
+        if name.isEmpty, bio.isEmpty, website.isEmpty { return }
+        guard var artist else { return }
+        artist.name = name
+        artist.biography = bio
+        artist.socialLinkURL = website
+        self.artist = artist
+        try await self.database.upsert(artist: artist)
+    }
     
+    @MainActor
+    func upsertListener() async throws {
+        if name.isEmpty { return }
+        guard var listener else { return }
+        listener.name = name
+        self.listener = listener
+        try await self.database.upsert(listener: listener)
+    }
+    
+    func upsertProfileImage(location: String) async throws {
+        if var artist {
+            artist.imageURL = location
+            try await database.upsert(artist: artist)
+        }
+        
+        if var listener {
+            listener.imageURL = location
+            try await database.upsert(listener: listener)
+        }
+    }
+}
+
+// MARK: - Get data from database
+
+extension AccountViewModel {
     /// Get all data associated with current user
     @MainActor
-    private func handleAccountData() async {
+    func handleAccountData() async {
         guard let id = user?.id else { return }
         do {
             artist = try await database.getArtist(with: id)
@@ -120,36 +164,69 @@ class AccountViewModel: ObservableObject {
             profileImage = URL(string: imageURL)
         }
     }
-    
-    private func uploadProfileImage(_ data: Data, name: String) {
-        Task(priority: .utility) { @MainActor [weak self] in
-            do {
-                guard let result = try await self?.storage.uploadImage(data, name: name) else {
-                    return self?.isError = true
-                }
-                guard let resultPath = URL(string: result)?.lastPathComponent else {
-                    return self?.isError = true
-                }
-                self?.profileImage = try self?.storage.getImageURL(for: resultPath)
-            } catch {
-                dump(error)
-                self?.isError = true
+}
+
+// MARK: - Profile picture
+
+private extension AccountViewModel {
+    /// Convert chosen profile picture item as image
+    func handle(picked item: PhotosPickerItem) async throws {
+        // update locally immediately
+        if let image = try? await item.loadTransferable(type: Image.self) {
+            await MainActor.run { [weak self] in
+                self?.justChangedProfileImage = image
             }
+        }
+        
+        // update backend storage, database
+        if let data = try? await item.loadTransferable(type: Data.self) {
+            guard let jpegData = UIImage(data: data)?
+                .aspectFitToHeight()
+                .jpegData(compressionQuality: 0.2)
+            else {
+                return await toggleError(true)
+            }
+            guard let profileImageName else {
+                return await toggleError(true)
+            }
+            
+            try await self.uploadProfileImage(jpegData, name: profileImageName)
+        } else {
+            return await toggleError(true)
         }
     }
     
-    private var profileImageName: String? {
+    func uploadProfileImage(_ data: Data, name: String) async throws {
+        do {
+            // upload image to storage
+            let imageLocation = try await storage.uploadImage(data, name: name)
+            // get image name and file extension
+            guard let resultPath = URL(string: imageLocation)?.lastPathComponent else {
+                return await toggleError(true)
+            }
+            // get public image url from storage
+            let imageURL = try storage.getImageURL(for: resultPath)
+            // update database with public image url
+            try await upsertProfileImage(location: imageURL.absoluteString)
+            
+            await MainActor.run { [weak self] in
+                // update image in view
+                self?.profileImage = imageURL
+            }
+        } catch {
+            dump(error)
+            return await toggleError(true)
+        }
+    }
+    
+    @MainActor
+    private func toggleError(_ toggle: Bool) {
+        isError = toggle
+    }
+    
+    var profileImageName: String? {
         guard let user else { return nil }
         let uuid = user.id.uuidString
         return "\(uuid)_profile_image.jpg"
-    }
-    
-    func actionButtonTapped() {
-        if isEditing {
-            // other stuff
-            isEditing.toggle()
-        } else {
-            isEditing.toggle()
-        }
     }
 }

@@ -15,16 +15,6 @@ struct UploadView: View {
     
     var body: some View {
         form
-            .fileImporter(
-                isPresented: $viewModel.isShowingFileImporter,
-                allowedContentTypes: [.audio],
-                allowsMultipleSelection: true
-            ) { result in
-                switch result {
-                case .success(let files): viewModel.handle(files)
-                case .failure(let failure): viewModel.handle(failure)
-                }
-            }
     }
     
     private var form: some View {
@@ -52,6 +42,16 @@ struct UploadView: View {
             }
         }
         .navigationTitle("Upload")
+        .fileImporter(
+            isPresented: $viewModel.isShowingFileImporter,
+            allowedContentTypes: [.audio],
+            allowsMultipleSelection: true
+        ) { result in
+            switch result {
+            case .success(let files): viewModel.handle(files)
+            case .failure(let failure): viewModel.handle(failure)
+            }
+        }
         .alert(
             "Edit Track Name",
             isPresented: $viewModel.isShowingEditTrackNameAlert
@@ -75,6 +75,7 @@ struct UploadView: View {
     private var artistNameField: some View {
         HStack {
             TextField("Artist name", text: $viewModel.artistName)
+                .foregroundStyle(.gray)
                 .disabled(!viewModel.currentArtistName.isEmpty)
             if viewModel.currentArtistName.isEmpty {
                 Spacer()

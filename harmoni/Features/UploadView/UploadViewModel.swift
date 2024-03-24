@@ -10,22 +10,22 @@ import PhotosUI
 import SwiftUI
 
 class UploadViewModel: ObservableObject {
-    @Published var isShowingFileImporter: Bool = false
-    @Published var isShowingNamePopover: Bool = false
-    @Published var albumTitle: String = ""
-    @Published var artistName: String = ""
-    @Published var currentArtistName: String = ""
-    @Published var isExplicit: Bool = false
-    @Published var payoutThreshold: Int = 0
-    @Published var listenerPayoutPercentage: Double = 20
-    @Published var genre: String = ""
-    @Published var yearReleased: String = ""
-    @Published var recordLabel: String = ""
-    @Published var albumCoverItem: PhotosPickerItem?
-    @Published var albumCoverImage: Image?
-    @Published var fileURL: URL?
-    @Published var isError: Bool = false
-    @Published var tracks: [Track] = [] {
+    @MainActor @Published var isShowingFileImporter: Bool = false
+    @MainActor @Published var isShowingNamePopover: Bool = false
+    @MainActor @Published var albumTitle: String = ""
+    @MainActor @Published var artistName: String = ""
+    @MainActor @Published var currentArtistName: String = ""
+    @MainActor @Published var isExplicit: Bool = false
+    @MainActor @Published var payoutThreshold: Int = 0
+    @MainActor @Published var listenerPayoutPercentage: Double = 20
+    @MainActor @Published var genre: String = ""
+    @MainActor @Published var yearReleased: String = ""
+    @MainActor @Published var recordLabel: String = ""
+    @MainActor @Published var albumCoverItem: PhotosPickerItem?
+    @MainActor @Published var albumCoverImage: Image?
+    @MainActor @Published var fileURL: URL?
+    @MainActor @Published var isError: Bool = false
+    @MainActor @Published var tracks: [Track] = [] {
         didSet {
             payoutViewModel.tracks = tracks
         }
@@ -79,7 +79,7 @@ class UploadViewModel: ObservableObject {
         get async {
             do {
                 var duration: Double = 0
-                for track in tracks {
+                for track in await tracks {
                     // https://stackoverflow.com/a/33313235
                     let asset = AVURLAsset(url: track.url, options: .none)
                     duration += try await asset.load(.duration).seconds
@@ -92,7 +92,7 @@ class UploadViewModel: ObservableObject {
     }
     
     private func getArtistName() {
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             guard let id = await self.userProvider.currentUserID else { return }
             let name = try await self.database.getArtist(with: id)?.name ?? ""
@@ -123,9 +123,12 @@ class UploadViewModel: ObservableObject {
     }
     
     func moveTrack(from: IndexSet, to: Int) {
-        tracks.move(fromOffsets: from, toOffset: to)
-        for (index, _) in tracks.enumerated() {
-            tracks[index].ordinal = index
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.tracks.move(fromOffsets: from, toOffset: to)
+            for (index, _) in self.tracks.enumerated() {
+                self.tracks[index].ordinal = index
+            }
         }
     }
     

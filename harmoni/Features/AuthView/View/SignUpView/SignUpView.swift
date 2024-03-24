@@ -7,7 +7,6 @@
 
 import AuthenticationServices
 import SwiftUI
-import SwiftUIIntrospect
 
 struct SignUpView: View {
     @Environment(\.dismiss) var dismiss
