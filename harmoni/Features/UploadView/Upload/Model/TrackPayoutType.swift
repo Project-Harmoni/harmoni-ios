@@ -7,6 +7,7 @@
 
 import Foundation
 
-enum TrackPayoutType {
-    case proportional, jackpot
+enum TrackPayoutType: String {
+    case proportional = "proportional"
+    case jackpot = "jackpot"
 }

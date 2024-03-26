@@ -61,11 +61,13 @@
 		B5B05FEF2BABCF9600AD6F40 /* EditPayoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FEE2BABCF9600AD6F40 /* EditPayoutViewModel.swift */; };
 		B5B05FF22BABCFF100AD6F40 /* EditTrackPayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FF12BABCFF100AD6F40 /* EditTrackPayoutView.swift */; };
 		B5B05FF42BAE48F700AD6F40 /* TrackPayoutType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FF32BAE48F700AD6F40 /* TrackPayoutType.swift */; };
-		B5B05FF62BAE4C1A00AD6F40 /* EditTrackPayoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FF52BAE4C1A00AD6F40 /* EditTrackPayoutViewModel.swift */; };
 		B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FF72BAE578500AD6F40 /* Binding+Extension.swift */; };
 		B5B05FFA2BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */; };
 		B5B05FFD2BAFA7DB00AD6F40 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FFC2BAFA7DB00AD6F40 /* SettingsView.swift */; };
 		B5B05FFF2BAFBA9A00AD6F40 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B05FFE2BAFBA9A00AD6F40 /* UIImage+Extension.swift */; };
+		B5B060032BB2417700AD6F40 /* ConfirmUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */; };
+		B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060042BB2638900AD6F40 /* UploadStore.swift */; };
+		B5B060072BB2801400AD6F40 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060062BB2801400AD6F40 /* Int+Extension.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -129,11 +131,13 @@
 		B5B05FEE2BABCF9600AD6F40 /* EditPayoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPayoutViewModel.swift; sourceTree = "<group>"; };
 		B5B05FF12BABCFF100AD6F40 /* EditTrackPayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackPayoutView.swift; sourceTree = "<group>"; };
 		B5B05FF32BAE48F700AD6F40 /* TrackPayoutType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPayoutType.swift; sourceTree = "<group>"; };
-		B5B05FF52BAE4C1A00AD6F40 /* EditTrackPayoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackPayoutViewModel.swift; sourceTree = "<group>"; };
 		B5B05FF72BAE578500AD6F40 /* Binding+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+Extension.swift"; sourceTree = "<group>"; };
 		B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserEnvironmentKey.swift; sourceTree = "<group>"; };
 		B5B05FFC2BAFA7DB00AD6F40 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B5B05FFE2BAFBA9A00AD6F40 /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
+		B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadView.swift; sourceTree = "<group>"; };
+		B5B060042BB2638900AD6F40 /* UploadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadStore.swift; sourceTree = "<group>"; };
+		B5B060062BB2801400AD6F40 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -166,9 +170,10 @@
 		B518F53F2BA53696002CDCB7 /* UploadView */ = {
 			isa = PBXGroup;
 			children = (
-				B518F5632BA68D8B002CDCB7 /* Model */,
-				B518F5402BA536AB002CDCB7 /* UploadView.swift */,
-				B518F54E2BA63D1F002CDCB7 /* UploadViewModel.swift */,
+				B5B060012BB2414A00AD6F40 /* Upload */,
+				B518F56C2BA933C5002CDCB7 /* EditPayoutView */,
+				B5B060002BB2412300AD6F40 /* ConfirmUploadView */,
+				B5B060042BB2638900AD6F40 /* UploadStore.swift */,
 			);
 			path = UploadView;
 			sourceTree = "<group>";
@@ -327,7 +332,6 @@
 		B58FC7A12B9D5806006F5BDF /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				B518F56C2BA933C5002CDCB7 /* EditPayoutView */,
 				B518F5662BA9039A002CDCB7 /* TagListView */,
 				B58FC7A42B9D6938006F5BDF /* AccountView */,
 				B58FC7922B9D55FB006F5BDF /* AppContainer */,
@@ -381,6 +385,7 @@
 				B518F53D2BA2B584002CDCB7 /* Date+Extension.swift */,
 				B5B05FF72BAE578500AD6F40 /* Binding+Extension.swift */,
 				B5B05FFE2BAFBA9A00AD6F40 /* UIImage+Extension.swift */,
+				B5B060062BB2801400AD6F40 /* Int+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -455,7 +460,6 @@
 			isa = PBXGroup;
 			children = (
 				B5B05FF12BABCFF100AD6F40 /* EditTrackPayoutView.swift */,
-				B5B05FF52BAE4C1A00AD6F40 /* EditTrackPayoutViewModel.swift */,
 			);
 			path = EditTrackPayoutView;
 			sourceTree = "<group>";
@@ -466,6 +470,24 @@
 				B5B05FFC2BAFA7DB00AD6F40 /* SettingsView.swift */,
 			);
 			path = SettingsView;
+			sourceTree = "<group>";
+		};
+		B5B060002BB2412300AD6F40 /* ConfirmUploadView */ = {
+			isa = PBXGroup;
+			children = (
+				B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */,
+			);
+			path = ConfirmUploadView;
+			sourceTree = "<group>";
+		};
+		B5B060012BB2414A00AD6F40 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				B518F5632BA68D8B002CDCB7 /* Model */,
+				B518F5402BA536AB002CDCB7 /* UploadView.swift */,
+				B518F54E2BA63D1F002CDCB7 /* UploadViewModel.swift */,
+			);
+			path = Upload;
 			sourceTree = "<group>";
 		};
 		B5E229D92BA2A8FB00BC30C3 /* SelectBirthdayView */ = {
@@ -617,6 +639,7 @@
 				B518F5462BA53BFD002CDCB7 /* SupabaseStorageClient+Extension.swift in Sources */,
 				B58FC79A2B9D56D5006F5BDF /* Supabase.swift in Sources */,
 				B5B05FF42BAE48F700AD6F40 /* TrackPayoutType.swift in Sources */,
+				B5B060072BB2801400AD6F40 /* Int+Extension.swift in Sources */,
 				B518F5542BA63E84002CDCB7 /* SongDetailViewModel.swift in Sources */,
 				B518F5622BA66E70002CDCB7 /* ArtistEnvironmentKey.swift in Sources */,
 				B5B05FF22BABCFF100AD6F40 /* EditTrackPayoutView.swift in Sources */,
@@ -651,8 +674,8 @@
 				B5B05FFA2BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift in Sources */,
 				B58FC7BC2B9E7AE7006F5BDF /* String+Extension.swift in Sources */,
 				B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */,
-				B5B05FF62BAE4C1A00AD6F40 /* EditTrackPayoutViewModel.swift in Sources */,
 				B5B05FEB2BABCF2E00AD6F40 /* TagCategory.swift in Sources */,
+				B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */,
 				B58FC7C42B9E92F9006F5BDF /* SignUpPath.swift in Sources */,
 				B518F5682BA903B3002CDCB7 /* TagListView.swift in Sources */,
 				B58FC7A62B9D694C006F5BDF /* AccountView.swift in Sources */,
@@ -669,6 +692,7 @@
 				B58FC79F2B9D5796006F5BDF /* AuthError.swift in Sources */,
 				B5B05FE82BABCF0E00AD6F40 /* TagViewModel.swift in Sources */,
 				B518F5442BA53AC1002CDCB7 /* StorageService.swift in Sources */,
+				B5B060032BB2417700AD6F40 /* ConfirmUploadView.swift in Sources */,
 				B58CDC1D2BA2A88000E51964 /* CompleteRegistrationViewModel.swift in Sources */,
 				B518F5512BA63DF9002CDCB7 /* SongDetailView.swift in Sources */,
 				B518F54F2BA63D1F002CDCB7 /* UploadViewModel.swift in Sources */,

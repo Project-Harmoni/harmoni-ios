@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct EditPayoutView: View {
+    @EnvironmentObject private var uploadStore: UploadStore
     @Environment(\.editMode) private var editMode
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var viewModel: EditPayoutViewModel
@@ -46,6 +47,9 @@ struct EditPayoutView: View {
             } message: {
                 Text("Enter the percentage of payout that goes to you, the artist.")
             }
+            .onChange(of: viewModel.tracks) { _, tracks in
+                uploadStore.tracks = tracks
+            }
     }
     
     @ViewBuilder
@@ -57,12 +61,11 @@ struct EditPayoutView: View {
         } else {
             List(selection: $viewModel.selectedTracks) {
                 ForEach($viewModel.tracks) { track in
-                    if let index = viewModel.trackPayoutViewModels.firstIndex(where: { $0.track.id == track.id }) {
-                        EditTrackPayoutView(
-                            viewModel: viewModel.trackPayoutViewModels[index]
-                        )
-                    }
+                    EditTrackPayoutView(
+                        track: track
+                    )
                 }
+                cta
             }
         }
     }
@@ -139,6 +142,26 @@ struct EditPayoutView: View {
             .bold()
             .onAppear() {
                 viewModel.isSelectingAll = true
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var cta: some View {
+        if viewModel.isEditing {
+            Button {
+                //
+            } label: {
+                Text("Save")
+            }
+            .buttonStyle(.borderedProminent)
+        } else {
+            Section {
+                NavigationLink("Continue") {
+                    ConfirmUploadView()
+                        .environmentObject(uploadStore)
+                }
+                .foregroundStyle(.blue)
             }
         }
     }

@@ -9,28 +9,28 @@ import SwiftUI
 
 struct EditTrackPayoutView: View {
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var viewModel: EditTrackPayoutViewModel
+    @Binding var track: Track
+    @State var isReadOnly: Bool = false
+    @State private var isShowingEditStreamAlert: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(viewModel.track.name).bold()
+                    Text(track.name).bold()
                     Spacer()
                     menu
                 }
             }
             editTrackContent
         }
-        .frame(height: isFreeToStream ? 64 : 125)
+        .frame(height: height)
         .padding(.vertical, 8)
         .listRowBackground(Color(.secondarySystemGroupedBackground))
-        .alert("Edit Streams", isPresented: $viewModel.isShowingEditStreamAlert) {
-            TextField("Number of streams", text: $viewModel.streamThreshold)
+        .alert("Edit Streams", isPresented: $isShowingEditStreamAlert) {
+            TextField("Number of streams", text: $track.streamThreshold.toString)
                 .keyboardType(.numberPad)
-            Button("Save", role: .none) {
-                viewModel.track.streamThreshold = Int(viewModel.streamThreshold) ?? 1000
-            }
+            Button("Save", role: .none) {}
             Button("Cancel", role: .cancel) { }
         } message: {
             Text("Enter the number of streams it takes for a payout to occur.")
@@ -54,40 +54,52 @@ struct EditTrackPayoutView: View {
             VStack(alignment: .leading, spacing: 12) {
                 youListenerCopy
                 slider
-                streamThreshold
+                footer
             }
         }
     }
     
+    @ViewBuilder
+    private var footer: some View {
+        if isReadOnly {
+            streamPerPayoutReadonly
+        } else {
+            streamThreshold
+        }
+    }
+    
+    @ViewBuilder
     private var menu: some View {
-        Menu {
-            Button {
-                viewModel.track.isFreeToStream.toggle()
-            } label: {
-                Text(
-                    isFreeToStream
-                    ? "Make Pay to Stream"
-                    : "Make Free to Stream"
-                )
-            }
-            Button {
-                viewModel.track.payoutType = .proportional
-            } label: {
-                Text("Proportional Payout")
-                if viewModel.track.payoutType == .proportional {
-                    Image(systemName: "checkmark")
+        if !isReadOnly {
+            Menu {
+                Button {
+                    track.isFreeToStream.toggle()
+                } label: {
+                    Text(
+                        isFreeToStream
+                        ? "Make Pay to Stream"
+                        : "Make Free to Stream"
+                    )
                 }
-            }
-            Button {
-                viewModel.track.payoutType = .jackpot
-            } label: {
-                Text("Jackpot Payout")
-                if viewModel.track.payoutType == .jackpot {
-                    Image(systemName: "checkmark")
+                Button {
+                    track.payoutType = .proportional
+                } label: {
+                    Text("Proportional Payout")
+                    if track.payoutType == .proportional {
+                        Image(systemName: "checkmark")
+                    }
                 }
+                Button {
+                    track.payoutType = .jackpot
+                } label: {
+                    Text("Jackpot Payout")
+                    if track.payoutType == .jackpot {
+                        Image(systemName: "checkmark")
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
             }
-        } label: {
-            Image(systemName: "ellipsis.circle")
         }
     }
     
@@ -95,13 +107,9 @@ struct EditTrackPayoutView: View {
         HStack {
             Spacer()
             Button {
-                viewModel.isShowingEditStreamAlert.toggle()
+                isShowingEditStreamAlert.toggle()
             } label: {
-                Text("\(viewModel.track.streamThreshold)")
-                    .font(.caption)
-                    .bold()
-                + Text(" streams / payout")
-                    .font(.caption2)
+                streamsPerPayoutLabel
             }
             .buttonStyle(.bordered)
             .clipShape(RoundedRectangle(cornerRadius: 25))
@@ -109,6 +117,14 @@ struct EditTrackPayoutView: View {
             Spacer()
         }
         .padding(.bottom, 2)
+    }
+    
+    private var streamsPerPayoutLabel: some View {
+        Text("\(track.streamThreshold)")
+            .font(.caption)
+            .bold()
+        + Text(" streams / payout")
+            .font(.caption2)
     }
     
     private func capsule(for role: SignUpRole, in proxy: GeometryProxy) -> some View {
@@ -152,16 +168,18 @@ struct EditTrackPayoutView: View {
                     capsule(for: .artist, in: proxy)
                     capsule(for: .listener, in: proxy)
                 }
-                Slider(value: $viewModel.track.artistPercentage, in: 0.0...100.0, step: 1)
-                    .tint(.clear)
-                    .padding(0)
-                    .frame(height: 20)
+                if !isReadOnly {
+                    Slider(value: $track.artistPercentage, in: 0.0...100.0, step: 1)
+                        .tint(.clear)
+                        .padding(0)
+                        .frame(height: 20)
+                }
             }
         }
     }
     
     private var artistBarWidth: CGFloat {
-        viewModel.track.artistPercentage / 100
+        track.artistPercentage / 100
     }
     
     private var listenerBarWidth: CGFloat {
@@ -169,22 +187,41 @@ struct EditTrackPayoutView: View {
     }
     
     private var artistPercentage: Int {
-        Int(viewModel.track.artistPercentage)
+        Int(track.artistPercentage)
     }
     
     private var listenerPercentage: Int {
-        Int((100 - viewModel.track.artistPercentage))
+        Int((100 - track.artistPercentage))
     }
     
     private var isFreeToStream: Bool {
-        viewModel.track.isFreeToStream
+        track.isFreeToStream
+    }
+    
+    private var height: CGFloat {
+        if isFreeToStream {
+            64
+        } else if isReadOnly {
+            100
+        } else {
+            125
+        }
+    }
+}
+
+// MARK: - Extension Read-Only
+
+private extension EditTrackPayoutView {
+    var streamPerPayoutReadonly: some View {
+        Text("**\(track.streamThreshold)**")
+            .font(.footnote)
+        + Text(" streams / **\(track.payoutType.rawValue)** payout")
+            .font(.footnote)
     }
 }
 
 #Preview {
     EditTrackPayoutView(
-        viewModel: EditTrackPayoutViewModel(
-            track: Track(url: URL(string: "www.apple.com")!, name: "Test", fileExtension: ".mp3")
-        )
+        track: .constant(Track(url: URL(string: "www.apple.com")!, name: "Test", fileExtension: ".mp3"))
     )
 }

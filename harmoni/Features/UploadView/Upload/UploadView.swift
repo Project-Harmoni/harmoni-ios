@@ -75,8 +75,9 @@ struct UploadView: View {
     private var artistNameField: some View {
         HStack {
             TextField("Artist name", text: $viewModel.artistName)
-                .foregroundStyle(.gray)
+                .foregroundStyle(viewModel.currentArtistName.isEmpty ? .black : .gray)
                 .disabled(!viewModel.currentArtistName.isEmpty)
+                .textInputAutocapitalization(.words)
             if viewModel.currentArtistName.isEmpty {
                 Spacer()
                 Button {
@@ -96,10 +97,7 @@ struct UploadView: View {
     
     private var albumTitleField: some View {
         TextField("Album title", text: $viewModel.albumTitle)
-    }
-    
-    private var genreField: some View {
-        TextField("Genre", text: $viewModel.genre)
+            .textInputAutocapitalization(.words)
     }
     
     private var yearReleasedField: some View {
@@ -109,6 +107,7 @@ struct UploadView: View {
     
     private var recordLabelField: some View {
         TextField("Record Label", text: $viewModel.recordLabel)
+            .textInputAutocapitalization(.words)
     }
     
     private var isExplicit: some View {
@@ -217,7 +216,9 @@ struct UploadView: View {
             EditPayoutView(
                 viewModel: viewModel.payoutViewModel
             )
+            .environmentObject(viewModel.uploadStore)
         }
+        .foregroundStyle(.blue)
     }
     
     private var isTrackChosen: Bool {

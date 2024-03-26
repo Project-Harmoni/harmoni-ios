@@ -12,21 +12,48 @@ import SwiftUI
 class UploadViewModel: ObservableObject {
     @MainActor @Published var isShowingFileImporter: Bool = false
     @MainActor @Published var isShowingNamePopover: Bool = false
-    @MainActor @Published var albumTitle: String = ""
-    @MainActor @Published var artistName: String = ""
     @MainActor @Published var currentArtistName: String = ""
-    @MainActor @Published var isExplicit: Bool = false
     @MainActor @Published var payoutThreshold: Int = 0
     @MainActor @Published var listenerPayoutPercentage: Double = 20
-    @MainActor @Published var genre: String = ""
-    @MainActor @Published var yearReleased: String = ""
-    @MainActor @Published var recordLabel: String = ""
     @MainActor @Published var albumCoverItem: PhotosPickerItem?
-    @MainActor @Published var albumCoverImage: Image?
     @MainActor @Published var fileURL: URL?
     @MainActor @Published var isError: Bool = false
+    
+    // Upload Store
+    @MainActor @Published var uploadStore: UploadStore = UploadStore()
+    @MainActor @Published var albumTitle: String = "" {
+        didSet {
+            uploadStore.albumTitle = albumTitle
+        }
+    }
+    @MainActor @Published var artistName: String = "" {
+        didSet {
+            uploadStore.artistName = artistName
+        }
+    }
+    @MainActor @Published var isExplicit: Bool = false {
+        didSet {
+            uploadStore.isExplicit = isExplicit
+        }
+    }
+    @MainActor @Published var yearReleased: String = "" {
+        didSet {
+            uploadStore.yearReleased = yearReleased
+        }
+    }
+    @MainActor @Published var recordLabel: String = "" {
+        didSet {
+            uploadStore.recordLabel = recordLabel
+        }
+    }
+    @MainActor @Published var albumCoverImage: Image? {
+        didSet {
+            uploadStore.albumCoverImage = albumCoverImage
+        }
+    }
     @MainActor @Published var tracks: [Track] = [] {
         didSet {
+            uploadStore.tracks = tracks
             payoutViewModel.tracks = tracks
         }
     }

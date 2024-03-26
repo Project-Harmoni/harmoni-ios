@@ -15,10 +15,7 @@ class EditPayoutViewModel: ObservableObject {
     @Published var isShowingEditStreamAlert: Bool = false
     @Published var artistPercentage: String = ""
     @Published var isShowingEditPercentageAlert: Bool = false
-    
-    lazy var trackPayoutViewModels: [EditTrackPayoutViewModel] = {
-        tracks.map { EditTrackPayoutViewModel(track: $0) }
-    }()
+    @Published var isEditing: Bool = false
     
     init(tracks: [Track]) {
         self.tracks = tracks
@@ -26,10 +23,10 @@ class EditPayoutViewModel: ObservableObject {
     
     func editStreamsUntilPayout() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
                 var threshold = Int(streamThreshold) ?? 1000
                 threshold = threshold < 0 ? 0 : threshold
-                viewModel.track.streamThreshold = threshold
+                tracks[index].streamThreshold = threshold
             }
         }
         streamThreshold = ""
@@ -37,11 +34,11 @@ class EditPayoutViewModel: ObservableObject {
     
     func editArtistPercentage() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
                 var percentage = CGFloat((artistPercentage as NSString).floatValue)
                 percentage = percentage > 100 ? 100 : percentage
                 percentage = percentage < 0 ? 0 : percentage
-                viewModel.track.artistPercentage = percentage
+                tracks[index].artistPercentage = percentage
             }
         }
         artistPercentage = ""
@@ -49,32 +46,32 @@ class EditPayoutViewModel: ObservableObject {
     
     func editFreeToStream() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
-                viewModel.track.isFreeToStream = true
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
+                tracks[index].isFreeToStream = true
             }
         }
     }
     
     func editPaidToStream() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
-                viewModel.track.isFreeToStream = false
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
+                tracks[index].isFreeToStream = false
             }
         }
     }
     
     func editProportionalPayout() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
-                viewModel.track.payoutType = .proportional
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
+                tracks[index].payoutType = .proportional
             }
         }
     }
     
     func editJackpotPayout() {
         for track in selectedTracks {
-            if let viewModel = trackPayoutViewModels.first(where: { $0.track.id == track }) {
-                viewModel.track.payoutType = .jackpot
+            if let index = tracks.firstIndex(where: { $0.id == track }) {
+                tracks[index].payoutType = .jackpot
             }
         }
     }
