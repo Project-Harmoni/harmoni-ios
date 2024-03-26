@@ -12,7 +12,7 @@ class ConfirmUploadViewModel: ObservableObject {
 }
 
 struct ConfirmUploadView: View {
-    @EnvironmentObject var uploadStore: UploadStore
+    @EnvironmentObject private var uploadStore: UploadStore
     @StateObject var viewModel: ConfirmUploadViewModel = ConfirmUploadViewModel()
     
     var body: some View {
@@ -20,19 +20,34 @@ struct ConfirmUploadView: View {
             Section("Metadata") {
                 metadata
             }
+            Section("Tags") {
+                tags
+            }
             Section("Payout Configuration") {
                 ForEach($uploadStore.tracks) { track in
                     cell(for: track)
                 }
             }
-            Section("Confirm") {
-                Button {
-                    
-                } label: {
-                    Text("Upload")
+            Section {
+                HStack {
+                    Button {
+                        print("tapped")
+                    } label: {
+                        HStack {
+                            Text("Upload").bold()
+                            Spacer()
+                            Image(systemName: "arrow.up")
+                                .bold()
+                        }
+                        .foregroundStyle(.white)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
             }
+            .listRowBackground(
+                Rectangle()
+                    .foregroundStyle(.blue)
+            )
+            
         }
         .navigationTitle("Confirm Upload")
     }
@@ -45,6 +60,34 @@ struct ConfirmUploadView: View {
             yearReleasedField
             recordLabelField
             isExplicit
+        }
+    }
+    
+    @ViewBuilder
+    private var tags: some View {
+        Section {
+            TagListView(viewModel: uploadStore.genreTagsViewModel)
+        } header: {
+            Text("Genres")
+                .font(.subheadline)
+        }
+        Section {
+            TagListView(viewModel: uploadStore.moodTagsViewModel)
+        } header: {
+            Text("Moods")
+                .font(.subheadline)
+        }
+        Section {
+            TagListView(viewModel: uploadStore.instrumentsTagsViewModel)
+        } header: {
+            Text("Instruments")
+                .font(.subheadline)
+        }
+        Section {
+            TagListView(viewModel: uploadStore.miscTagsViewModel)
+        } header: {
+            Text("Miscellaneous")
+                .font(.subheadline)
         }
     }
     
@@ -119,4 +162,5 @@ struct ConfirmUploadView: View {
 
 #Preview {
     ConfirmUploadView()
+        .environmentObject(UploadStore())
 }

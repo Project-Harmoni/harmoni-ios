@@ -15,11 +15,13 @@ class TagListViewModel: ObservableObject {
     @Published var editedTagName: String = ""
     @Published var selectedTag: Tag?
     @Published var tags: [Tag] = []
+    let isReadOnly: Bool
     let category: TagCategory
     
-    init(tags: [Tag] = [], category: TagCategory) {
+    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false) {
         self.tags = tags
         self.category = category
+        self.isReadOnly = isReadOnly
     }
     
     func createTag() {

@@ -161,8 +161,12 @@ struct EditPayoutView: View {
                     ConfirmUploadView()
                         .environmentObject(uploadStore)
                 }
-                .foregroundStyle(.blue)
+                .foregroundStyle(.white)
             }
+            .listRowBackground(
+                Rectangle()
+                    .foregroundStyle(.blue)
+            )
         }
     }
     

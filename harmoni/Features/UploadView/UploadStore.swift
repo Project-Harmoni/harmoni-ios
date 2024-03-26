@@ -15,4 +15,26 @@ class UploadStore: ObservableObject {
     var yearReleased: String = ""
     var recordLabel: String = ""
     var albumCoverImage: Image?
+    
+    // Tags
+    var genreTagsViewModel = TagListViewModel(
+        tags: [],
+        category: .genres,
+        isReadOnly: true
+    )
+    var moodTagsViewModel = TagListViewModel(
+        tags: [],
+        category: .moods,
+        isReadOnly: true
+    )
+    var instrumentsTagsViewModel = TagListViewModel(
+        tags: [],
+        category: .instruments,
+        isReadOnly: true
+    )
+    var miscTagsViewModel = TagListViewModel(
+        tags: [],
+        category: .miscellaneous,
+        isReadOnly: true
+    )
 }

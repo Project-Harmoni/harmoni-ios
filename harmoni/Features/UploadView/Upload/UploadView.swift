@@ -10,7 +10,6 @@ import SwiftUI
 import Supabase
 
 struct UploadView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @StateObject var viewModel = UploadViewModel()
     
     var body: some View {
@@ -36,10 +35,14 @@ struct UploadView: View {
             }
             Section("Tags") {
                 tags
+                    .environmentObject(viewModel.uploadStore)
             }
             Section {
                 continueToPayout
             }
+            .listRowBackground(
+                Rectangle().foregroundStyle(.blue)
+            )
         }
         .navigationTitle("Upload")
         .fileImporter(
@@ -218,7 +221,7 @@ struct UploadView: View {
             )
             .environmentObject(viewModel.uploadStore)
         }
-        .foregroundStyle(.blue)
+        .foregroundStyle(.white)
     }
     
     private var isTrackChosen: Bool {

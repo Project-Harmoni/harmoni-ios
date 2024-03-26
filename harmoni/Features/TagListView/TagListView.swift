@@ -9,6 +9,7 @@ import SwiftUI
 import WrappingStack
 
 struct TagListView: View {
+    @EnvironmentObject private var uploadStore: UploadStore
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: TagListViewModel
     
@@ -46,6 +47,18 @@ struct TagListView: View {
                     viewModel.removeTag()
                 })
             } message: {}
+            .onChange(of: viewModel.tags) { _, tags in
+                switch viewModel.category {
+                case .genres:
+                    uploadStore.genreTagsViewModel.tags = tags
+                case .moods:
+                    uploadStore.moodTagsViewModel.tags = tags
+                case .instruments:
+                    uploadStore.instrumentsTagsViewModel.tags = tags
+                case .miscellaneous:
+                    uploadStore.miscTagsViewModel.tags = tags
+                }
+            }
     }
     
     private var tags: some View {
@@ -71,22 +84,27 @@ struct TagListView: View {
             viewModel.isDisplayingEditTagAlert.toggle()
         } label: {
             Text(tag.name)
+                .foregroundStyle(viewModel.isReadOnly ? Color.primary : .blue)
         }
         .buttonStyle(.bordered)
         .clipShape(RoundedRectangle(cornerRadius: 25))
+        .disabled(viewModel.isReadOnly)
     }
     
+    @ViewBuilder
     private var createNewTag: some View {
-        Button {
-            viewModel.newTagName = ""
-            viewModel.isDisplayingCreateTagAlert.toggle()
-        } label: {
-            Image(systemName: "plus")
-                .foregroundStyle(colorScheme == .dark ? .black : .white)
+        if !viewModel.isReadOnly {
+            Button {
+                viewModel.newTagName = ""
+                viewModel.isDisplayingCreateTagAlert.toggle()
+            } label: {
+                Image(systemName: "plus")
+                    .foregroundStyle(colorScheme == .dark ? .black : .white)
+            }
+            .buttonStyle(.borderedProminent)
+            .clipShape(Circle())
+            .tint(.secondary)
         }
-        .buttonStyle(.borderedProminent)
-        .clipShape(Circle())
-        .tint(.secondary)
     }
 }
 
