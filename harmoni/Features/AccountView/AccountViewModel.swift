@@ -240,6 +240,6 @@ private extension AccountViewModel {
     var profileImageName: String? {
         guard let user else { return nil }
         let uuid = user.id.uuidString
-        return "\(uuid)_profile_image.jpg"
+        return "\(uuid)_profile_image".toJPG
     }
 }

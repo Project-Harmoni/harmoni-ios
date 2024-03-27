@@ -68,6 +68,13 @@
 		B5B060032BB2417700AD6F40 /* ConfirmUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */; };
 		B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060042BB2638900AD6F40 /* UploadStore.swift */; };
 		B5B060072BB2801400AD6F40 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060062BB2801400AD6F40 /* Int+Extension.swift */; };
+		B5B060092BB38BC800AD6F40 /* SongDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060082BB38BC800AD6F40 /* SongDB.swift */; };
+		B5B0600B2BB3900800AD6F40 /* AlbumDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0600A2BB3900800AD6F40 /* AlbumDB.swift */; };
+		B5B0600D2BB391D000AD6F40 /* SongAlbumDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0600C2BB391D000AD6F40 /* SongAlbumDB.swift */; };
+		B5B0600F2BB3922100AD6F40 /* SongTagDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0600E2BB3922100AD6F40 /* SongTagDB.swift */; };
+		B5B060112BB3924C00AD6F40 /* TagDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060102BB3924C00AD6F40 /* TagDB.swift */; };
+		B5B060132BB392A100AD6F40 /* TagCategoryDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060122BB392A100AD6F40 /* TagCategoryDB.swift */; };
+		B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -138,6 +145,13 @@
 		B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadView.swift; sourceTree = "<group>"; };
 		B5B060042BB2638900AD6F40 /* UploadStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadStore.swift; sourceTree = "<group>"; };
 		B5B060062BB2801400AD6F40 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		B5B060082BB38BC800AD6F40 /* SongDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDB.swift; sourceTree = "<group>"; };
+		B5B0600A2BB3900800AD6F40 /* AlbumDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumDB.swift; sourceTree = "<group>"; };
+		B5B0600C2BB391D000AD6F40 /* SongAlbumDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongAlbumDB.swift; sourceTree = "<group>"; };
+		B5B0600E2BB3922100AD6F40 /* SongTagDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTagDB.swift; sourceTree = "<group>"; };
+		B5B060102BB3924C00AD6F40 /* TagDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDB.swift; sourceTree = "<group>"; };
+		B5B060122BB392A100AD6F40 /* TagCategoryDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCategoryDB.swift; sourceTree = "<group>"; };
+		B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadViewModel.swift; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -476,6 +490,7 @@
 			isa = PBXGroup;
 			children = (
 				B5B060022BB2417700AD6F40 /* ConfirmUploadView.swift */,
+				B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */,
 			);
 			path = ConfirmUploadView;
 			sourceTree = "<group>";
@@ -532,6 +547,12 @@
 				B5EC14002B9FEAEB00F1CCA8 /* UserDB.swift */,
 				B518F5552BA65097002CDCB7 /* ArtistDB.swift */,
 				B518F55C2BA66319002CDCB7 /* ListenerDB.swift */,
+				B5B060082BB38BC800AD6F40 /* SongDB.swift */,
+				B5B0600A2BB3900800AD6F40 /* AlbumDB.swift */,
+				B5B0600C2BB391D000AD6F40 /* SongAlbumDB.swift */,
+				B5B0600E2BB3922100AD6F40 /* SongTagDB.swift */,
+				B5B060102BB3924C00AD6F40 /* TagDB.swift */,
+				B5B060122BB392A100AD6F40 /* TagCategoryDB.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -649,6 +670,7 @@
 				B5EC14092B9FFC0100F1CCA8 /* AuthFlowError.swift in Sources */,
 				B58CDC1B2BA2A6B300E51964 /* CompleteRegistrationView.swift in Sources */,
 				B518F54D2BA63CD4002CDCB7 /* VolumeSliderView.swift in Sources */,
+				B5B0600D2BB391D000AD6F40 /* SongAlbumDB.swift in Sources */,
 				B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
@@ -656,6 +678,7 @@
 				B5EC13FD2B9FE7CC00F1CCA8 /* PostgrestClient+Extension.swift in Sources */,
 				B58FC79D2B9D573A006F5BDF /* AuthManager.swift in Sources */,
 				B5ADE8E72B9D1707009988E5 /* AppContainerView.swift in Sources */,
+				B5B060112BB3924C00AD6F40 /* TagDB.swift in Sources */,
 				B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */,
 				B518F5412BA536AB002CDCB7 /* UploadView.swift in Sources */,
 				B518F56E2BA933D0002CDCB7 /* EditPayoutView.swift in Sources */,
@@ -673,10 +696,15 @@
 				B518F55B2BA66068002CDCB7 /* UserProvider.swift in Sources */,
 				B5B05FFA2BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift in Sources */,
 				B58FC7BC2B9E7AE7006F5BDF /* String+Extension.swift in Sources */,
+				B5B060092BB38BC800AD6F40 /* SongDB.swift in Sources */,
 				B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */,
+				B5B0600F2BB3922100AD6F40 /* SongTagDB.swift in Sources */,
+				B5B0600B2BB3900800AD6F40 /* AlbumDB.swift in Sources */,
 				B5B05FEB2BABCF2E00AD6F40 /* TagCategory.swift in Sources */,
 				B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */,
+				B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */,
 				B58FC7C42B9E92F9006F5BDF /* SignUpPath.swift in Sources */,
+				B5B060132BB392A100AD6F40 /* TagCategoryDB.swift in Sources */,
 				B518F5682BA903B3002CDCB7 /* TagListView.swift in Sources */,
 				B58FC7A62B9D694C006F5BDF /* AccountView.swift in Sources */,
 				B518F5562BA65097002CDCB7 /* ArtistDB.swift in Sources */,

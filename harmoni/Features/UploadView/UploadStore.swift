@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/25/24.
 //
 
+import PhotosUI
 import SwiftUI
 
 class UploadStore: ObservableObject {
@@ -14,7 +15,13 @@ class UploadStore: ObservableObject {
     var isExplicit: Bool = false
     var yearReleased: String = ""
     var recordLabel: String = ""
+    var albumCoverItem: PhotosPickerItem?
     var albumCoverImage: Image?
+    private let userProvider: UserProviding?
+    
+    init(userProvider: UserProviding = UserProvider()) {
+        self.userProvider = userProvider
+    }
     
     // Tags
     var genreTagsViewModel = TagListViewModel(
@@ -37,4 +44,41 @@ class UploadStore: ObservableObject {
         category: .miscellaneous,
         isReadOnly: true
     )
+}
+
+extension UploadStore {
+    func name(for track: Track) async -> String? {
+        guard let artistID = await userProvider?.currentUserID else { return nil }
+        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)"
+    }
+    
+    // TODO: - Add better handling if artist uploads cover for 2+ tracks with same album title and year released
+    var albumCoverName: String? {
+        get async {
+            guard let artistID = await userProvider?.currentUserID else { return nil }
+            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)".toJPG
+        }
+    }
+    
+    var durationOfTracks: Double? {
+        get async {
+            do {
+                var duration: Double = 0
+                for track in tracks {
+                    // https://stackoverflow.com/a/33313235
+                    let asset = AVURLAsset(url: track.url, options: .none)
+                    duration += try await asset.load(.duration).seconds
+                }
+                return duration
+            } catch {
+                return nil
+            }
+        }
+    }
+    
+    var yearReleasedDate: Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        return formatter.date(from: yearReleased)
+    }
 }

@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-class ConfirmUploadViewModel: ObservableObject {
-    @Published var isSaving: Bool = false
-}
-
 struct ConfirmUploadView: View {
     @EnvironmentObject private var uploadStore: UploadStore
     @StateObject var viewModel: ConfirmUploadViewModel = ConfirmUploadViewModel()
@@ -29,27 +25,26 @@ struct ConfirmUploadView: View {
                 }
             }
             Section {
-                HStack {
-                    Button {
-                        print("tapped")
-                    } label: {
-                        HStack {
-                            Text("Upload").bold()
-                            Spacer()
-                            Image(systemName: "arrow.up")
-                                .bold()
-                        }
-                        .foregroundStyle(.white)
-                    }
-                }
+                uploadCTA
             }
             .listRowBackground(
-                Rectangle()
-                    .foregroundStyle(.blue)
+                Rectangle().foregroundStyle(.blue)
             )
             
         }
         .navigationTitle("Confirm Upload")
+        .alert(
+            "Uh oh!",
+            isPresented: $viewModel.isError,
+            actions: {
+                Button("OK", role: .none, action: {})
+            }, message: {
+                Text("An error occurred uploading. Please try again.")
+            }
+        )
+        .onAppear() {
+            viewModel.store = uploadStore
+        }
     }
     
     private var metadata: some View {
@@ -157,6 +152,39 @@ struct ConfirmUploadView: View {
             track: track,
             isReadOnly: true
         )
+    }
+    
+    private var uploadCTA: some View {
+        HStack {
+            Button {
+                viewModel.upload()
+            } label: {
+                HStack {
+                    uploadLabel
+                    Spacer()
+                    Image(systemName: "arrow.up")
+                        .bold()
+                }
+                .foregroundStyle(.white)
+            }
+            .disabled(isUploading)
+        }
+    }
+    
+    @ViewBuilder
+    private var uploadLabel: some View {
+        if isUploading {
+            HStack {
+                ProgressView().tint(.white)
+                Text("Uploading...").bold()
+            }
+        } else {
+            Text("Upload").bold()
+        }
+    }
+    
+    private var isUploading: Bool {
+        viewModel.isSaving
     }
 }
 

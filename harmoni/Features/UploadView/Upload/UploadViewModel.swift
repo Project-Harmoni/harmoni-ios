@@ -15,7 +15,6 @@ class UploadViewModel: ObservableObject {
     @MainActor @Published var currentArtistName: String = ""
     @MainActor @Published var payoutThreshold: Int = 0
     @MainActor @Published var listenerPayoutPercentage: Double = 20
-    @MainActor @Published var albumCoverItem: PhotosPickerItem?
     @MainActor @Published var fileURL: URL?
     @MainActor @Published var isError: Bool = false
     
@@ -44,6 +43,11 @@ class UploadViewModel: ObservableObject {
     @MainActor @Published var recordLabel: String = "" {
         didSet {
             uploadStore.recordLabel = recordLabel
+        }
+    }
+    @MainActor @Published var albumCoverItem: PhotosPickerItem? {
+        didSet {
+            uploadStore.albumCoverItem = albumCoverItem
         }
     }
     @MainActor @Published var albumCoverImage: Image? {
@@ -100,22 +104,6 @@ class UploadViewModel: ObservableObject {
             .store(in: &cancellables)
         
         getArtistName()
-    }
-    
-    private var durationOfTracks: Double? {
-        get async {
-            do {
-                var duration: Double = 0
-                for track in await tracks {
-                    // https://stackoverflow.com/a/33313235
-                    let asset = AVURLAsset(url: track.url, options: .none)
-                    duration += try await asset.load(.duration).seconds
-                }
-                return duration
-            } catch {
-                return nil
-            }
-        }
     }
     
     private func getArtistName() {
