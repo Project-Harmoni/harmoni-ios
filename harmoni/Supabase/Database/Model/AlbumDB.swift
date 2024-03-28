@@ -12,11 +12,11 @@ struct AlbumDB: Codable {
     var name: String?
     var artistID: UUID
     var coverImagePath: String?
-    var yearReleased: Date?
+    var yearReleased: String?
     var totalTracks: Int
     var recordLabel: String?
     var duration: Double?
-    var createdAt: Date?
+    var createdAt: String?
     
     enum CodingKeys: String, CodingKey {
         case id = "album_id"

@@ -12,16 +12,18 @@ import SwiftUI
 struct AccountView: View {
     @Environment(\.isArtist) private var isArtist
     @Environment(\.isAdmin) private var isAdmin
-    @StateObject var viewModel = AccountViewModel()
+    @StateObject private var viewModel = AccountViewModel()
+    @StateObject private var router = AccountViewRouter()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $router.path) {
             if isAuthorized {
                 accountView
             } else {
                 AuthView()
             }
         }
+        .environmentObject(router)
     }
     
     @ViewBuilder
@@ -64,6 +66,14 @@ struct AccountView: View {
         } message: {
             Text("Hm, that didn't work. Please try again.")
         }
+        .navigationDestination(for: AccountViewPath.self) { destination in
+            switch destination {
+            case .uploader: UploadView()
+            case .myUploads: MyUploadsView()
+            case .albums: Text("Albums")
+            case .tags: Text("Tags")
+            }
+        }
     }
     
     @ViewBuilder
@@ -72,16 +82,22 @@ struct AccountView: View {
             artistName
             artistBio
             artistWebsite
+        }
+        
+        Section("Music") {
+            myUploads
             uploadView
         }
     }
     
     @ViewBuilder
     private var uploadView: some View {
-        NavigationLink("Upload Track(s)") {
-            UploadView()
-        }
-        .foregroundStyle(.blue)
+        NavigationLink("New Upload", value: AccountViewPath.uploader)
+            .foregroundStyle(.blue)
+    }
+    
+    private var myUploads: some View {
+        NavigationLink("My Uploads", value: AccountViewPath.myUploads)
     }
 }
 

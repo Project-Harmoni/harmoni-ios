@@ -8,6 +8,7 @@
 import UIKit
 
 class ConfirmUploadViewModel: ObservableObject {
+    @Published var isShowingCompletedToast: Bool = false
     @Published var isSaving: Bool = false
     @Published var isError: Bool = false
     private let database: DBServiceProviding
@@ -58,6 +59,7 @@ class ConfirmUploadViewModel: ObservableObject {
                 try await self.updateAssociationTables()
                 
                 self.isSaving.toggle()
+                self.isShowingCompletedToast.toggle()
             } catch {
                 dump(error)
                 self.isSaving.toggle()
@@ -189,11 +191,10 @@ class ConfirmUploadViewModel: ObservableObject {
             name: store.albumTitle,
             artistID: userID,
             coverImagePath: coverPath,
-            yearReleased: store.yearReleasedDate,
+            yearReleased: store.yearReleased,
             totalTracks: store.tracks.count,
             recordLabel: store.recordLabel,
-            duration: await store.durationOfTracks,
-            createdAt: .now
+            duration: await store.durationOfTracks
         )
         self.uploadedAlbum = try await self.database.upsert(album: album)
     }

@@ -5,10 +5,12 @@
 //  Created by Kyle Stokes on 3/25/24.
 //
 
+import AlertToast
 import SwiftUI
 
 struct ConfirmUploadView: View {
     @EnvironmentObject private var uploadStore: UploadStore
+    @EnvironmentObject private var router: AccountViewRouter
     @StateObject var viewModel: ConfirmUploadViewModel = ConfirmUploadViewModel()
     
     var body: some View {
@@ -45,6 +47,16 @@ struct ConfirmUploadView: View {
         .onAppear() {
             viewModel.store = uploadStore
         }
+        .toast(
+            isPresenting: $viewModel.isShowingCompletedToast,
+            duration: 2,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(type: .complete(.green), title: "Upload complete!")
+            }, completion: {
+                router.popToRoot()
+            }
+        )
     }
     
     private var metadata: some View {
@@ -161,25 +173,28 @@ struct ConfirmUploadView: View {
             } label: {
                 HStack {
                     uploadLabel
-                    Spacer()
-                    Image(systemName: "arrow.up")
-                        .bold()
                 }
                 .foregroundStyle(.white)
             }
             .disabled(isUploading)
         }
+        .opacity(isUploading ? 0.5 : 1)
     }
     
     @ViewBuilder
     private var uploadLabel: some View {
         if isUploading {
             HStack {
-                ProgressView().tint(.white)
                 Text("Uploading...").bold()
+                Spacer()
+                ProgressView()
+                    .tint(.white)
             }
         } else {
             Text("Upload").bold()
+            Spacer()
+            Image(systemName: "arrow.up")
+                .bold()
         }
     }
     

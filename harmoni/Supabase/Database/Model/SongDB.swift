@@ -18,7 +18,7 @@ struct SongDB: Codable {
     var filePath: String?
     var name: String?
     var streamCount: Int = 0
-    var createdAt: Date
+    var createdAt: String?
     var ordinal: Int
     var isFree: Bool = false
     var payoutType: String?
@@ -62,7 +62,6 @@ extension SongDB {
         self.filePath = filePath
         self.name = track.name
         self.streamCount = 0
-        self.createdAt = .now
         self.ordinal = track.ordinal
         self.isFree = track.isFreeToStream
         self.payoutType = track.payoutType.rawValue

@@ -75,10 +75,4 @@ extension UploadStore {
             }
         }
     }
-    
-    var yearReleasedDate: Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy"
-        return formatter.date(from: yearReleased)
-    }
 }

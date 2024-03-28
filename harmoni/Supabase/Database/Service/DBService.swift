@@ -83,7 +83,8 @@ struct DBService: DBServiceProviding {
             .upsert(song)
             .execute()
         
-        return try JSONDecoder().decode(SongDB.self, from: response.data)
+        let songs = try JSONDecoder().decode([SongDB].self, from: response.data)
+        return songs.first
     }
     
     func upsert(album: AlbumDB) async throws -> AlbumDB? {
@@ -92,7 +93,8 @@ struct DBService: DBServiceProviding {
             .upsert(album)
             .execute()
         
-        return try JSONDecoder().decode(AlbumDB.self, from: response.data)
+        let albums = try JSONDecoder().decode([AlbumDB].self, from: response.data)
+        return albums.first
     }
     
     func upsert(songAlbum: SongAlbumDB) async throws -> SongAlbumDB? {
@@ -101,7 +103,8 @@ struct DBService: DBServiceProviding {
             .upsert(songAlbum)
             .execute()
         
-        return try JSONDecoder().decode(SongAlbumDB.self, from: response.data)
+        let songAlbums = try JSONDecoder().decode([SongAlbumDB].self, from: response.data)
+        return songAlbums.first
     }
     
     func upsert(songTag: SongTagDB) async throws -> SongTagDB? {
@@ -110,7 +113,8 @@ struct DBService: DBServiceProviding {
             .upsert(songTag)
             .execute()
         
-        return try JSONDecoder().decode(SongTagDB.self, from: response.data)
+        let songTags = try JSONDecoder().decode([SongTagDB].self, from: response.data)
+        return songTags.first
     }
     
     func upsert(tag: TagDB) async throws -> TagDB? {
@@ -119,7 +123,8 @@ struct DBService: DBServiceProviding {
             .upsert(tag)
             .execute()
         
-        return try JSONDecoder().decode(TagDB.self, from: response.data)
+        let tags = try JSONDecoder().decode([TagDB].self, from: response.data)
+        return tags.first
     }
     
     func upsert(tagCategory: TagCategoryDB) async throws -> TagCategoryDB? {
@@ -128,7 +133,8 @@ struct DBService: DBServiceProviding {
             .upsert(tagCategory)
             .execute()
         
-        return try JSONDecoder().decode(TagCategoryDB.self, from: response.data)
+        let tagCategories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
+        return tagCategories.first
     }
     
     /// Check if user has birthday and role selected

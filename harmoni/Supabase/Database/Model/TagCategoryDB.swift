@@ -10,7 +10,7 @@ import Foundation
 struct TagCategoryDB: Codable {
     var id: Int8?
     var name: String
-    var createdAt: Date?
+    var createdAt: String?
     
     enum CodingKeys: String, CodingKey {
         case id = "category_id"

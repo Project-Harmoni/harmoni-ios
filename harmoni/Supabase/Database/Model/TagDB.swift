@@ -11,7 +11,7 @@ struct TagDB: Codable {
     var id: Int8?
     var name: String
     var categoryID: Int8
-    var createdAt: Date?
+    var createdAt: String?
     
     enum CodingKeys: String, CodingKey {
         case id = "tag_id"

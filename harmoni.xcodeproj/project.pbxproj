@@ -75,6 +75,9 @@
 		B5B060112BB3924C00AD6F40 /* TagDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060102BB3924C00AD6F40 /* TagDB.swift */; };
 		B5B060132BB392A100AD6F40 /* TagCategoryDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060122BB392A100AD6F40 /* TagCategoryDB.swift */; };
 		B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */; };
+		B5B060182BB5210B00AD6F40 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B5B060172BB5210B00AD6F40 /* AlertToast */; };
+		B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */; };
+		B5B0601F2BB5309600AD6F40 /* AccountViewRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -152,6 +155,8 @@
 		B5B060102BB3924C00AD6F40 /* TagDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDB.swift; sourceTree = "<group>"; };
 		B5B060122BB392A100AD6F40 /* TagCategoryDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCategoryDB.swift; sourceTree = "<group>"; };
 		B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadViewModel.swift; sourceTree = "<group>"; };
+		B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsView.swift; sourceTree = "<group>"; };
+		B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewRouter.swift; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -173,6 +178,7 @@
 				B5ADE8FE2B9D1841009988E5 /* Supabase in Frameworks */,
 				B5ADE8F42B9D1841009988E5 /* Auth in Frameworks */,
 				B5ADE8FC2B9D1841009988E5 /* Storage in Frameworks */,
+				B5B060182BB5210B00AD6F40 /* AlertToast in Frameworks */,
 				B518F56B2BA91E35002CDCB7 /* WrappingStack in Frameworks */,
 				B5ADE8FA2B9D1841009988E5 /* Realtime in Frameworks */,
 			);
@@ -352,6 +358,7 @@
 				B58FC7A92B9E4BF5006F5BDF /* AuthView */,
 				B518F5472BA63BF3002CDCB7 /* SongDetailView */,
 				B518F53F2BA53696002CDCB7 /* UploadView */,
+				B5B060192BB526D100AD6F40 /* MyUploadsView */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -361,6 +368,7 @@
 			children = (
 				B58FC7A52B9D694B006F5BDF /* AccountView.swift */,
 				B58FC7A72B9D697F006F5BDF /* AccountViewModel.swift */,
+				B5B060202BB530BC00AD6F40 /* Router */,
 				B5B05FFB2BAFA7C900AD6F40 /* SettingsView */,
 			);
 			path = AccountView;
@@ -505,6 +513,22 @@
 			path = Upload;
 			sourceTree = "<group>";
 		};
+		B5B060192BB526D100AD6F40 /* MyUploadsView */ = {
+			isa = PBXGroup;
+			children = (
+				B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */,
+			);
+			path = MyUploadsView;
+			sourceTree = "<group>";
+		};
+		B5B060202BB530BC00AD6F40 /* Router */ = {
+			isa = PBXGroup;
+			children = (
+				B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */,
+			);
+			path = Router;
+			sourceTree = "<group>";
+		};
 		B5E229D92BA2A8FB00BC30C3 /* SelectBirthdayView */ = {
 			isa = PBXGroup;
 			children = (
@@ -597,6 +621,7 @@
 				B5ADE8FB2B9D1841009988E5 /* Storage */,
 				B5ADE8FD2B9D1841009988E5 /* Supabase */,
 				B518F56A2BA91E35002CDCB7 /* WrappingStack */,
+				B5B060172BB5210B00AD6F40 /* AlertToast */,
 			);
 			productName = harmoni;
 			productReference = B5ADE8E12B9D1707009988E5 /* harmoni.app */;
@@ -629,6 +654,7 @@
 			packageReferences = (
 				B5ADE8F22B9D1840009988E5 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				B518F5692BA91E35002CDCB7 /* XCRemoteSwiftPackageReference "swiftui-wrapping-stack" */,
+				B5B060162BB5210B00AD6F40 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = B5ADE8E22B9D1707009988E5 /* Products */;
 			projectDirPath = "";
@@ -664,6 +690,7 @@
 				B518F5542BA63E84002CDCB7 /* SongDetailViewModel.swift in Sources */,
 				B518F5622BA66E70002CDCB7 /* ArtistEnvironmentKey.swift in Sources */,
 				B5B05FF22BABCFF100AD6F40 /* EditTrackPayoutView.swift in Sources */,
+				B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */,
 				B58FC7BF2B9E80E5006F5BDF /* SignUpView.swift in Sources */,
 				B518F5652BA68D92002CDCB7 /* Track.swift in Sources */,
 				B58FC7C12B9E81B5006F5BDF /* SignUpViewModel.swift in Sources */,
@@ -712,6 +739,7 @@
 				B58FC7B62B9E7856006F5BDF /* SignInViewModel.swift in Sources */,
 				B518F54B2BA63C4E002CDCB7 /* RoutePickerView.swift in Sources */,
 				B5B05FFF2BAFBA9A00AD6F40 /* UIImage+Extension.swift in Sources */,
+				B5B0601F2BB5309600AD6F40 /* AccountViewRouter.swift in Sources */,
 				B5B05FFD2BAFA7DB00AD6F40 /* SettingsView.swift in Sources */,
 				B518F55F2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift in Sources */,
 				B5EC14042B9FF6FE00F1CCA8 /* DBService.swift in Sources */,
@@ -959,6 +987,14 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		B5B060162BB5210B00AD6F40 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -996,6 +1032,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B5ADE8F22B9D1840009988E5 /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		B5B060172BB5210B00AD6F40 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5B060162BB5210B00AD6F40 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

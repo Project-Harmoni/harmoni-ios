@@ -88,42 +88,38 @@ extension PostgrestClient {
 
 extension PostgrestClient {
     func user(with id: UUID) async throws -> UserDB? {
-        let user: UserDB = try await users
+        let users: [UserDB] = try await users
             .select()
             .eq(UserDB.CodingKeys.id.rawValue, value: id)
-            .single()
             .execute()
             .value
-        return user
+        return users.first
     }
     
     func listener(with id: UUID) async throws -> ListenerDB? {
-        let listener: ListenerDB = try await listeners
+        let listeners: [ListenerDB] = try await listeners
             .select()
             .eq(ListenerDB.CodingKeys.id.rawValue, value: id)
-            .single()
             .execute()
             .value
-        return listener
+        return listeners.first
     }
     
     func artist(with id: UUID) async throws -> ArtistDB? {
-        let artist: ArtistDB = try await artists
+        let artists: [ArtistDB] = try await artists
             .select()
             .eq(ArtistDB.CodingKeys.id.rawValue, value: id)
-            .single()
             .execute()
             .value
-        return artist
+        return artists.first
     }
     
     func tagCategory(with category: TagCategory) async throws -> TagCategoryDB? {
-        let tagCategory: TagCategoryDB = try await tagCategories
+        let tagCategories: [TagCategoryDB] = try await tagCategories
             .select()
             .eq(TagCategoryDB.CodingKeys.name.rawValue, value: category.rawValue)
-            .single()
             .execute()
             .value
-        return tagCategory
+        return tagCategories.first
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 struct SongTagDB: Codable {
     var songID: Int8?
     var tagID: Int8?
-    var createdAt: Date?
+    var createdAt: String?
     
     enum CodingKeys: String, CodingKey {
         case songID = "song_id"
