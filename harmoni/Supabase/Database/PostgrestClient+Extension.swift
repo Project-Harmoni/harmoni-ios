@@ -122,4 +122,35 @@ extension PostgrestClient {
             .value
         return tagCategories.first
     }
+    
+    func albums(by artist: UUID) async throws -> [AlbumDB] {
+        let albums: [AlbumDB] = try await albums
+            .select()
+            .eq(AlbumDB.CodingKeys.artistID.rawValue, value: artist)
+            .execute()
+            .value
+        return albums
+    }
+    
+    func songs(on album: Int8) async throws -> [SongDB] {
+        let songID = SongDB.CodingKeys.id.rawValue
+        let songs: [SongDB] = try await songs
+            .select("\(songID), \(DatabaseTables.songAlbum.rawValue)!inner(\(songID)")
+            .eq(SongAlbumDB.CodingKeys.albumID.rawValue, value: Int(album))
+            .execute()
+            .value
+        
+        return songs
+    }
+    
+    func tags(for song: Int8) async throws -> [TagDB] {
+        let tagID = TagDB.CodingKeys.id.rawValue
+        let tags: [TagDB] = try await tags
+            .select("\(tagID), \(DatabaseTables.songTag.rawValue)!inner(\(tagID)")
+            .eq(SongTagDB.CodingKeys.songID.rawValue, value: Int(song))
+            .execute()
+            .value
+        
+        return tags
+    }
 }

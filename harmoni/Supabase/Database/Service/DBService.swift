@@ -16,6 +16,12 @@ protocol DBServiceProviding {
     func getListener(with id: UUID) async throws -> ListenerDB?
     /// Get tag category
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB?
+    /// Get albums by artist
+    func albums(by artist: UUID) async throws -> [AlbumDB]
+    /// Get songs on album
+    func songs(on album: Int8) async throws -> [SongDB]
+    /// Get tags for song
+    func tags(for song: Int8) async throws -> [TagDB]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
     /// Upsert (update or insert) user in DB
@@ -54,6 +60,18 @@ struct DBService: DBServiceProviding {
     
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB? {
         return try await Supabase.shared.client.database.tagCategory(with: category)
+    }
+    
+    func albums(by artist: UUID) async throws -> [AlbumDB] {
+        return try await Supabase.shared.client.database.albums(by: artist)
+    }
+    
+    func songs(on album: Int8) async throws -> [SongDB] {
+        return try await Supabase.shared.client.database.songs(on: album)
+    }
+    
+    func tags(for song: Int8) async throws -> [TagDB] {
+        return try await Supabase.shared.client.database.tags(for: song)
     }
     
     func upsert(user: UserDB) async throws {

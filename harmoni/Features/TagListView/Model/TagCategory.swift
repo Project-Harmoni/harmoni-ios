@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TagCategory: String {
+enum TagCategory: String, CaseIterable {
     case genres = "Genres"
     case moods = "Moods"
     case instruments = "Instruments"

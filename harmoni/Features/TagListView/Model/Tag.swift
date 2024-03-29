@@ -11,5 +11,5 @@ struct Tag: Identifiable, Equatable {
     let id = UUID()
     var name: String
     var category: TagCategory
-    var createdAt: Date
+    var createdAt: Date?
 }
