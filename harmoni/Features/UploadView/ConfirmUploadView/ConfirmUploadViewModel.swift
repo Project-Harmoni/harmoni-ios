@@ -189,7 +189,7 @@ class ConfirmUploadViewModel: ObservableObject {
         guard let store else { return self.isError.toggle() }
         let album = AlbumDB(
             name: store.albumTitle,
-            artistID: userID,
+            artistID: userID.uuidString,
             coverImagePath: coverPath,
             yearReleased: store.yearReleased,
             totalTracks: store.tracks.count,

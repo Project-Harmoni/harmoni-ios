@@ -34,7 +34,7 @@ extension PostgrestClient {
     var users: PostgrestQueryBuilder {
         get async { await getTable(with: DatabaseTables.users.rawValue) }
     }
-        
+    
     var artists: PostgrestQueryBuilder {
         get async { await getTable(with: DatabaseTables.artists.rawValue) }
     }
@@ -133,10 +133,15 @@ extension PostgrestClient {
     }
     
     func songs(on album: Int8) async throws -> [SongDB] {
-        let songID = SongDB.CodingKeys.id.rawValue
+        let songID = SongAlbumDB.CodingKeys.songID.rawValue
+        let albumID = SongAlbumDB.CodingKeys.albumID.rawValue
         let songs: [SongDB] = try await songs
-            .select("\(songID), \(DatabaseTables.songAlbum.rawValue)!inner(\(songID)")
-            .eq(SongAlbumDB.CodingKeys.albumID.rawValue, value: Int(album))
+            .innerJoinEq(
+                table: .songAlbum,
+                joinedColumn: songID,
+                equalColumn: albumID,
+                equalValue: Int(album)
+            )
             .execute()
             .value
         
@@ -144,13 +149,35 @@ extension PostgrestClient {
     }
     
     func tags(for song: Int8) async throws -> [TagDB] {
-        let tagID = TagDB.CodingKeys.id.rawValue
+        let songID = SongTagDB.CodingKeys.songID.rawValue
+        let tagID = SongTagDB.CodingKeys.tagID.rawValue
         let tags: [TagDB] = try await tags
-            .select("\(tagID), \(DatabaseTables.songTag.rawValue)!inner(\(tagID)")
-            .eq(SongTagDB.CodingKeys.songID.rawValue, value: Int(song))
+            .innerJoinEq(
+                table: .songTag,
+                joinedColumn: tagID,
+                equalColumn: songID,
+                equalValue: Int(song)
+            )
             .execute()
             .value
         
         return tags
+    }
+}
+
+fileprivate extension PostgrestQueryBuilder {
+    func innerJoin(table: DatabaseTables, column: String) async throws -> PostgrestFilterBuilder {
+        self.select("*, \(table.rawValue)!inner(\(column))")
+    }
+    
+    func innerJoinEq(
+        table: DatabaseTables,
+        joinedColumn: String,
+        equalColumn: String,
+        equalValue: URLQueryRepresentable
+    ) async throws -> PostgrestFilterBuilder {
+        try await self
+            .innerJoin(table: table, column: joinedColumn)
+            .eq("\(table.rawValue).\(equalColumn)", value: equalValue)
     }
 }

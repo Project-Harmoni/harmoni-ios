@@ -78,6 +78,8 @@
 		B5B060182BB5210B00AD6F40 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B5B060172BB5210B00AD6F40 /* AlertToast */; };
 		B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */; };
 		B5B0601F2BB5309600AD6F40 /* AccountViewRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */; };
+		B5B060222BB799E300AD6F40 /* MyAlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060212BB799E300AD6F40 /* MyAlbumView.swift */; };
+		B5B060252BB79CB100AD6F40 /* MyUploadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -157,6 +159,8 @@
 		B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadViewModel.swift; sourceTree = "<group>"; };
 		B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsView.swift; sourceTree = "<group>"; };
 		B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewRouter.swift; sourceTree = "<group>"; };
+		B5B060212BB799E300AD6F40 /* MyAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAlbumView.swift; sourceTree = "<group>"; };
+		B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsViewModel.swift; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -517,6 +521,8 @@
 			isa = PBXGroup;
 			children = (
 				B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */,
+				B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */,
+				B5B060232BB799E900AD6F40 /* MyAlbum */,
 			);
 			path = MyUploadsView;
 			sourceTree = "<group>";
@@ -527,6 +533,14 @@
 				B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */,
 			);
 			path = Router;
+			sourceTree = "<group>";
+		};
+		B5B060232BB799E900AD6F40 /* MyAlbum */ = {
+			isa = PBXGroup;
+			children = (
+				B5B060212BB799E300AD6F40 /* MyAlbumView.swift */,
+			);
+			path = MyAlbum;
 			sourceTree = "<group>";
 		};
 		B5E229D92BA2A8FB00BC30C3 /* SelectBirthdayView */ = {
@@ -699,6 +713,7 @@
 				B518F54D2BA63CD4002CDCB7 /* VolumeSliderView.swift in Sources */,
 				B5B0600D2BB391D000AD6F40 /* SongAlbumDB.swift in Sources */,
 				B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */,
+				B5B060222BB799E300AD6F40 /* MyAlbumView.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
 				B518F5492BA63C00002CDCB7 /* AudioManager.swift in Sources */,
@@ -750,6 +765,7 @@
 				B518F5442BA53AC1002CDCB7 /* StorageService.swift in Sources */,
 				B5B060032BB2417700AD6F40 /* ConfirmUploadView.swift in Sources */,
 				B58CDC1D2BA2A88000E51964 /* CompleteRegistrationViewModel.swift in Sources */,
+				B5B060252BB79CB100AD6F40 /* MyUploadsViewModel.swift in Sources */,
 				B518F5512BA63DF9002CDCB7 /* SongDetailView.swift in Sources */,
 				B518F54F2BA63D1F002CDCB7 /* UploadViewModel.swift in Sources */,
 			);

@@ -10,7 +10,7 @@ import Foundation
 struct SongDB: Codable {
     var id: Int8?
     var albumName: String?
-    var artistID: UUID
+    var artistID: String
     var coverImagePath: String?
     var isExplicit: Bool = false
     var payoutThreshold: Int
@@ -54,7 +54,7 @@ extension SongDB {
     ) {
         self.id = nil
         self.albumName = albumName
-        self.artistID = artistID
+        self.artistID = artistID.uuidString
         self.coverImagePath = coverImagePath
         self.isExplicit = isExplicit
         self.payoutThreshold = track.streamThreshold

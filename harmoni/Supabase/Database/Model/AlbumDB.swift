@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct AlbumDB: Codable {
+struct AlbumDB: Codable, Identifiable {
     var id: Int8?
     var name: String?
-    var artistID: UUID
+    var artistID: String
     var coverImagePath: String?
     var yearReleased: String?
     var totalTracks: Int
