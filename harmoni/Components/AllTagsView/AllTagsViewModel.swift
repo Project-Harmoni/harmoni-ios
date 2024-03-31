@@ -1,11 +1,11 @@
 //
-//  AllTagsView.swift
+//  AllTagsViewModel.swift
 //  harmoni
 //
-//  Created by Kyle Stokes on 3/30/24.
+//  Created by Kyle Stokes on 3/31/24.
 //
 
-import SwiftUI
+import Foundation
 
 class AllTagsViewModel: ObservableObject {
     let isReadOnly: Bool
@@ -39,14 +39,10 @@ class AllTagsViewModel: ObservableObject {
     ) {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
-        self.genreTagsViewModel.tags = genreTags
-        self.genreTagsViewModel.isReadOnly = isReadOnly
-        self.moodTagsViewModel.tags = moodTags
-        self.moodTagsViewModel.isReadOnly = isReadOnly
-        self.instrumentsTagsViewModel.tags = instrumentTags
-        self.instrumentsTagsViewModel.isReadOnly = isReadOnly
-        self.miscTagsViewModel.tags = miscTags
-        self.miscTagsViewModel.isReadOnly = isReadOnly
+        self.genreTagsViewModel.configure(with: genreTags, isReadOnly: isReadOnly)
+        self.moodTagsViewModel.configure(with: moodTags, isReadOnly: isReadOnly)
+        self.instrumentsTagsViewModel.configure(with: instrumentTags, isReadOnly: isReadOnly)
+        self.miscTagsViewModel.configure(with: miscTags, isReadOnly: isReadOnly)
     }
     
     var allTagsEmpty: Bool {
@@ -69,43 +65,4 @@ class AllTagsViewModel: ObservableObject {
             dump(error)
         }
     }
-}
-
-struct AllTagsView: View {
-    @EnvironmentObject private var uploadStore: UploadStore
-    @ObservedObject var viewModel: AllTagsViewModel = AllTagsViewModel()
-    
-    var body: some View {
-        Section {
-            TagListView(viewModel: viewModel.genreTagsViewModel)
-        } header: {
-            Text("Genres")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.moodTagsViewModel)
-        } header: {
-            Text("Moods")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.instrumentsTagsViewModel)
-        } header: {
-            Text("Instruments")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.miscTagsViewModel)
-        } header: {
-            Text("Miscellaneous")
-                .font(.subheadline)
-        }
-        .task {
-            await viewModel.getTags()
-        }
-    }
-}
-
-#Preview {
-    AllTagsView()
 }

@@ -78,11 +78,14 @@
 		B5B060182BB5210B00AD6F40 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B5B060172BB5210B00AD6F40 /* AlertToast */; };
 		B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */; };
 		B5B0601F2BB5309600AD6F40 /* AccountViewRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */; };
-		B5B060222BB799E300AD6F40 /* MyAlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060212BB799E300AD6F40 /* MyAlbumView.swift */; };
+		B5B060222BB799E300AD6F40 /* AlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060212BB799E300AD6F40 /* AlbumView.swift */; };
 		B5B060252BB79CB100AD6F40 /* MyUploadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */; };
 		B5B0602B2BB8C78600AD6F40 /* CoverArtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602A2BB8C78600AD6F40 /* CoverArtView.swift */; };
 		B5B0602E2BB8DD6200AD6F40 /* GlobalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602D2BB8DD6200AD6F40 /* GlobalUtilities.swift */; };
 		B5B060302BB904E200AD6F40 /* AllTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */; };
+		B5B060332BB9D02A00AD6F40 /* AllTagsViewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060322BB9D02A00AD6F40 /* AllTagsViewSheet.swift */; };
+		B5B060352BB9D06A00AD6F40 /* AllTagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060342BB9D06A00AD6F40 /* AllTagsViewModel.swift */; };
+		B5B060372BB9D0F900AD6F40 /* AlbumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060362BB9D0F900AD6F40 /* AlbumViewModel.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -162,11 +165,14 @@
 		B5B060142BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmUploadViewModel.swift; sourceTree = "<group>"; };
 		B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsView.swift; sourceTree = "<group>"; };
 		B5B0601E2BB5309600AD6F40 /* AccountViewRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewRouter.swift; sourceTree = "<group>"; };
-		B5B060212BB799E300AD6F40 /* MyAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAlbumView.swift; sourceTree = "<group>"; };
+		B5B060212BB799E300AD6F40 /* AlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumView.swift; sourceTree = "<group>"; };
 		B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsViewModel.swift; sourceTree = "<group>"; };
 		B5B0602A2BB8C78600AD6F40 /* CoverArtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverArtView.swift; sourceTree = "<group>"; };
 		B5B0602D2BB8DD6200AD6F40 /* GlobalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalUtilities.swift; sourceTree = "<group>"; };
 		B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTagsView.swift; sourceTree = "<group>"; };
+		B5B060322BB9D02A00AD6F40 /* AllTagsViewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTagsViewSheet.swift; sourceTree = "<group>"; };
+		B5B060342BB9D06A00AD6F40 /* AllTagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTagsViewModel.swift; sourceTree = "<group>"; };
+		B5B060362BB9D0F900AD6F40 /* AlbumViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumViewModel.swift; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -530,7 +536,6 @@
 			children = (
 				B5B0601A2BB526EF00AD6F40 /* MyUploadsView.swift */,
 				B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */,
-				B5B060232BB799E900AD6F40 /* MyAlbum */,
 			);
 			path = MyUploadsView;
 			sourceTree = "<group>";
@@ -543,12 +548,13 @@
 			path = Router;
 			sourceTree = "<group>";
 		};
-		B5B060232BB799E900AD6F40 /* MyAlbum */ = {
+		B5B060232BB799E900AD6F40 /* AlbumView */ = {
 			isa = PBXGroup;
 			children = (
-				B5B060212BB799E300AD6F40 /* MyAlbumView.swift */,
+				B5B060212BB799E300AD6F40 /* AlbumView.swift */,
+				B5B060362BB9D0F900AD6F40 /* AlbumViewModel.swift */,
 			);
-			path = MyAlbum;
+			path = AlbumView;
 			sourceTree = "<group>";
 		};
 		B5B060282BB8C75100AD6F40 /* CoverArtView */ = {
@@ -563,7 +569,8 @@
 			isa = PBXGroup;
 			children = (
 				B5B060282BB8C75100AD6F40 /* CoverArtView */,
-				B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */,
+				B5B060312BB9D01B00AD6F40 /* AllTagsView */,
+				B5B060232BB799E900AD6F40 /* AlbumView */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -574,6 +581,16 @@
 				B5B0602D2BB8DD6200AD6F40 /* GlobalUtilities.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		B5B060312BB9D01B00AD6F40 /* AllTagsView */ = {
+			isa = PBXGroup;
+			children = (
+				B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */,
+				B5B060342BB9D06A00AD6F40 /* AllTagsViewModel.swift */,
+				B5B060322BB9D02A00AD6F40 /* AllTagsViewSheet.swift */,
+			);
+			path = AllTagsView;
 			sourceTree = "<group>";
 		};
 		B5E229D92BA2A8FB00BC30C3 /* SelectBirthdayView */ = {
@@ -746,7 +763,8 @@
 				B518F54D2BA63CD4002CDCB7 /* VolumeSliderView.swift in Sources */,
 				B5B0600D2BB391D000AD6F40 /* SongAlbumDB.swift in Sources */,
 				B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */,
-				B5B060222BB799E300AD6F40 /* MyAlbumView.swift in Sources */,
+				B5B060332BB9D02A00AD6F40 /* AllTagsViewSheet.swift in Sources */,
+				B5B060222BB799E300AD6F40 /* AlbumView.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
 				B518F5492BA63C00002CDCB7 /* AudioManager.swift in Sources */,
@@ -783,10 +801,12 @@
 				B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */,
 				B58FC7C42B9E92F9006F5BDF /* SignUpPath.swift in Sources */,
 				B5B060132BB392A100AD6F40 /* TagCategoryDB.swift in Sources */,
+				B5B060352BB9D06A00AD6F40 /* AllTagsViewModel.swift in Sources */,
 				B518F5682BA903B3002CDCB7 /* TagListView.swift in Sources */,
 				B58FC7A62B9D694C006F5BDF /* AccountView.swift in Sources */,
 				B518F5562BA65097002CDCB7 /* ArtistDB.swift in Sources */,
 				B5EC14062B9FF97F00F1CCA8 /* AuthResponse+Extension.swift in Sources */,
+				B5B060372BB9D0F900AD6F40 /* AlbumViewModel.swift in Sources */,
 				B58FC7B62B9E7856006F5BDF /* SignInViewModel.swift in Sources */,
 				B518F54B2BA63C4E002CDCB7 /* RoutePickerView.swift in Sources */,
 				B5B05FFF2BAFBA9A00AD6F40 /* UIImage+Extension.swift in Sources */,

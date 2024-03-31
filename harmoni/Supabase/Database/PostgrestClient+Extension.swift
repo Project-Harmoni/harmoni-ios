@@ -160,11 +160,12 @@ extension PostgrestClient {
         let songs = try await songsOnAlbum(with: id)
         let tagCategories = try await tagCategories()
         var tagSet: Set<Tag> = []
-        for song in songs {
-            guard let id = song.id else { continue }
-            for tag in try await self.tagsOnSong(with: id, and: tagCategories) {
-                tagSet.insert(tag)
-            }
+        // Since all songs have the same tags applied, get first song
+        // TODO: - Allow applying different tags to individual songs
+        guard let song = songs.first else { return [] }
+        guard let id = song.id else { return [] }
+        for tag in try await self.tagsOnSong(with: id, and: tagCategories) {
+            tagSet.insert(tag)
         }
         return Array(tagSet)
     }

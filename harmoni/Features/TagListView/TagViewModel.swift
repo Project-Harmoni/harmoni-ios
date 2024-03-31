@@ -24,6 +24,11 @@ class TagListViewModel: ObservableObject {
         self.isReadOnly = isReadOnly
     }
     
+    func configure(with tags: [Tag], isReadOnly: Bool) {
+        self.tags = tags
+        self.isReadOnly = isReadOnly
+    }
+    
     func createTag() {
         guard !newTagName.isEmpty else { return }
         let tag = Tag(name: newTagName, category: category, createdAt: .now)

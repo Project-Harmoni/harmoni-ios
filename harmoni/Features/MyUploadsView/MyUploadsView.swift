@@ -36,8 +36,8 @@ struct MyUploadsView: View {
         List {
             ForEach(viewModel.albums) { album in
                 NavigationLink {
-                    MyAlbumView(
-                        viewModel: MyAlbumViewModel(
+                    AlbumView(
+                        viewModel: AlbumViewModel(
                             album: album
                         )
                     )
