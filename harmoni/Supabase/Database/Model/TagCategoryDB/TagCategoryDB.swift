@@ -26,3 +26,14 @@ extension TagCategoryDB {
         TagCategory(rawValue: name)
     }
 }
+
+// MARK: - Updateable
+
+extension TagCategoryDB {
+    func updateable() -> TagCategoryUpdateDB {
+        TagCategoryUpdateDB(
+            name: name,
+            createdAt: createdAt
+        )
+    }
+}

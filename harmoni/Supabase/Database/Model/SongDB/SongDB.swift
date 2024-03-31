@@ -41,6 +41,28 @@ struct SongDB: Codable, Identifiable, Hashable {
     }
 }
 
+// MARK: - Updateable
+
+extension SongDB {
+    func updateable() -> SongUpdateDB {
+        SongUpdateDB(
+            albumName: albumName,
+            artistID: artistID,
+            coverImagePath: coverImagePath,
+            isExplicit: isExplicit,
+            payoutThreshold: payoutThreshold,
+            artistPayoutPercentage: artistPayoutPercentage,
+            filePath: filePath,
+            name: name,
+            streamCount: streamCount,
+            createdAt: createdAt,
+            ordinal: ordinal,
+            isFree: isFree,
+            payoutType: payoutType
+        )
+    }
+}
+
 // MARK: - Initialize from upload details
 
 extension SongDB {
@@ -52,7 +74,7 @@ extension SongDB {
         filePath: String,
         isExplicit: Bool
     ) {
-        self.id = nil
+        self.id = track.serverID
         self.albumName = albumName
         self.artistID = artistID.uuidString
         self.coverImagePath = coverImagePath
@@ -78,6 +100,7 @@ extension SongDB {
         guard let filePath else { return nil }
         guard let url = URL(string: filePath) else { return nil }
         return Track(
+            serverID: id,
             ordinal: ordinal,
             url: url,
             name: name,

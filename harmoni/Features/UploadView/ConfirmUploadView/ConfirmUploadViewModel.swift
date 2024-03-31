@@ -87,21 +87,17 @@ class ConfirmUploadViewModel: ObservableObject {
                 isExplicit: store.isExplicit
             )
             
-            if let uploadedSong = try await self.database.upsert(song: song) {
+            if let uploadedSong = try await self.updateSong(song) {
                 self.uploadedSongs.append(uploadedSong)
             }
         }
     }
     
     private func upload(track: Track) async throws -> String? {
-        guard let store else {
-            self.isError.toggle()
-            return nil
-        }
         let trackData = try Data(contentsOf: track.url)
-        guard let trackName = await store.name(for: track) else { return nil }
+        guard let trackName = await nameForTrack(track) else { return nil }
         // upload track to storage
-        let uploadResult = try await self.storage.uploadSong(trackData, name: trackName)
+        let uploadResult = try await self.uploadTrack(trackData, trackName)
         // get track name and file extension
         guard let resultPath = URL(string: uploadResult)?.lastPathComponent else {
             return nil
@@ -112,20 +108,16 @@ class ConfirmUploadViewModel: ObservableObject {
     }
     
     private func uploadCoverArt() async throws -> String? {
-        guard let store else {
-            self.isError.toggle()
-            return nil
-        }
-        if let albumCoverData = try? await store.albumCoverItem?.loadTransferable(type: Data.self) {
+        if let albumCoverData {
             guard let jpegData = UIImage(data: albumCoverData)?
                 .aspectFitToHeight()
                 .jpegData(compressionQuality: 0.4)
             else {
                 return nil
             }
-            guard let albumCoverName = await store.albumCoverName else { return nil }
+            guard let albumCoverName = await self.albumCoverName else { return nil }
             // upload image to storage
-            let imageLocation = try await self.storage.uploadImage(jpegData, name: albumCoverName)
+            let imageLocation = try await self.uploadCoverArt(data: jpegData, name: albumCoverName)
             // get image name and file extension
             guard let resultPath = URL(string: imageLocation)?.lastPathComponent else {
                 return nil
@@ -144,7 +136,7 @@ class ConfirmUploadViewModel: ObservableObject {
         if let genres = try await self.database.getTagCategory(with: .genres), let id = genres.id {
             for tag in store.genreTagsViewModel.tags {
                 let genreTag = TagDB(name: tag.name, categoryID: id)
-                if let uploadedTag = try await self.database.upsert(tag: genreTag) {
+                if let uploadedTag = try await self.updateTag(genreTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
             }
@@ -153,7 +145,7 @@ class ConfirmUploadViewModel: ObservableObject {
         if let moods = try await self.database.getTagCategory(with: .moods), let id = moods.id {
             for tag in store.moodTagsViewModel.tags {
                 let moodTag = TagDB(name: tag.name, categoryID: id)
-                if let uploadedTag = try await self.database.upsert(tag: moodTag) {
+                if let uploadedTag = try await self.updateTag(moodTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
             }
@@ -162,7 +154,7 @@ class ConfirmUploadViewModel: ObservableObject {
         if let instruments = try await self.database.getTagCategory(with: .instruments), let id = instruments.id {
             for tag in store.instrumentsTagsViewModel.tags {
                 let instrumentsTag = TagDB(name: tag.name, categoryID: id)
-                if let uploadedTag = try await self.database.upsert(tag: instrumentsTag) {
+                if let uploadedTag = try await self.updateTag(instrumentsTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
             }
@@ -171,7 +163,7 @@ class ConfirmUploadViewModel: ObservableObject {
         if let misc = try await self.database.getTagCategory(with: .miscellaneous), let id = misc.id {
             for tag in store.miscTagsViewModel.tags {
                 let miscTag = TagDB(name: tag.name, categoryID: id)
-                if let uploadedTag = try await self.database.upsert(tag: miscTag) {
+                if let uploadedTag = try await self.updateTag(miscTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
             }
@@ -186,7 +178,9 @@ class ConfirmUploadViewModel: ObservableObject {
         }
         if let artistName = artist.name, artistName.isEmpty {
             artist.name = store.artistName
-            try await self.database.upsert(artist: artist)
+            isEditing 
+            ? try await self.database.update(artist: artist)
+            : try await self.database.upsert(artist: artist)
         }
     }
     
@@ -194,6 +188,7 @@ class ConfirmUploadViewModel: ObservableObject {
     private func updateAlbum(for userID: UUID, with coverPath: String) async throws {
         guard let store else { return self.isError.toggle() }
         let album = AlbumDB(
+            id: isEditing ? store.albumToEdit?.id : nil,
             name: store.albumTitle,
             artistID: userID.uuidString,
             coverImagePath: coverPath,
@@ -203,7 +198,9 @@ class ConfirmUploadViewModel: ObservableObject {
             duration: await store.durationOfTracks,
             isExplicit: store.isExplicit
         )
-        self.uploadedAlbum = try await self.database.upsert(album: album)
+        self.uploadedAlbum = isEditing
+        ? try await self.database.update(album: album)
+        : try await self.database.upsert(album: album)
     }
     
     /// Update song/album table in database
@@ -237,5 +234,54 @@ class ConfirmUploadViewModel: ObservableObject {
         // Update song/tag table in database
         try await self.updateSongTagAssociations()
     }
+}
+
+// MARK: - Editing Helpers
+
+extension ConfirmUploadViewModel {
+    private var isEditing: Bool {
+        store?.isEditing ?? false
+    }
     
+    private var albumCoverData: Data? {
+        store?.albumCoverData
+    }
+    
+    private var albumCoverName: String? {
+        get async {
+            isEditing
+            ? store?.albumToEdit?.coverImageStorageBucketName
+            : await store?.albumCoverName
+        }
+    }
+    
+    private func nameForTrack(_ track: Track) async -> String? {
+        isEditing
+        ? track.url.lastPathComponent
+        : await store?.name(for: track)
+    }
+    
+    private func uploadCoverArt(data: Data, name: String) async throws -> String {
+        isEditing
+        ? try await self.storage.updateImage(data, name: name)
+        : try await self.storage.uploadImage(data, name: name)
+    }
+    
+    private func uploadTrack(_ data: Data, _ name: String) async throws -> String {
+        isEditing
+        ? try await self.storage.updateSong(data, name: name)
+        : try await self.storage.uploadSong(data, name: name)
+    }
+    
+    private func updateTag(_ tag: TagDB) async throws -> TagDB? {
+        isEditing
+        ? try await database.update(tag: tag)
+        : try await database.upsert(tag: tag)
+    }
+    
+    private func updateSong(_ song: SongDB) async throws -> SongDB? {
+        isEditing
+        ? try await database.update(song: song)
+        : try await database.upsert(song: song)
+    }
 }

@@ -102,6 +102,7 @@ class UploadViewModel: ObservableObject {
         isExplicit = album.isExplicit
         tracks = songs.compactMap { $0.toTrack() }
         uploadStore.isEditing = true
+        uploadStore.albumToEdit = album
         getCoverArt(for: album)
         getArtistName()
         observeAlbumCoverChanges()

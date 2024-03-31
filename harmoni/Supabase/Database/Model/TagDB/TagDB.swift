@@ -20,3 +20,15 @@ struct TagDB: Codable {
         case createdAt = "created_at"
     }
 }
+
+// MARK: - Updateable
+
+extension TagDB {
+    func updateable() -> TagUpdateDB {
+        TagUpdateDB(
+            name: name,
+            categoryID: categoryID,
+            createdAt: createdAt
+        )
+    }
+}

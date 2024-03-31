@@ -33,6 +33,7 @@ class AlbumViewModel: ObservableObject {
             guard let albumID = album.id else { return isError.toggle() }
             isLoading.toggle()
             songs = try await database.songsOnAlbum(with: albumID)
+                .sorted(by: { $0.ordinal < $1.ordinal })
             isLoading.toggle()
         } catch {
             dump(error)

@@ -10,6 +10,7 @@ import Foundation
 /// Represents selected track to upload
 struct Track: Identifiable, Hashable, Equatable {
     let id = UUID()
+    var serverID: Int8?
     var ordinal: Int = 0
     var url: URL
     var name: String

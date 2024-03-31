@@ -26,6 +26,9 @@ protocol DBServiceProviding {
     func tagsOnAlbum(with id: Int8) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
+    
+    // Upsert
+    
     /// Upsert (update or insert) user in DB
     func upsert(user: UserDB) async throws
     /// Upsert (update or insert) listener in DB
@@ -44,6 +47,23 @@ protocol DBServiceProviding {
     func upsert(tag: TagDB) async throws -> TagDB?
     /// Upsert (update or insert) tag category in DB
     func upsert(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
+    
+    // Update
+    
+    /// Update user in DB
+    func update(user: UserDB) async throws
+    /// Update listener in DB
+    func update(listener: ListenerDB) async throws
+    /// Update artist in DB
+    func update(artist: ArtistDB) async throws
+    /// Update song in DB
+    func update(song: SongDB) async throws -> SongDB?
+    /// Update album in DB
+    func update(album: AlbumDB) async throws -> AlbumDB?
+    /// Update tag in DB
+    func update(tag: TagDB) async throws -> TagDB?
+    /// Udate tag category in DB
+    func update(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
 }
 
 struct DBService: DBServiceProviding {
@@ -80,6 +100,17 @@ struct DBService: DBServiceProviding {
         return try await Supabase.shared.client.database.tagsOnAlbum(with: id)
     }
     
+    /// Check if user has birthday and role selected
+    func checkRegistrationFinished(for id: UUID) async throws -> Bool {
+        let user = try await Supabase.shared.client.database.user(with: id)
+        guard let user else { return false }
+        return user.birthday != nil && user.type != nil
+    }
+}
+
+// MARK: - DB Service Upsert
+
+extension DBService {
     func upsert(user: UserDB) async throws {
         _ = try await Supabase.shared.client.database
             .users
@@ -160,11 +191,85 @@ struct DBService: DBServiceProviding {
         let tagCategories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
         return tagCategories.first
     }
+}
+
+// MARK: - DB Service Update
+
+extension DBService {
+    func update(user: UserDB) async throws {
+        _ = try await Supabase.shared.client.database
+            .users
+            .update(user)
+            .eq(UserDB.CodingKeys.id.rawValue, value: user.id)
+            .execute()
+    }
     
-    /// Check if user has birthday and role selected
-    func checkRegistrationFinished(for id: UUID) async throws -> Bool {
-        let user = try await Supabase.shared.client.database.user(with: id)
-        guard let user else { return false }
-        return user.birthday != nil && user.type != nil
+    func update(listener: ListenerDB) async throws {
+        _ = try await Supabase.shared.client.database
+            .listeners
+            .update(listener)
+            .eq(ListenerDB.CodingKeys.id.rawValue, value: listener.id)
+            .execute()
+    }
+    
+    func update(artist: ArtistDB) async throws {
+        _ = try await Supabase.shared.client.database
+            .artists
+            .update(artist)
+            .eq(ArtistDB.CodingKeys.id.rawValue, value: artist.id)
+            .execute()
+    }
+    
+    func update(song: SongDB) async throws -> SongDB? {
+        guard let id = song.id else { return nil }
+        let song: SongDB? = try await Supabase.shared.client.database
+            .songs
+            .update(song.updateable())
+            .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
+            .select()
+            .single()
+            .execute()
+            .value
+        
+        return song
+    }
+    
+    func update(album: AlbumDB) async throws -> AlbumDB? {
+        guard let id = album.id else { return nil }
+        let response = try await Supabase.shared.client.database
+            .albums
+            .update(album.updateable())
+            .eq(AlbumDB.CodingKeys.id.rawValue, value: Int(id))
+            .select()
+            .execute()
+        
+        let albums = try JSONDecoder().decode([AlbumDB].self, from: response.data)
+        return albums.first
+    }
+    
+    func update(tag: TagDB) async throws -> TagDB? {
+        guard let id = tag.id else { return nil }
+        let response = try await Supabase.shared.client.database
+            .tags
+            .update(tag.updateable())
+            .eq(TagDB.CodingKeys.id.rawValue, value: Int(id))
+            .select()
+            .execute()
+        
+        let tags = try JSONDecoder().decode([TagDB].self, from: response.data)
+        return tags.first
+    }
+    
+    func update(tagCategory: TagCategoryDB) async throws -> TagCategoryDB? {
+        guard let id = tagCategory.id else { return nil }
+        let response = try await Supabase.shared.client.database
+            .tagCategories
+            .update(tagCategory.updateable())
+            .eq(TagCategoryDB.CodingKeys.id.rawValue, value: Int(id))
+            .select()
+            .execute()
+        
+        let categories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
+        return categories.first
     }
 }

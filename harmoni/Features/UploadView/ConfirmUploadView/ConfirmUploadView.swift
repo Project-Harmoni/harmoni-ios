@@ -32,14 +32,15 @@ struct ConfirmUploadView: View {
             .listRowBackground(
                 Rectangle().foregroundStyle(.blue)
             )
-            
         }
         .navigationTitle(uploadStore.isEditing ? "Confirm Changes" : "Confirm Upload")
         .alert(
             "Uh oh!",
             isPresented: $viewModel.isError,
             actions: {
-                Button("OK", role: .none, action: {})
+                Button("OK", role: .none, action: {
+                    viewModel.isSaving = false
+                })
             }, message: {
                 Text("An error occurred uploading. Please try again.")
             }
@@ -55,7 +56,6 @@ struct ConfirmUploadView: View {
                 AlertToast(type: .complete(.green), title: "Upload complete!")
             }, completion: {
                 router.popToRoot()
-                uploadStore.clear()
             }
         )
         .toast(isPresenting: $viewModel.isSaving) {

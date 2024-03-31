@@ -10,14 +10,38 @@ import SwiftUI
 
 class UploadStore: ObservableObject {
     var isEditing: Bool = false
+    var albumToEdit: AlbumDB? {
+        didSet {
+            Task.detached { [weak self] in
+                guard let self else { return }
+                do {
+                    self.albumCoverData = try self.albumToEdit?.coverImageData
+                } catch {
+                    dump(error)
+                }
+            }
+        }
+    }
     var tracks: [Track] = []
     var albumTitle: String = ""
     var artistName: String = ""
     var isExplicit: Bool = false
     var yearReleased: String = ""
     var recordLabel: String = ""
-    var albumCoverItem: PhotosPickerItem?
+    var albumCoverItem: PhotosPickerItem? {
+        didSet {
+            Task.detached { [weak self] in
+                guard let self else { return }
+                do {
+                    self.albumCoverData = try await self.albumCoverItem?.loadTransferable(type: Data.self)
+                } catch {
+                    dump(error)
+                }
+            }
+        }
+    }
     var albumCoverImage: Image?
+    var albumCoverData: Data?
     private let userProvider: UserProviding?
     
     init(userProvider: UserProviding = UserProvider()) {
@@ -45,18 +69,6 @@ class UploadStore: ObservableObject {
         category: .miscellaneous,
         isReadOnly: true
     )
-    
-    func clear() {
-        tracks = []
-        albumTitle = ""
-        artistName = ""
-        isExplicit = false
-        yearReleased = ""
-        recordLabel = ""
-        albumCoverItem = nil
-        albumCoverImage = nil
-        isEditing = false
-    }
 }
 
 extension UploadStore {
