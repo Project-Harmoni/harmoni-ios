@@ -158,22 +158,20 @@ extension PostgrestClient {
     
     func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
         let songs = try await songsOnAlbum(with: id)
-        let songID = SongTagDB.CodingKeys.songID.rawValue
-        let tagID = SongTagDB.CodingKeys.tagID.rawValue
+        let tagCategories = try await tagCategories()
         var tagSet: Set<Tag> = []
         for song in songs {
             guard let id = song.id else { continue }
-            for tag in try await self.tagsOnSong(with: id) {
+            for tag in try await self.tagsOnSong(with: id, and: tagCategories) {
                 tagSet.insert(tag)
             }
         }
         return Array(tagSet)
     }
     
-    func tagsOnSong(with id: Int8) async throws -> [Tag] {
+    private func tagsOnSong(with id: Int8, and tagCategories: [TagCategoryDB]?) async throws -> [Tag] {
         let songID = SongTagDB.CodingKeys.songID.rawValue
         let tagID = SongTagDB.CodingKeys.tagID.rawValue
-        let tagCategories = try await tagCategories()
         let tagsDB: [TagDB] = try await tags
             .innerJoinEq(
                 table: .songTag,

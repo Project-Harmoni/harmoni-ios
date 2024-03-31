@@ -15,7 +15,6 @@ class UploadViewModel: ObservableObject {
     @MainActor @Published var currentArtistName: String = ""
     @MainActor @Published var payoutThreshold: Int = 0
     @MainActor @Published var listenerPayoutPercentage: Double = 20
-    @MainActor @Published var fileURL: URL?
     @MainActor @Published var isError: Bool = false
     
     // Upload Store
@@ -61,24 +60,6 @@ class UploadViewModel: ObservableObject {
             payoutViewModel.tracks = tracks
         }
     }
-    
-    // Tags
-    @Published var genreTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .genres
-    )
-    @Published var moodTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .moods
-    )
-    @Published var instrumentsTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .instruments
-    )
-    @Published var miscTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .miscellaneous
-    )
     
     // Payout
     @Published var payoutViewModel = EditPayoutViewModel(tracks: [])
@@ -167,35 +148,6 @@ class UploadViewModel: ObservableObject {
     func remove(_ file: URL) {
         Task { @MainActor [weak self] in
             self?.tracks.removeAll(where: { $0.url == file })
-        }
-    }
-    
-    func uploadFiles() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            do {
-                for file in self.tracks {
-                    let data = try Data(contentsOf: file.url)
-                    let fileName = file.name + file.fileExtension
-                    self.upload(data: data, name: fileName)
-                }
-                self.isError = false
-            } catch {
-                dump(error)
-                self.isError = true
-            }
-        }
-    }
-    
-    private func upload(data: Data, name: String) {
-        Task(priority: .utility) { @MainActor [weak self] in
-            do {
-                guard let result = try await self?.storage.uploadSong(data, name: name) else { return }
-                self?.fileURL = try self?.storage.getMusicURL(for: result)
-            } catch {
-                dump(error)
-                self?.isError = true
-            }
         }
     }
     

@@ -82,6 +82,7 @@
 		B5B060252BB79CB100AD6F40 /* MyUploadsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */; };
 		B5B0602B2BB8C78600AD6F40 /* CoverArtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602A2BB8C78600AD6F40 /* CoverArtView.swift */; };
 		B5B0602E2BB8DD6200AD6F40 /* GlobalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602D2BB8DD6200AD6F40 /* GlobalUtilities.swift */; };
+		B5B060302BB904E200AD6F40 /* AllTagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */; };
 		B5E229DB2BA2A90D00BC30C3 /* SelectBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */; };
 		B5E229DD2BA2A93700BC30C3 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */; };
 		B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */; };
@@ -165,6 +166,7 @@
 		B5B060242BB79CB100AD6F40 /* MyUploadsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUploadsViewModel.swift; sourceTree = "<group>"; };
 		B5B0602A2BB8C78600AD6F40 /* CoverArtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverArtView.swift; sourceTree = "<group>"; };
 		B5B0602D2BB8DD6200AD6F40 /* GlobalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalUtilities.swift; sourceTree = "<group>"; };
+		B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTagsView.swift; sourceTree = "<group>"; };
 		B5E229DA2BA2A90D00BC30C3 /* SelectBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBirthdayView.swift; sourceTree = "<group>"; };
 		B5E229DC2BA2A93700BC30C3 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		B5E96DE12BA28F91000B429A /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
@@ -561,6 +563,7 @@
 			isa = PBXGroup;
 			children = (
 				B5B060282BB8C75100AD6F40 /* CoverArtView */,
+				B5B0602F2BB904E200AD6F40 /* AllTagsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -747,6 +750,7 @@
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
 				B518F5492BA63C00002CDCB7 /* AudioManager.swift in Sources */,
+				B5B060302BB904E200AD6F40 /* AllTagsView.swift in Sources */,
 				B5B0602B2BB8C78600AD6F40 /* CoverArtView.swift in Sources */,
 				B5EC13FD2B9FE7CC00F1CCA8 /* PostgrestClient+Extension.swift in Sources */,
 				B58FC79D2B9D573A006F5BDF /* AuthManager.swift in Sources */,

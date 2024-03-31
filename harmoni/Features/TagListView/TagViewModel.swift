@@ -15,7 +15,7 @@ class TagListViewModel: ObservableObject {
     @Published var editedTagName: String = ""
     @Published var selectedTag: Tag?
     @Published var tags: [Tag] = []
-    let isReadOnly: Bool
+    var isReadOnly: Bool
     let category: TagCategory
     
     init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false) {

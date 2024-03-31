@@ -11,9 +11,9 @@ class MyAlbumViewModel: ObservableObject {
     let database: DBServiceProviding = DBService()
     let album: AlbumDB
     @MainActor @Published var songs: [SongDB] = []
-    @MainActor @Published var tags: [Tag] = []
     @MainActor @Published var selectedSongs: Set<SongDB.ID> = []
     @MainActor @Published var isPresentingEdit: Bool = false
+    @MainActor @Published var isPresentingViewTags: Bool = false
     @MainActor @Published var isLoading: Bool = false
     @MainActor @Published var isError: Bool = false
     
@@ -28,7 +28,6 @@ class MyAlbumViewModel: ObservableObject {
             guard let albumID = album.id else { return isError.toggle() }
             isLoading.toggle()
             songs = try await database.songsOnAlbum(with: albumID)
-            tags = try await database.tagsOnAlbum(with: albumID)
             isLoading.toggle()
         } catch {
             dump(error)
@@ -116,12 +115,22 @@ struct MyAlbumView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
-                    viewModel.isPresentingEdit.toggle()
+                    viewModel.isPresentingViewTags.toggle()
                 } label: {
-                    Text("Edit")
+                    Image(systemName: "tag")
                 }
+                Menu {
+                    Button("Edit", role: .none) {
+                        viewModel.isPresentingEdit.toggle()
+                    }
+                    Button("Delete", role: .destructive) {
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+                .menuOrder(.fixed)
             }
         }
         .sheet(isPresented: $viewModel.isPresentingEdit) {
@@ -135,6 +144,20 @@ struct MyAlbumView: View {
                 )
                 .navigationBarTitleDisplayMode(.inline)
             }
+        }
+        .sheet(isPresented: $viewModel.isPresentingViewTags) {
+            List {
+                AllTagsView(
+                    viewModel: AllTagsViewModel(
+                        albumID: viewModel.album.id
+                    )
+                )
+                .environmentObject(UploadStore())
+            }
+            .presentationDetents([.medium])
+            .presentationCornerRadius(24)
+            .presentationBackground(.thinMaterial)
+            .presentationDragIndicator(.visible)
         }
     }
     

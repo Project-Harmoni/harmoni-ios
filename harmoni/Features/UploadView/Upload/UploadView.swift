@@ -188,30 +188,8 @@ struct UploadView: View {
     
     @ViewBuilder
     private var tags: some View {
-        Section {
-            TagListView(viewModel: viewModel.genreTagsViewModel)
-        } header: {
-            Text("Genres")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.moodTagsViewModel)
-        } header: {
-            Text("Moods")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.instrumentsTagsViewModel)
-        } header: {
-            Text("Instruments")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: viewModel.miscTagsViewModel)
-        } header: {
-            Text("Miscellaneous")
-                .font(.subheadline)
-        }
+        AllTagsView()
+            .environmentObject(viewModel.uploadStore)
     }
     
     private var continueToPayout: some View {

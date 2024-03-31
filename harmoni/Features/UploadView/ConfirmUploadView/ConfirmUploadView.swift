@@ -78,30 +78,15 @@ struct ConfirmUploadView: View {
     
     @ViewBuilder
     private var tags: some View {
-        Section {
-            TagListView(viewModel: uploadStore.genreTagsViewModel)
-        } header: {
-            Text("Genres")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.moodTagsViewModel)
-        } header: {
-            Text("Moods")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.instrumentsTagsViewModel)
-        } header: {
-            Text("Instruments")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.miscTagsViewModel)
-        } header: {
-            Text("Miscellaneous")
-                .font(.subheadline)
-        }
+        AllTagsView(
+            viewModel: AllTagsViewModel(
+                genreTags: uploadStore.genreTagsViewModel.tags,
+                moodTags: uploadStore.moodTagsViewModel.tags,
+                instrumentTags: uploadStore.instrumentsTagsViewModel.tags,
+                miscTags: uploadStore.miscTagsViewModel.tags,
+                isReadOnly: true
+            )
+        )
     }
     
     @ViewBuilder
