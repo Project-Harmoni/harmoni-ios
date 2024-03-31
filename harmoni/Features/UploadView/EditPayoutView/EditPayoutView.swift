@@ -19,7 +19,9 @@ struct EditPayoutView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
+                    if !viewModel.tracks.isEmpty {
+                        EditButton()
+                    }
                 }
                 
                 ToolbarItemGroup(placement: .bottomBar) {

@@ -17,6 +17,7 @@ class MyUploadsViewModel: ObservableObject {
     
     @MainActor
     func getAlbums() async {
+        guard albums.isEmpty else { return }
         isLoading.toggle()
         guard let currentUser else { return isError.toggle() }
         do {

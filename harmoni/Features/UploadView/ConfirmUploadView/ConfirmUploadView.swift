@@ -57,6 +57,12 @@ struct ConfirmUploadView: View {
                 router.popToRoot()
             }
         )
+        .toast(isPresenting: $viewModel.isSaving) {
+            AlertToast(
+                type: .loading,
+                title: "Uploading"
+            )
+        }
     }
     
     private var metadata: some View {
@@ -110,7 +116,7 @@ struct ConfirmUploadView: View {
                         .scaledToFill()
                 )
                 .frame(width: 250, height: 250)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
         }
     }
     
@@ -183,19 +189,10 @@ struct ConfirmUploadView: View {
     
     @ViewBuilder
     private var uploadLabel: some View {
-        if isUploading {
-            HStack {
-                Text("Uploading...").bold()
-                Spacer()
-                ProgressView()
-                    .tint(.white)
-            }
-        } else {
-            Text("Upload").bold()
-            Spacer()
-            Image(systemName: "arrow.up")
-                .bold()
-        }
+        Text("Upload").bold()
+        Spacer()
+        Image(systemName: "arrow.up")
+            .bold()
     }
     
     private var isUploading: Bool {

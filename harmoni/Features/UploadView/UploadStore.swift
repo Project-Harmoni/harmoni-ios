@@ -49,14 +49,13 @@ class UploadStore: ObservableObject {
 extension UploadStore {
     func name(for track: Track) async -> String? {
         guard let artistID = await userProvider?.currentUserID else { return nil }
-        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)"
+        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)_\(UUID())\(track.fileExtension)"
     }
     
-    // TODO: - Add better handling if artist uploads cover for 2+ tracks with same album title and year released
     var albumCoverName: String? {
         get async {
             guard let artistID = await userProvider?.currentUserID else { return nil }
-            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)".toJPG
+            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(UUID())".toJPG
         }
     }
     

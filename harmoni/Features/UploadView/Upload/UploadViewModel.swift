@@ -93,8 +93,10 @@ class UploadViewModel: ObservableObject {
     private let userProvider: UserProviding = UserProvider()
     private let storage: StorageProviding = StorageService()
     private var cancellables: Set<AnyCancellable> = []
+    let isEditingAlbum: Bool
     
     init() {
+        isEditingAlbum = false
         $albumCoverItem
             .receive(on: DispatchQueue.main)
             .sink { [weak self] item in
@@ -104,6 +106,11 @@ class UploadViewModel: ObservableObject {
             .store(in: &cancellables)
         
         getArtistName()
+    }
+    
+    /// Initializer for edit album
+    init(album: AlbumDB, songs: [SongDB], tags: [TagDB]) {
+        isEditingAlbum = true
     }
     
     private func getArtistName() {
@@ -195,8 +202,9 @@ class UploadViewModel: ObservableObject {
     /// Convert chosen album cover item as image
     private func handle(picked item: PhotosPickerItem?) {
         Task { @MainActor [weak self] in
-            if let loaded = try? await item?.loadTransferable(type: Image.self) {
-                self?.albumCoverImage = loaded
+            if let data = try? await item?.loadTransferable(type: Data.self),
+               let uiImage = UIImage(data: data){
+                self?.albumCoverImage = Image(uiImage: uiImage)
             } else {
                 self?.isError = true
             }

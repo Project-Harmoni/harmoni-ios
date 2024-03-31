@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SongDB: Codable {
+struct SongDB: Codable, Identifiable, Hashable {
     var id: Int8?
     var albumName: String?
     var artistID: String
@@ -65,5 +65,24 @@ extension SongDB {
         self.ordinal = track.ordinal
         self.isFree = track.isFreeToStream
         self.payoutType = track.payoutType.rawValue
+    }
+}
+
+// MARK: - Mock
+
+extension SongDB {
+    static var mock: Self {
+        SongDB(
+            track: .init(
+                url: URL(string: "www.apple.com")!,
+                name: "Hit Song",
+                fileExtension: ".mp3"
+            ),
+            albumName: "Coolest Album",
+            artistID: .init(),
+            coverImagePath: "",
+            filePath: "",
+            isExplicit: false
+        )
     }
 }

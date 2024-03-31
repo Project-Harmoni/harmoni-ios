@@ -15,7 +15,6 @@ struct MyUploadsView: View {
     var body: some View {
         uploads
             .task {
-                guard viewModel.albums.isEmpty else { return }
                 viewModel.currentUser = currentUser
                 await viewModel.getAlbums()
             }
@@ -25,6 +24,9 @@ struct MyUploadsView: View {
     private var uploads: some View {
         if viewModel.isLoading {
             ProgressView()
+        } else if viewModel.albums.isEmpty {
+            Text("**No uploads!** Come back after you've uploaded something.")
+                .multilineTextAlignment(.center)
         } else {
             albumList
         }
@@ -34,7 +36,11 @@ struct MyUploadsView: View {
         List {
             ForEach(viewModel.albums) { album in
                 NavigationLink {
-                    MyAlbumView()
+                    MyAlbumView(
+                        viewModel: MyAlbumViewModel(
+                            album: album
+                        )
+                    )
                 } label: {
                     HStack(spacing: 16) {
                         coverArt(for: album)
@@ -52,40 +58,12 @@ struct MyUploadsView: View {
     
     @ViewBuilder
     private func coverArt(for album: AlbumDB) -> some View {
-        if let coverImagePath = album.coverImagePath {
-            AsyncImage(url: URL(string: coverImagePath)) { image in
-                switch image {
-                case .empty:
-                    coverArtPlaceholder
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(1, contentMode: .fill)
-                        .frame(width: 64, height: 64)
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                case .failure(_):
-                    coverArtPlaceholder
-                @unknown default:
-                    coverArtPlaceholder
-                }
-            }
-        } else {
-            coverArtPlaceholder
-        }
-    }
-    
-    var coverArtPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 4)
-            .foregroundStyle(.gray.tertiary)
-            .overlay(
-                Image(systemName: "music.note")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 32, height: 32)
-                    .foregroundStyle(.gray)
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 4))
-            .frame(width: 64, height: 64)
+        CoverArtView(
+            imagePath: album.coverImagePath,
+            placeholderName: "music.note",
+            size: 64,
+            cornerRadius: 4
+        )
     }
 }
 

@@ -44,7 +44,7 @@ struct UploadView: View {
                 Rectangle().foregroundStyle(.blue)
             )
         }
-        .navigationTitle("Upload")
+        .navigationTitle(navigationTitle)
         .fileImporter(
             isPresented: $viewModel.isShowingFileImporter,
             allowedContentTypes: [.audio],
@@ -182,7 +182,7 @@ struct UploadView: View {
                         .scaledToFill()
                 )
                 .frame(width: 250, height: 250)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
         }
     }
     
@@ -222,6 +222,10 @@ struct UploadView: View {
             .environmentObject(viewModel.uploadStore)
         }
         .foregroundStyle(.white)
+    }
+    
+    private var navigationTitle: String {
+        viewModel.isEditingAlbum ? "Edit Album" : "Upload"
     }
     
     private var isTrackChosen: Bool {
