@@ -21,7 +21,7 @@ class MyUploadsViewModel: ObservableObject {
         isLoading.toggle()
         guard let currentUser else { return isError.toggle() }
         do {
-            albums = try await database.albums(by: currentUser.id)
+            albums = try await database.albumsByArtist(with: currentUser.id)
             isLoading.toggle()
         } catch {
             dump(error)

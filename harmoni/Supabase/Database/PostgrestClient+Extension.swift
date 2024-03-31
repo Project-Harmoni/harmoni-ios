@@ -123,16 +123,24 @@ extension PostgrestClient {
         return tagCategories.first
     }
     
-    func albums(by artist: UUID) async throws -> [AlbumDB] {
+    func tagCategories() async throws -> [TagCategoryDB]? {
+        let tagCategories: [TagCategoryDB] = try await tagCategories
+            .select()
+            .execute()
+            .value
+        return tagCategories
+    }
+    
+    func albumsByArtist(with id: UUID) async throws -> [AlbumDB] {
         let albums: [AlbumDB] = try await albums
             .select()
-            .eq(AlbumDB.CodingKeys.artistID.rawValue, value: artist)
+            .eq(AlbumDB.CodingKeys.artistID.rawValue, value: id)
             .execute()
             .value
         return albums
     }
     
-    func songs(on album: Int8) async throws -> [SongDB] {
+    func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
         let songID = SongAlbumDB.CodingKeys.songID.rawValue
         let albumID = SongAlbumDB.CodingKeys.albumID.rawValue
         let songs: [SongDB] = try await songs
@@ -140,7 +148,7 @@ extension PostgrestClient {
                 table: .songAlbum,
                 joinedColumn: songID,
                 equalColumn: albumID,
-                equalValue: Int(album)
+                equalValue: Int(id)
             )
             .execute()
             .value
@@ -148,20 +156,43 @@ extension PostgrestClient {
         return songs
     }
     
-    func tags(for song: Int8) async throws -> [TagDB] {
+    func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
+        let songs = try await songsOnAlbum(with: id)
         let songID = SongTagDB.CodingKeys.songID.rawValue
         let tagID = SongTagDB.CodingKeys.tagID.rawValue
-        let tags: [TagDB] = try await tags
+        var tagSet: Set<Tag> = []
+        for song in songs {
+            guard let id = song.id else { continue }
+            for tag in try await self.tagsOnSong(with: id) {
+                tagSet.insert(tag)
+            }
+        }
+        return Array(tagSet)
+    }
+    
+    func tagsOnSong(with id: Int8) async throws -> [Tag] {
+        let songID = SongTagDB.CodingKeys.songID.rawValue
+        let tagID = SongTagDB.CodingKeys.tagID.rawValue
+        let tagCategories = try await tagCategories()
+        let tagsDB: [TagDB] = try await tags
             .innerJoinEq(
                 table: .songTag,
                 joinedColumn: tagID,
                 equalColumn: songID,
-                equalValue: Int(song)
+                equalValue: Int(id)
             )
             .execute()
             .value
         
-        return tags
+        var tagSet: Set<Tag> = []
+        tagsDB.forEach { tagDB in
+            if let tagCategory = tagCategories?.first(where: { $0.id == tagDB.categoryID }),
+               let category = tagCategory.toCategory() {
+                tagSet.insert(Tag(name: tagDB.name, category: category))
+            }
+        }
+        
+        return Array(tagSet)
     }
 }
 

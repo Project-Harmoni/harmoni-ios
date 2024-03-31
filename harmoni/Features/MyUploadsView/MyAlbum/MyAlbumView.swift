@@ -11,6 +11,7 @@ class MyAlbumViewModel: ObservableObject {
     let database: DBServiceProviding = DBService()
     let album: AlbumDB
     @MainActor @Published var songs: [SongDB] = []
+    @MainActor @Published var tags: [Tag] = []
     @MainActor @Published var selectedSongs: Set<SongDB.ID> = []
     @MainActor @Published var isPresentingEdit: Bool = false
     @MainActor @Published var isLoading: Bool = false
@@ -21,12 +22,13 @@ class MyAlbumViewModel: ObservableObject {
     }
     
     @MainActor
-    func getSongs() async {
+    func getAlbum() async {
         guard songs.isEmpty else { return }
         do {
             guard let albumID = album.id else { return isError.toggle() }
             isLoading.toggle()
-            songs = try await database.songs(on: albumID)
+            songs = try await database.songsOnAlbum(with: albumID)
+            tags = try await database.tagsOnAlbum(with: albumID)
             isLoading.toggle()
         } catch {
             dump(error)
@@ -76,7 +78,7 @@ struct MyAlbumView: View {
     var body: some View {
         albumContainer
             .task {
-                await viewModel.getSongs()
+                await viewModel.getAlbum()
             }
     }
     

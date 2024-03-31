@@ -18,3 +18,11 @@ struct TagCategoryDB: Codable {
         case createdAt = "created_at"
     }
 }
+
+// MARK: - To TagCategory
+
+extension TagCategoryDB {
+    func toCategory() -> TagCategory? {
+        TagCategory(rawValue: name)
+    }
+}

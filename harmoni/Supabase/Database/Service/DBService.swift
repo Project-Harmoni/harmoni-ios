@@ -16,12 +16,16 @@ protocol DBServiceProviding {
     func getListener(with id: UUID) async throws -> ListenerDB?
     /// Get tag category
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB?
+    /// Get all tag categories
+    func getTagCategories() async throws -> [TagCategoryDB]?
     /// Get albums by artist
-    func albums(by artist: UUID) async throws -> [AlbumDB]
+    func albumsByArtist(with id: UUID) async throws -> [AlbumDB]
     /// Get songs on album
-    func songs(on album: Int8) async throws -> [SongDB]
-    /// Get tags for song
-    func tags(for song: Int8) async throws -> [TagDB]
+    func songsOnAlbum(with id: Int8) async throws -> [SongDB]
+    /// Get tags on song
+    func tagsOnSong(with id: Int8) async throws -> [Tag]
+    /// Get tags on album
+    func tagsOnAlbum(with id: Int8) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
     /// Upsert (update or insert) user in DB
@@ -62,16 +66,24 @@ struct DBService: DBServiceProviding {
         return try await Supabase.shared.client.database.tagCategory(with: category)
     }
     
-    func albums(by artist: UUID) async throws -> [AlbumDB] {
-        return try await Supabase.shared.client.database.albums(by: artist)
+    func getTagCategories() async throws -> [TagCategoryDB]? {
+        return try await Supabase.shared.client.database.tagCategories()
     }
     
-    func songs(on album: Int8) async throws -> [SongDB] {
-        return try await Supabase.shared.client.database.songs(on: album)
+    func albumsByArtist(with id: UUID) async throws -> [AlbumDB] {
+        return try await Supabase.shared.client.database.albumsByArtist(with: id)
     }
     
-    func tags(for song: Int8) async throws -> [TagDB] {
-        return try await Supabase.shared.client.database.tags(for: song)
+    func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
+        return try await Supabase.shared.client.database.songsOnAlbum(with: id)
+    }
+    
+    func tagsOnSong(with id: Int8) async throws -> [Tag] {
+        return try await Supabase.shared.client.database.tagsOnSong(with: id)
+    }
+    
+    func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
+        return try await Supabase.shared.client.database.tagsOnAlbum(with: id)
     }
     
     func upsert(user: UserDB) async throws {
