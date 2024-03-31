@@ -16,6 +16,7 @@ struct AlbumDB: Codable, Identifiable {
     var totalTracks: Int
     var recordLabel: String?
     var duration: Double?
+    var isExplicit: Bool = false
     var createdAt: String?
     
     enum CodingKeys: String, CodingKey {
@@ -27,6 +28,7 @@ struct AlbumDB: Codable, Identifiable {
         case totalTracks = "total_tracks"
         case recordLabel = "record_label"
         case duration
+        case isExplicit = "is_explicit"
         case createdAt = "created_at"
     }
 }

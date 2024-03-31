@@ -9,6 +9,7 @@ import PhotosUI
 import SwiftUI
 
 class UploadStore: ObservableObject {
+    var isEditing: Bool = false
     var tracks: [Track] = []
     var albumTitle: String = ""
     var artistName: String = ""
@@ -44,6 +45,18 @@ class UploadStore: ObservableObject {
         category: .miscellaneous,
         isReadOnly: true
     )
+    
+    func clear() {
+        tracks = []
+        albumTitle = ""
+        artistName = ""
+        isExplicit = false
+        yearReleased = ""
+        recordLabel = ""
+        albumCoverItem = nil
+        albumCoverImage = nil
+        isEditing = false
+    }
 }
 
 extension UploadStore {

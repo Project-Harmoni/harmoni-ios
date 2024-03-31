@@ -61,6 +61,9 @@ class UploadViewModel: ObservableObject {
         }
     }
     
+    // Tags
+    @Published var allTagsViewModel: AllTagsViewModel
+    
     // Payout
     @Published var payoutViewModel = EditPayoutViewModel(tracks: [])
     
@@ -78,6 +81,33 @@ class UploadViewModel: ObservableObject {
     
     init() {
         isEditingAlbum = false
+        allTagsViewModel = AllTagsViewModel()
+        observeAlbumCoverChanges()
+        getArtistName()
+    }
+    
+    /// Initializer for edit album
+    @MainActor init(album: AlbumDB, songs: [SongDB], tags: [Tag]) {
+        isEditingAlbum = true
+        allTagsViewModel = AllTagsViewModel(
+            genreTags: tags.genres,
+            moodTags: tags.moods,
+            instrumentTags: tags.instruments,
+            miscTags: tags.misc,
+            albumID: album.id
+        )
+        albumTitle = album.name ?? ""
+        yearReleased = album.yearReleased ?? ""
+        recordLabel = album.recordLabel ?? ""
+        isExplicit = album.isExplicit
+        tracks = songs.compactMap { $0.toTrack() }
+        uploadStore.isEditing = true
+        getCoverArt(for: album)
+        getArtistName()
+        observeAlbumCoverChanges()
+    }
+    
+    private func observeAlbumCoverChanges() {
         $albumCoverItem
             .receive(on: DispatchQueue.main)
             .sink { [weak self] item in
@@ -85,13 +115,6 @@ class UploadViewModel: ObservableObject {
                 self?.handle(picked: item)
             }
             .store(in: &cancellables)
-        
-        getArtistName()
-    }
-    
-    /// Initializer for edit album
-    init(album: AlbumDB, songs: [SongDB], tags: [TagDB]) {
-        isEditingAlbum = true
     }
     
     private func getArtistName() {
@@ -159,6 +182,28 @@ class UploadViewModel: ObservableObject {
                 self?.albumCoverImage = Image(uiImage: uiImage)
             } else {
                 self?.isError = true
+            }
+        }
+    }
+}
+
+
+// MARK: - Edit Helpers
+
+extension UploadViewModel {
+    private func getCoverArt(for album: AlbumDB) {
+        Task.detached {
+            if let coverImagePath = album.coverImagePath,
+               let url = URL(string: coverImagePath) {
+                do {
+                    let data = try Data(contentsOf: url)
+                    guard let uiImage = UIImage(data: data) else { return }
+                    await MainActor.run { [weak self] in
+                        self?.albumCoverImage = Image(uiImage: uiImage)
+                    }
+                } catch {
+                    dump(error)
+                }
             }
         }
     }

@@ -8,22 +8,36 @@
 import SwiftUI
 
 struct AllTagsViewSheet: View {
-    let albumID: Int8?
-    let isReadOnly: Bool
+    let viewModel: AllTagsViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Tags")
-                .font(.title2)
-                .bold()
-                .padding(.leading)
-                .padding(.top, 24)
+        VStack(alignment: .center, spacing: 8) {
+            HStack {
+                Text("Tags")
+                    .font(.title2)
+                    .bold()
+                    .padding(.leading)
+                    .padding(.top, 24)
+                Spacer()
+            }
+            tags
+        }
+        .presentationDetents([.fraction(fractionHeight)])
+        .presentationCornerRadius(24)
+        .presentationBackground(.thinMaterial)
+        .presentationDragIndicator(.visible)
+    }
+    
+    @ViewBuilder
+    private var tags: some View {
+        if viewModel.allTagsEmpty {
+            Spacer()
+            Text("No tags")
+            Spacer()
+        } else {
             List {
                 AllTagsView(
-                    viewModel: AllTagsViewModel(
-                        albumID: albumID,
-                        isReadOnly: isReadOnly
-                    )
+                    viewModel: viewModel
                 )
                 .environmentObject(UploadStore())
                 .listSectionSpacing(0)
@@ -31,9 +45,13 @@ struct AllTagsViewSheet: View {
             .scrollContentBackground(.hidden)
             .padding(EdgeInsets())
         }
-        .presentationDetents([.fraction(0.7)])
-        .presentationCornerRadius(24)
-        .presentationBackground(.thinMaterial)
-        .presentationDragIndicator(.visible)
     }
+    
+    private var fractionHeight: CGFloat {
+        viewModel.allTagsEmpty ? 0.25 : 0.7
+    }
+}
+
+#Preview {
+    AllTagsViewSheet(viewModel: AllTagsViewModel())
 }

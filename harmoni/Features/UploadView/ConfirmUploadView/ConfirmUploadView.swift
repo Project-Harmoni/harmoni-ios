@@ -34,7 +34,7 @@ struct ConfirmUploadView: View {
             )
             
         }
-        .navigationTitle("Confirm Upload")
+        .navigationTitle(uploadStore.isEditing ? "Confirm Changes" : "Confirm Upload")
         .alert(
             "Uh oh!",
             isPresented: $viewModel.isError,
@@ -55,6 +55,7 @@ struct ConfirmUploadView: View {
                 AlertToast(type: .complete(.green), title: "Upload complete!")
             }, completion: {
                 router.popToRoot()
+                uploadStore.clear()
             }
         )
         .toast(isPresenting: $viewModel.isSaving) {
@@ -174,7 +175,7 @@ struct ConfirmUploadView: View {
     
     @ViewBuilder
     private var uploadLabel: some View {
-        Text("Upload").bold()
+        Text(uploadStore.isEditing ? "Upload Changes" : "Upload").bold()
         Spacer()
         Image(systemName: "arrow.up")
             .bold()

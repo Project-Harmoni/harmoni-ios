@@ -13,3 +13,22 @@ struct Tag: Identifiable, Equatable, Hashable {
     var category: TagCategory
     var createdAt: Date?
 }
+// MARK: - Filter specific categories
+
+extension [Tag] {
+    var genres: [Tag] {
+        self.filter { $0.category == .genres }
+    }
+    
+    var moods: [Tag] {
+        self.filter { $0.category == .moods }
+    }
+    
+    var instruments: [Tag] {
+        self.filter { $0.category == .instruments }
+    }
+    
+    var misc: [Tag] {
+        self.filter { $0.category == .miscellaneous }
+    }
+}

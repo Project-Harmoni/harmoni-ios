@@ -14,6 +14,7 @@ struct AlbumView: View {
         albumContainer
             .task {
                 await viewModel.getAlbum()
+                await viewModel.allTagsViewModel.getTags()
             }
     }
     
@@ -73,9 +74,9 @@ struct AlbumView: View {
             NavigationStack {
                 UploadView(
                     viewModel: UploadViewModel(
-                        album: .init(artistID: "", totalTracks: 0),
-                        songs: [],
-                        tags: []
+                        album: viewModel.album,
+                        songs: viewModel.songs,
+                        tags: viewModel.tags
                     )
                 )
                 .navigationBarTitleDisplayMode(.inline)
@@ -83,8 +84,7 @@ struct AlbumView: View {
         }
         .sheet(isPresented: $viewModel.isPresentingViewTags) {
             AllTagsViewSheet(
-                albumID: viewModel.album.id,
-                isReadOnly: true
+                viewModel: viewModel.allTagsViewModel
             )
         }
     }

@@ -68,6 +68,28 @@ extension SongDB {
     }
 }
 
+// MARK: - To Track
+
+extension SongDB {
+    func toTrack() -> Track? {
+        guard let payoutType else { return nil }
+        guard let trackPayoutType = TrackPayoutType(rawValue: payoutType) else { return nil }
+        guard let name else { return nil }
+        guard let filePath else { return nil }
+        guard let url = URL(string: filePath) else { return nil }
+        return Track(
+            ordinal: ordinal,
+            url: url,
+            name: name,
+            fileExtension: ".\(url.pathExtension)",
+            artistPercentage: CGFloat(artistPayoutPercentage),
+            streamThreshold: payoutThreshold,
+            isFreeToStream: isFree,
+            payoutType: trackPayoutType
+        )
+    }
+}
+
 // MARK: - Mock
 
 extension SongDB {

@@ -100,8 +100,14 @@ class ConfirmUploadViewModel: ObservableObject {
         }
         let trackData = try Data(contentsOf: track.url)
         guard let trackName = await store.name(for: track) else { return nil }
+        // upload track to storage
         let uploadResult = try await self.storage.uploadSong(trackData, name: trackName)
-        let trackURL = try self.storage.getMusicURL(for: uploadResult)
+        // get track name and file extension
+        guard let resultPath = URL(string: uploadResult)?.lastPathComponent else {
+            return nil
+        }
+        // get public file url from storage
+        let trackURL = try self.storage.getMusicURL(for: resultPath)
         return trackURL.absoluteString
     }
     
@@ -194,7 +200,8 @@ class ConfirmUploadViewModel: ObservableObject {
             yearReleased: store.yearReleased,
             totalTracks: store.tracks.count,
             recordLabel: store.recordLabel,
-            duration: await store.durationOfTracks
+            duration: await store.durationOfTracks,
+            isExplicit: store.isExplicit
         )
         self.uploadedAlbum = try await self.database.upsert(album: album)
     }

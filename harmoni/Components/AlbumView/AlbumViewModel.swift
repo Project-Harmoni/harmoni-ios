@@ -16,9 +16,14 @@ class AlbumViewModel: ObservableObject {
     @MainActor @Published var isPresentingViewTags: Bool = false
     @MainActor @Published var isLoading: Bool = false
     @MainActor @Published var isError: Bool = false
+    var allTagsViewModel: AllTagsViewModel
     
     init(album: AlbumDB) {
         self.album = album
+        self.allTagsViewModel = AllTagsViewModel(
+            albumID: album.id,
+            isReadOnly: true
+        )
     }
     
     @MainActor
@@ -68,5 +73,9 @@ class AlbumViewModel: ObservableObject {
     
     var recordLabel: String? {
         album.recordLabel
+    }
+    
+    var tags: [Tag] {
+        allTagsViewModel.tags
     }
 }

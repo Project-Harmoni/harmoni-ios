@@ -36,6 +36,12 @@ struct AllTagsView: View {
             Text("Miscellaneous")
                 .font(.subheadline)
         }
+        .onAppear() {
+            uploadStore.genreTagsViewModel = viewModel.genreTagsViewModel
+            uploadStore.moodTagsViewModel = viewModel.moodTagsViewModel
+            uploadStore.instrumentsTagsViewModel = viewModel.instrumentsTagsViewModel
+            uploadStore.miscTagsViewModel = viewModel.miscTagsViewModel
+        }
         .task {
             await viewModel.getTags()
         }

@@ -188,8 +188,10 @@ struct UploadView: View {
     
     @ViewBuilder
     private var tags: some View {
-        AllTagsView()
-            .environmentObject(viewModel.uploadStore)
+        AllTagsView(
+            viewModel: viewModel.allTagsViewModel
+        )
+        .environmentObject(viewModel.uploadStore)
     }
     
     private var continueToPayout: some View {

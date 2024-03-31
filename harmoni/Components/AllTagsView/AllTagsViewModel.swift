@@ -11,6 +11,7 @@ class AllTagsViewModel: ObservableObject {
     let isReadOnly: Bool
     let database: DBServiceProviding = DBService()
     let albumID: Int8?
+    var tags: [Tag] = []
 
     @Published var genreTagsViewModel = TagListViewModel(
         tags: [],
@@ -56,11 +57,11 @@ class AllTagsViewModel: ObservableObject {
     func getTags() async {
         guard let albumID, allTagsEmpty else { return }
         do {
-            let tags = try await database.tagsOnAlbum(with: albumID)
-            genreTagsViewModel.tags = tags.filter { $0.category == .genres }
-            moodTagsViewModel.tags = tags.filter { $0.category == .moods }
-            instrumentsTagsViewModel.tags = tags.filter { $0.category == .instruments }
-            miscTagsViewModel.tags = tags.filter { $0.category == .miscellaneous }
+            tags = try await database.tagsOnAlbum(with: albumID)
+            genreTagsViewModel.tags = tags.genres
+            moodTagsViewModel.tags = tags.moods
+            instrumentsTagsViewModel.tags = tags.instruments
+            miscTagsViewModel.tags = tags.misc
         } catch {
             dump(error)
         }
