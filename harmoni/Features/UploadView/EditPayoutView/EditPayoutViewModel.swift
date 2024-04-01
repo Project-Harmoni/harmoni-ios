@@ -15,7 +15,6 @@ class EditPayoutViewModel: ObservableObject {
     @Published var isShowingEditStreamAlert: Bool = false
     @Published var artistPercentage: String = ""
     @Published var isShowingEditPercentageAlert: Bool = false
-    @Published var isEditing: Bool = false
     
     init(tracks: [Track]) {
         self.tracks = tracks

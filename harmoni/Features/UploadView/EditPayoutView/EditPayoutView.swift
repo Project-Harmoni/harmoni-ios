@@ -150,26 +150,17 @@ struct EditPayoutView: View {
     
     @ViewBuilder
     private var cta: some View {
-        if viewModel.isEditing {
-            Button {
-                //
-            } label: {
-                Text("Save")
+        Section {
+            NavigationLink("Continue") {
+                ConfirmUploadView()
+                    .environmentObject(uploadStore)
             }
-            .buttonStyle(.borderedProminent)
-        } else {
-            Section {
-                NavigationLink("Continue") {
-                    ConfirmUploadView()
-                        .environmentObject(uploadStore)
-                }
-                .foregroundStyle(.white)
-            }
-            .listRowBackground(
-                Rectangle()
-                    .foregroundStyle(.blue)
-            )
+            .foregroundStyle(.white)
         }
+        .listRowBackground(
+            Rectangle()
+                .foregroundStyle(.blue)
+        )
     }
     
     private var isEditing: Bool {

@@ -5,10 +5,12 @@
 //  Created by Kyle Stokes on 3/27/24.
 //
 
+import AlertToast
 import SwiftUI
 
 struct MyUploadsView: View {
     @EnvironmentObject var router: AccountViewRouter
+    @Environment(\.editMode) var editMode
     @Environment(\.currentUser) private var currentUser
     @StateObject private var viewModel = MyUploadsViewModel()
     
@@ -22,7 +24,49 @@ struct MyUploadsView: View {
                 Task {
                     await viewModel.reload()
                 }
-            }.navigationTitle("My Uploads")
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if !viewModel.albums.isEmpty {
+                        EditButton()
+                            .disabled(viewModel.isDeleting)
+                    }
+                }
+                
+                ToolbarItemGroup(placement: .bottomBar) {
+                    if !viewModel.albums.isEmpty {
+                        deleteSelected
+                        selectionToggle
+                    }
+                }
+            }
+            .alert("Delete Albums", isPresented: $viewModel.isShowingDeleteConfirm) {
+                Button("Cancel", role: .cancel, action: {})
+                Button("Delete", role: .destructive, action: {
+                    viewModel.deleteSelected()
+                })
+            } message: {
+                Text("Are you sure you want to delete the selected albums?")
+            }
+            .toast(
+                isPresenting: $viewModel.isDeleted,
+                duration: 2,
+                tapToDismiss: true,
+                alert: {
+                    AlertToast(type: .complete(.green), title: "Albums deleted")
+                }, completion: {
+                    Task {
+                        await viewModel.reload()
+                    }
+                }
+            )
+            .toast(isPresenting: $viewModel.isDeleting) {
+                AlertToast(
+                    type: .loading,
+                    title: "Deleting"
+                )
+            }
+            .navigationTitle("My Uploads")
     }
     
     @ViewBuilder
@@ -38,7 +82,7 @@ struct MyUploadsView: View {
     }
     
     private var albumList: some View {
-        List {
+        List(selection: $viewModel.selectedAlbums) {
             ForEach(viewModel.albums) { album in
                 NavigationLink {
                     AlbumView(
@@ -68,6 +112,58 @@ struct MyUploadsView: View {
             size: 64,
             cornerRadius: 4
         )
+    }
+    
+    @ViewBuilder
+    private var deleteSelected: some View {
+        if isSelected {
+            Button {
+                viewModel.isShowingDeleteConfirm.toggle()
+            } label: {
+                Text("Delete Selected")
+                    .padding()
+                    .frame(height: 32)
+                    .background(.red)
+                    .foregroundStyle(.white)
+                    .bold()
+                    .clipShape(RoundedRectangle(cornerRadius: 25))
+            }
+            .disabled(viewModel.isDeleting)
+        }
+    }
+    
+    @ViewBuilder
+    private var selectionToggle: some View {
+        if isEditing {
+            Spacer()
+            Button(viewModel.isSelectingAll ? "Select All" : "Deselect All") {
+                if viewModel.isSelectingAll {
+                    viewModel.albums.forEach { album in
+                        viewModel.selectedAlbums.insert(album.id)
+                    }
+                } else {
+                    viewModel.albums.forEach { album in
+                        viewModel.selectedAlbums.remove(album.id)
+                    }
+                }
+                
+                viewModel.isSelectingAll.toggle()
+            }
+            .disabled(viewModel.isDeleting)
+            .bold()
+            .onAppear() {
+                viewModel.isSelectingAll = true
+            }
+        }
+    }
+    
+    private var isEditing: Bool {
+        guard let editMode = editMode?.wrappedValue else { return false }
+        return editMode.isEditing
+    }
+    
+    private var isSelected: Bool {
+        isEditing && !viewModel.selectedAlbums.isEmpty
     }
 }
 
