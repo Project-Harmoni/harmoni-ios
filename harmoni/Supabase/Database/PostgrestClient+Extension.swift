@@ -156,6 +156,52 @@ extension PostgrestClient {
         return songs
     }
     
+    func deleteSong(with id: Int8) async throws {
+        _ = try await songs
+            .delete()
+            .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
+            .execute()
+    }
+    
+    func deleteAlbums(with ids: [Int8], in storage: StorageProviding) async throws {
+        for id in ids {
+            try await deleteAlbum(with: id, in: storage)
+        }
+    }
+    
+    func deleteAlbum(with id: Int8, in storage: StorageProviding) async throws {
+        let albums: [AlbumDB] = try await albums
+            .select()
+            .eq(AlbumDB.CodingKeys.id.rawValue, value: Int(id))
+            .execute()
+            .value
+        
+        for album in albums {
+            guard let albumID = album.id else { continue }
+            let songs = try await songsOnAlbum(with: albumID)
+            for song in songs {
+                guard let songID = song.id else { continue }
+                // Delete cover art from storage
+                if let coverImagePath = song.coverImagePath, let url = URL(string: coverImagePath) {
+                    try await storage.deleteImage(name: url.lastPathComponent)
+                }
+                // Delete track from storage
+                if let filePath = song.filePath, let url = URL(string: filePath) {
+                    try await storage.deleteSong(name: url.lastPathComponent)
+                }
+                // Delete song on album
+                try await deleteSong(with: songID)
+            }
+            
+            // Delete album
+            _ = try await self.albums
+                .delete()
+                .eq(AlbumDB.CodingKeys.id.rawValue, value: Int(id))
+                .execute()
+                .value
+        }
+    }
+    
     func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
         let songs = try await songsOnAlbum(with: id)
         let tagCategories = try await tagCategories()

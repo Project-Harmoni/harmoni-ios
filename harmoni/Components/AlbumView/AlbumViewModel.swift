@@ -9,12 +9,16 @@ import Foundation
 
 class AlbumViewModel: ObservableObject {
     let database: DBServiceProviding = DBService()
+    let storage: StorageProviding = StorageService()
     let album: AlbumDB
     @MainActor @Published var songs: [SongDB] = []
     @MainActor @Published var selectedSongs: Set<SongDB.ID> = []
+    @MainActor @Published var isPresentingDeleteConfirm: Bool = false
     @MainActor @Published var isPresentingEdit: Bool = false
     @MainActor @Published var isPresentingViewTags: Bool = false
     @MainActor @Published var isLoading: Bool = false
+    @MainActor @Published var isDeleting: Bool = false
+    @MainActor @Published var isDeleted: Bool = false
     @MainActor @Published var isError: Bool = false
     var allTagsViewModel: AllTagsViewModel
     
@@ -39,6 +43,20 @@ class AlbumViewModel: ObservableObject {
             dump(error)
             isError.toggle()
             isLoading.toggle()
+        }
+    }
+    
+    @MainActor
+    func deleteAlbum() async {
+        do {
+            isDeleting.toggle()
+            try await database.deleteAlbum(with: album.id, in: storage)
+            isDeleting.toggle()
+            isDeleted.toggle()
+        } catch {
+            dump(error)
+            isError.toggle()
+            isDeleting.toggle()
         }
     }
     

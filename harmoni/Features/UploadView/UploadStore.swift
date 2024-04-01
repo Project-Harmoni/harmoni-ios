@@ -12,7 +12,8 @@ class UploadStore: ObservableObject {
     var isEditing: Bool = false
     var albumToEdit: AlbumDB? { didSet { handleAlbumToEdit() } }
     var tracks: [Track] = []
-    var tracksToDelete: [Track] = []
+    var loadedTracks: [Track] = []
+    var loadedTags: [Tag] = []
     var albumTitle: String = ""
     var artistName: String = ""
     var isExplicit: Bool = false

@@ -247,7 +247,7 @@ extension ConfirmUploadViewModel {
     }
     
     private var isTrackFileChanged: Bool {
-        let tracksToDeleteServerIDs = store?.tracksToDelete.compactMap { $0.serverID }
+        let tracksToDeleteServerIDs = store?.loadedTracks.compactMap { $0.serverID }
         let tracksServerIDs = store?.tracks.compactMap { $0.serverID }
         return tracksToDeleteServerIDs != tracksServerIDs
     }
@@ -284,7 +284,7 @@ extension ConfirmUploadViewModel {
     
     private func deleteTracksIfNeeded() async throws {
         guard isTrackFileChanged, isEditing else { return }
-        guard let tracks = store?.tracksToDelete else { return }
+        guard let tracks = store?.loadedTracks else { return }
         for track in tracks {
             try await self.storage.deleteSong(name: track.url.lastPathComponent)
             try await self.database.deleteSong(with: track.serverID)
@@ -308,7 +308,7 @@ extension ConfirmUploadViewModel {
 
 private extension ConfirmUploadViewModel {
     var areTracksEmpty: Bool {
-        store?.tracksToDelete.isEmpty ?? true
+        store?.loadedTracks.isEmpty ?? true
     }
     
     var areTagsEmpty: Bool {

@@ -18,6 +18,11 @@ struct MyUploadsView: View {
                 viewModel.currentUser = currentUser
                 await viewModel.getAlbums()
             }
+            .onAppear() {
+                Task {
+                    await viewModel.reload()
+                }
+            }.navigationTitle("My Uploads")
     }
     
     @ViewBuilder
@@ -53,7 +58,6 @@ struct MyUploadsView: View {
                 }
             }
         }
-        .navigationTitle("My Uploads")
     }
     
     @ViewBuilder

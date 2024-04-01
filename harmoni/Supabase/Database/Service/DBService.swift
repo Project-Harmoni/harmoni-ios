@@ -69,6 +69,8 @@ protocol DBServiceProviding {
     
     // Delete song in DB
     func deleteSong(with id: Int8?) async throws
+    func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws
+    func deleteAlbums(with ids: [Int8?], in storage: StorageProviding) async throws
 }
 
 struct DBService: DBServiceProviding {
@@ -284,10 +286,16 @@ extension DBService {
 extension DBService {
     func deleteSong(with id: Int8?) async throws {
         guard let id else { return }
-        _ = try await Supabase.shared.client.database
-            .songs
-            .delete()
-            .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
-            .execute()
+        _ = try await Supabase.shared.client.database.deleteSong(with: id)
+    }
+    
+    func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws {
+        guard let id else { return }
+        _ = try await Supabase.shared.client.database.deleteAlbum(with: id, in: storage)
+    }
+    
+    func deleteAlbums(with ids: [Int8?], in storage: StorageProviding) async throws {
+        let ids = ids.compactMap { $0 }
+        _ = try await Supabase.shared.client.database.deleteAlbums(with: ids, in: storage)
     }
 }

@@ -5,9 +5,11 @@
 //  Created by Kyle Stokes on 3/29/24.
 //
 
+import AlertToast
 import SwiftUI
 
 struct AlbumView: View {
+    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AlbumViewModel
     
     var body: some View {
@@ -63,6 +65,7 @@ struct AlbumView: View {
                         viewModel.isPresentingEdit.toggle()
                     }
                     Button("Delete", role: .destructive) {
+                        viewModel.isPresentingDeleteConfirm.toggle()
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -87,6 +90,33 @@ struct AlbumView: View {
                 viewModel: viewModel.allTagsViewModel
             )
         }
+        .alert("Delete Album", isPresented: $viewModel.isPresentingDeleteConfirm) {
+            Button("Cancel", role: .cancel, action: {})
+            Button("Delete", role: .destructive, action: {
+                Task.detached {
+                    await viewModel.deleteAlbum()
+                }
+            })
+        } message: {
+            Text("Are you sure you want to delete this album?")
+        }
+        .toast(
+            isPresenting: $viewModel.isDeleted,
+            duration: 2,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(type: .complete(.green), title: "Album deleted")
+            }, completion: {
+                dismiss()
+            }
+        )
+        .toast(isPresenting: $viewModel.isDeleting) {
+            AlertToast(
+                type: .loading,
+                title: "Deleting"
+            )
+        }
+        
     }
     
     private var header: some View {
