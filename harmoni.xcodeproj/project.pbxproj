@@ -99,6 +99,7 @@
 		B5EC14042B9FF6FE00F1CCA8 /* DBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC14032B9FF6FE00F1CCA8 /* DBService.swift */; };
 		B5EC14062B9FF97F00F1CCA8 /* AuthResponse+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC14052B9FF97F00F1CCA8 /* AuthResponse+Extension.swift */; };
 		B5EC14092B9FFC0100F1CCA8 /* AuthFlowError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC14082B9FFC0100F1CCA8 /* AuthFlowError.swift */; };
+		B5F126832BBB361000341C09 /* ConfigDebug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,7 +147,6 @@
 		B5ADE8EB2B9D170A009988E5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B5ADE8FF2B9D2A1D009988E5 /* harmoni.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = harmoni.entitlements; sourceTree = "<group>"; };
 		B5ADE9122B9D3566009988E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B5ADE9132B9D38CF009988E5 /* ConfigDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ConfigDebug.xcconfig; sourceTree = "<group>"; };
 		B5B05FE72BABCF0E00AD6F40 /* TagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewModel.swift; sourceTree = "<group>"; };
 		B5B05FEA2BABCF2E00AD6F40 /* TagCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCategory.swift; sourceTree = "<group>"; };
 		B5B05FEC2BABCF3C00AD6F40 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -190,6 +190,7 @@
 		B5EC14032B9FF6FE00F1CCA8 /* DBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBService.swift; sourceTree = "<group>"; };
 		B5EC14052B9FF97F00F1CCA8 /* AuthResponse+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthResponse+Extension.swift"; sourceTree = "<group>"; };
 		B5EC14082B9FFC0100F1CCA8 /* AuthFlowError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowError.swift; sourceTree = "<group>"; };
+		B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ConfigDebug.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,11 +335,11 @@
 		B58FC7952B9D565C006F5BDF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */,
 				B58FC7972B9D56A1006F5BDF /* EnvManager.swift */,
 				B5ADE8FF2B9D2A1D009988E5 /* harmoni.entitlements */,
 				B5ADE9122B9D3566009988E5 /* Info.plist */,
 				B5ADE8E82B9D170A009988E5 /* Assets.xcassets */,
-				B5ADE9132B9D38CF009988E5 /* ConfigDebug.xcconfig */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -778,6 +779,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5F126832BBB361000341C09 /* ConfigDebug.xcconfig in Resources */,
 				B5ADE8EC2B9D170A009988E5 /* Preview Assets.xcassets in Resources */,
 				B5ADE8E92B9D170A009988E5 /* Assets.xcassets in Resources */,
 			);
@@ -880,7 +882,7 @@
 /* Begin XCBuildConfiguration section */
 		B5ADE8ED2B9D170A009988E5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5ADE9132B9D38CF009988E5 /* ConfigDebug.xcconfig */;
+			baseConfigurationReference = B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1000,7 +1002,7 @@
 		};
 		B5ADE8F02B9D170A009988E5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5ADE9132B9D38CF009988E5 /* ConfigDebug.xcconfig */;
+			baseConfigurationReference = B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

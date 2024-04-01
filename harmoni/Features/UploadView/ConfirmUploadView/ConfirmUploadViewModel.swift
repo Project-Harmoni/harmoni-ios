@@ -206,6 +206,7 @@ class ConfirmUploadViewModel: ObservableObject {
     
     /// Update song/album table in database
     private func updateSongAlbumAssociations() async throws {
+        guard isTrackFileChanged || areTracksEmpty else { return }
         for uploadedSong in uploadedSongs {
             let songAlbummDB = SongAlbumDB(
                 songID: uploadedSong.id,
@@ -217,6 +218,7 @@ class ConfirmUploadViewModel: ObservableObject {
     
     /// Update song/tag table in database
     private func updateSongTagAssociations() async throws {
+        guard isTrackFileChanged || areTracksEmpty else { return }
         for uploadedSong in uploadedSongs {
             for uploadedTag in uploadedTags {
                 let songTagDB = SongTagDB(
@@ -244,8 +246,10 @@ extension ConfirmUploadViewModel {
         store?.isEditing ?? false
     }
     
-    private var isTrackDeletionNecessary: Bool {
-        store?.tracksToDelete != store?.tracks
+    private var isTrackFileChanged: Bool {
+        let tracksToDeleteServerIDs = store?.tracksToDelete.compactMap { $0.serverID }
+        let tracksServerIDs = store?.tracks.compactMap { $0.serverID }
+        return tracksToDeleteServerIDs != tracksServerIDs
     }
     
     private var albumCoverData: Data? {
@@ -261,7 +265,9 @@ extension ConfirmUploadViewModel {
     }
     
     private func nameForTrack(_ track: Track) async -> String? {
-        await store?.name(for: track)
+        isTrackFileChanged || areTracksEmpty
+        ? await store?.name(for: track)
+        : track.url.lastPathComponent
     }
     
     private func uploadCoverArt(data: Data, name: String) async throws -> String {
@@ -271,11 +277,13 @@ extension ConfirmUploadViewModel {
     }
     
     private func uploadTrack(_ data: Data, _ name: String) async throws -> String {
-        try await self.storage.uploadSong(data, name: name)
+        isTrackFileChanged || areTracksEmpty
+        ? try await self.storage.uploadSong(data, name: name)
+        : try await self.storage.updateSong(data, name: name)
     }
     
     private func deleteTracksIfNeeded() async throws {
-        guard isTrackDeletionNecessary, isEditing else { return }
+        guard isTrackFileChanged, isEditing else { return }
         guard let tracks = store?.tracksToDelete else { return }
         for track in tracks {
             try await self.storage.deleteSong(name: track.url.lastPathComponent)
@@ -290,13 +298,19 @@ extension ConfirmUploadViewModel {
     }
     
     private func updateSong(_ song: SongDB) async throws -> SongDB? {
-        try await database.upsert(song: song)
+        isTrackFileChanged || areTracksEmpty
+        ? try await database.upsert(song: song)
+        : try await database.update(song: song)
     }
 }
 
 // MARK: - Helpers
 
 private extension ConfirmUploadViewModel {
+    var areTracksEmpty: Bool {
+        store?.tracksToDelete.isEmpty ?? true
+    }
+    
     var areTagsEmpty: Bool {
         store?.tagsAreEmpty ?? true
     }
