@@ -9,6 +9,7 @@ import AlertToast
 import SwiftUI
 
 struct AlbumView: View {
+    @EnvironmentObject  var nowPlayingManager: NowPlayingManager
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AlbumViewModel
     
@@ -37,6 +38,11 @@ struct AlbumView: View {
                     HStack(alignment: .center, spacing: 16) {
                         Text("\(song.wrappedValue.ordinal + 1)").foregroundStyle(.gray)
                         Text(song.wrappedValue.name ?? "Song title")
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        nowPlayingManager.track = song.wrappedValue.toTrack()
                     }
                     .listRowBackground(Color(.secondarySystemGroupedBackground))
                 }

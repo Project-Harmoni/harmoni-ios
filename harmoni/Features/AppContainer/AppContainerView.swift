@@ -20,6 +20,11 @@ struct AppContainerView: View {
     var body: some View {
         TabView {
             AccountView()
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        NowPlayingBar()
+                    }
+                }
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                     Text("Account")
@@ -38,12 +43,12 @@ struct AppContainerView: View {
                 Text("Search")
                     .navigationTitle("Search")
             }
-            .navigationTitle("Search")
             .tabItem {
                 Image(systemName: "magnifyingglass")
                 Text("Search")
             }
         }
+        .environmentObject(NowPlayingManager())
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.currentUser, viewModel.currentUser)

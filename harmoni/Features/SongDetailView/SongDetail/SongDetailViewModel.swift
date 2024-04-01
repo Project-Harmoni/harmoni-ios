@@ -8,7 +8,9 @@
 import Foundation
 
 class SongDetailViewModel: ObservableObject {
-    @Published var isAudioStarted: Bool = false
-    @Published var isPlaying: Bool = false
     @Published var fileURL: URL?
+    
+    init(fileURL: URL?) {
+        self.fileURL = fileURL
+    }
 }
