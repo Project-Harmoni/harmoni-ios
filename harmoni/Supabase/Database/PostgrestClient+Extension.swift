@@ -187,7 +187,7 @@ extension PostgrestClient {
         tagsDB.forEach { tagDB in
             if let tagCategory = tagCategories?.first(where: { $0.id == tagDB.categoryID }),
                let category = tagCategory.toCategory() {
-                tagSet.insert(Tag(name: tagDB.name, category: category))
+                tagSet.insert(Tag(serverID: tagDB.id, name: tagDB.name, category: category))
             }
         }
         

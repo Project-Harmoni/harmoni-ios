@@ -101,6 +101,7 @@ class UploadViewModel: ObservableObject {
         recordLabel = album.recordLabel ?? ""
         isExplicit = album.isExplicit
         tracks = songs.compactMap { $0.toTrack() }
+        uploadStore.tracksToDelete = tracks
         uploadStore.isEditing = true
         uploadStore.albumToEdit = album
         getCoverArt(for: album)

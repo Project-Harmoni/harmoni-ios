@@ -64,6 +64,11 @@ protocol DBServiceProviding {
     func update(tag: TagDB) async throws -> TagDB?
     /// Udate tag category in DB
     func update(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
+    
+    // Delete
+    
+    // Delete song in DB
+    func deleteSong(with id: Int8?) async throws
 }
 
 struct DBService: DBServiceProviding {
@@ -271,5 +276,18 @@ extension DBService {
         
         let categories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
         return categories.first
+    }
+}
+
+// MARK: - DB Service Delete
+
+extension DBService {
+    func deleteSong(with id: Int8?) async throws {
+        guard let id else { return }
+        _ = try await Supabase.shared.client.database
+            .songs
+            .delete()
+            .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
+            .execute()
     }
 }

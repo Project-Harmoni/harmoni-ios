@@ -95,6 +95,7 @@ class ConfirmUploadViewModel: ObservableObject {
     
     private func upload(track: Track) async throws -> String? {
         let trackData = try Data(contentsOf: track.url)
+        try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track) else { return nil }
         // upload track to storage
         let uploadResult = try await self.uploadTrack(trackData, trackName)
@@ -135,7 +136,7 @@ class ConfirmUploadViewModel: ObservableObject {
         guard let store else { return self.isError.toggle() }
         if let genres = try await self.database.getTagCategory(with: .genres), let id = genres.id {
             for tag in store.genreTagsViewModel.tags {
-                let genreTag = TagDB(name: tag.name, categoryID: id)
+                let genreTag = TagDB(id: tag.serverID, name: tag.name, categoryID: id)
                 if let uploadedTag = try await self.updateTag(genreTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
@@ -144,7 +145,7 @@ class ConfirmUploadViewModel: ObservableObject {
         
         if let moods = try await self.database.getTagCategory(with: .moods), let id = moods.id {
             for tag in store.moodTagsViewModel.tags {
-                let moodTag = TagDB(name: tag.name, categoryID: id)
+                let moodTag = TagDB(id: tag.serverID, name: tag.name, categoryID: id)
                 if let uploadedTag = try await self.updateTag(moodTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
@@ -153,7 +154,7 @@ class ConfirmUploadViewModel: ObservableObject {
         
         if let instruments = try await self.database.getTagCategory(with: .instruments), let id = instruments.id {
             for tag in store.instrumentsTagsViewModel.tags {
-                let instrumentsTag = TagDB(name: tag.name, categoryID: id)
+                let instrumentsTag = TagDB(id: tag.serverID, name: tag.name, categoryID: id)
                 if let uploadedTag = try await self.updateTag(instrumentsTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
@@ -162,7 +163,7 @@ class ConfirmUploadViewModel: ObservableObject {
         
         if let misc = try await self.database.getTagCategory(with: .miscellaneous), let id = misc.id {
             for tag in store.miscTagsViewModel.tags {
-                let miscTag = TagDB(name: tag.name, categoryID: id)
+                let miscTag = TagDB(id: tag.serverID, name: tag.name, categoryID: id)
                 if let uploadedTag = try await self.updateTag(miscTag) {
                     self.uploadedTags.append(uploadedTag)
                 }
@@ -243,6 +244,10 @@ extension ConfirmUploadViewModel {
         store?.isEditing ?? false
     }
     
+    private var isTrackDeletionNecessary: Bool {
+        store?.tracksToDelete != store?.tracks
+    }
+    
     private var albumCoverData: Data? {
         store?.albumCoverData
     }
@@ -256,9 +261,7 @@ extension ConfirmUploadViewModel {
     }
     
     private func nameForTrack(_ track: Track) async -> String? {
-        isEditing
-        ? track.url.lastPathComponent
-        : await store?.name(for: track)
+        await store?.name(for: track)
     }
     
     private func uploadCoverArt(data: Data, name: String) async throws -> String {
@@ -268,20 +271,38 @@ extension ConfirmUploadViewModel {
     }
     
     private func uploadTrack(_ data: Data, _ name: String) async throws -> String {
-        isEditing
-        ? try await self.storage.updateSong(data, name: name)
-        : try await self.storage.uploadSong(data, name: name)
+        try await self.storage.uploadSong(data, name: name)
+    }
+    
+    private func deleteTracksIfNeeded() async throws {
+        guard isTrackDeletionNecessary, isEditing else { return }
+        guard let tracks = store?.tracksToDelete else { return }
+        for track in tracks {
+            try await self.storage.deleteSong(name: track.url.lastPathComponent)
+            try await self.database.deleteSong(with: track.serverID)
+        }
     }
     
     private func updateTag(_ tag: TagDB) async throws -> TagDB? {
-        isEditing
+        isTagUpdateRequired
         ? try await database.update(tag: tag)
         : try await database.upsert(tag: tag)
     }
     
     private func updateSong(_ song: SongDB) async throws -> SongDB? {
-        isEditing
-        ? try await database.update(song: song)
-        : try await database.upsert(song: song)
+        try await database.upsert(song: song)
+    }
+}
+
+// MARK: - Helpers
+
+private extension ConfirmUploadViewModel {
+    var areTagsEmpty: Bool {
+        store?.tagsAreEmpty ?? true
+    }
+    
+    var isTagUpdateRequired: Bool {
+        isEditing &&
+        !areTagsEmpty
     }
 }
