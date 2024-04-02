@@ -10,6 +10,7 @@ import Supabase
 
 /// Root level container for all views
 struct AppContainerView: View {
+    @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @State private var user: User?
     @StateObject var viewModel = AppContainerViewModel()
     
@@ -22,7 +23,9 @@ struct AppContainerView: View {
             AccountView()
                 .toolbar {
                     ToolbarItem(placement: .bottomBar) {
-                        NowPlayingBar()
+                        if nowPlayingManager.track != nil {
+                            NowPlayingBar()
+                        }
                     }
                 }
                 .tabItem {
@@ -38,6 +41,13 @@ struct AppContainerView: View {
                 Image(systemName: "music.note")
                 Text("Library")
             }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    if nowPlayingManager.track != nil {
+                        NowPlayingBar()
+                    }
+                }
+            }
             
             NavigationStack {
                 Text("Search")
@@ -47,8 +57,14 @@ struct AppContainerView: View {
                 Image(systemName: "magnifyingglass")
                 Text("Search")
             }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    if nowPlayingManager.track != nil {
+                        NowPlayingBar()
+                    }
+                }
+            }
         }
-        .environmentObject(NowPlayingManager())
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.currentUser, viewModel.currentUser)
