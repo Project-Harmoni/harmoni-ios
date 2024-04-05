@@ -32,13 +32,6 @@ struct MyUploadsView: View {
                             .disabled(viewModel.isDeleting)
                     }
                 }
-                
-                ToolbarItemGroup(placement: .bottomBar) {
-                    if !viewModel.albums.isEmpty {
-                        deleteSelected
-                        selectionToggle
-                    }
-                }
             }
             .alert("Delete Albums", isPresented: $viewModel.isShowingDeleteConfirm) {
                 Button("Cancel", role: .cancel, action: {})
@@ -67,6 +60,17 @@ struct MyUploadsView: View {
                 )
             }
             .navigationTitle("My Uploads")
+            .safeAreaInset(edge: .bottom) {
+                if !viewModel.albums.isEmpty, isEditing {
+                    HStack {
+                        deleteSelected
+                        Spacer()
+                        selectionToggle
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                }
+            }
     }
     
     @ViewBuilder
@@ -135,7 +139,6 @@ struct MyUploadsView: View {
     @ViewBuilder
     private var selectionToggle: some View {
         if isEditing {
-            Spacer()
             Button(viewModel.isSelectingAll ? "Select All" : "Deselect All") {
                 if viewModel.isSelectingAll {
                     viewModel.albums.forEach { album in

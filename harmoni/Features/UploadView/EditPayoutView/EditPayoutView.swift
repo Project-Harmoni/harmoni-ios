@@ -23,11 +23,6 @@ struct EditPayoutView: View {
                         EditButton()
                     }
                 }
-                
-                ToolbarItemGroup(placement: .bottomBar) {
-                    configureMenu
-                    selectionToggle
-                }
             }
             .alert("Edit Streams", isPresented: $viewModel.isShowingEditStreamAlert) {
                 TextField("Number of streams", text: $viewModel.streamThreshold)
@@ -51,6 +46,17 @@ struct EditPayoutView: View {
             }
             .onChange(of: viewModel.tracks) { _, tracks in
                 uploadStore.tracks = tracks
+            }
+            .safeAreaInset(edge: .bottom) {
+                if isEditing {
+                    HStack {
+                        configureMenu
+                        Spacer()
+                        selectionToggle
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                }
             }
     }
     
@@ -127,7 +133,6 @@ struct EditPayoutView: View {
     @ViewBuilder
     private var selectionToggle: some View {
         if isEditing {
-            Spacer()
             Button(viewModel.isSelectingAll ? "Select All" : "Deselect All") {
                 if viewModel.isSelectingAll {
                     viewModel.tracks.forEach { track in
