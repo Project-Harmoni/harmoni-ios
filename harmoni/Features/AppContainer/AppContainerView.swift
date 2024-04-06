@@ -21,16 +21,16 @@ struct AppContainerView: View {
     var body: some View {
         TabView {
             AccountView()
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        if nowPlayingManager.track != nil {
-                            NowPlayingBar()
-                        }
-                    }
-                }
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                     Text("Account")
+                }
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        if nowPlayingManager.song != nil {
+                            NowPlayingBar()
+                        }
+                    }
                 }
             
             NavigationStack {
@@ -43,7 +43,7 @@ struct AppContainerView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    if nowPlayingManager.track != nil {
+                    if nowPlayingManager.song != nil {
                         NowPlayingBar()
                     }
                 }
@@ -59,7 +59,7 @@ struct AppContainerView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    if nowPlayingManager.track != nil {
+                    if nowPlayingManager.song != nil {
                         NowPlayingBar()
                     }
                 }

@@ -8,9 +8,9 @@
 import Foundation
 
 class SongDetailViewModel: ObservableObject {
-    @Published var fileURL: URL?
+    @Published var song: SongDB?
     
-    init(fileURL: URL?) {
-        self.fileURL = fileURL
+    init(song: SongDB?) {
+        self.song = song
     }
 }

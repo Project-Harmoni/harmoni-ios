@@ -9,10 +9,29 @@ import SwiftUI
 
 class NowPlayingManager: ObservableObject {
     @Published var isPlaying: Bool = false
-    @Published var track: Track? {
+    @Published var artistName: String?
+    @Published var song: SongDB? {
         didSet {
-            guard let url = track?.url else { return }
+            guard let path = song?.filePath else { return }
+            guard let url = URL(string: path) else { return }
+            getArtistName()
+            isPlaying = true
             AudioManager.shared.startAudio(url: url)
+        }
+    }
+    private let database: DBServiceProviding = DBService()
+    
+    private func getArtistName() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let artistID = song?.artistID else { return }
+            guard let artistUUID = UUID(uuidString: artistID) else { return }
+            do {
+                let artist = try await database.getArtist(with: artistUUID)
+                artistName = artist?.name
+            } catch {
+                dump(error)
+            }
         }
     }
 }
@@ -26,21 +45,22 @@ struct NowPlayingBar: View {
     @StateObject var viewModel = NowPlayingViewModel()
     
     var body: some View {
-        if let track = nowPlayingManager.track {
+        if let name = nowPlayingManager.song?.name {
             HStack {
-                Text(track.name)
+                Text(name)
                 Spacer()
                 Button {
                     nowPlayingManager.isPlaying.toggle()
                     nowPlayingManager.isPlaying
-                    ? AudioManager.shared.pause()
-                    : AudioManager.shared.play()
+                    ? AudioManager.shared.play()
+                    : AudioManager.shared.pause()
                 } label: {
                     Image(
                         systemName: nowPlayingManager.isPlaying
-                        ? "play.fill"
-                        : "pause.fill"
+                        ? "pause.fill"
+                        : "play.fill"
                     )
+                    .tint(.primary)
                 }
             }
             .contentShape(Rectangle())
@@ -50,9 +70,14 @@ struct NowPlayingBar: View {
             .sheet(isPresented: $viewModel.isPresentingSongDetail) {
                 SongDetailView(
                     viewModel: SongDetailViewModel(
-                        fileURL: nowPlayingManager.track?.url
+                        song: nowPlayingManager.song
                     )
                 )
+            }
+            .onAppear() {
+                AudioManager.shared.onSongFinished = {
+                    nowPlayingManager.isPlaying = false
+                }
             }
         } else {
             Text("Nothing playing")

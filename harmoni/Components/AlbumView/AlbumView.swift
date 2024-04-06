@@ -35,15 +35,11 @@ struct AlbumView: View {
         List(selection: $viewModel.selectedSongs) {
             Section {
                 ForEach($viewModel.songs) { song in
-                    HStack(alignment: .center, spacing: 16) {
-                        Text("\(song.wrappedValue.ordinal + 1)").foregroundStyle(.gray)
-                        Text(song.wrappedValue.name ?? "Song title")
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        nowPlayingManager.track = song.wrappedValue.toTrack()
-                    }
+                    SongCellView(
+                        viewModel: SongCellViewModel(
+                            song: song.wrappedValue
+                        )
+                    )
                     .listRowBackground(Color(.secondarySystemGroupedBackground))
                 }
             } header: {
