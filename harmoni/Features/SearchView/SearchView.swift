@@ -24,7 +24,8 @@ struct SearchView: View {
         }
         .searchable(
             text: $viewModel.searchString,
-            placement: .navigationBarDrawer(displayMode: .always)
+            placement: .navigationBarDrawer(displayMode: .always), 
+            prompt: Text("Artists, Songs, Albums, and #Tags")
         )
         .refreshable {
             await viewModel.getLatestSongs(force: true)
@@ -32,6 +33,22 @@ struct SearchView: View {
         .task {
             await viewModel.getLatestSongs()
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    viewModel.isShowingInfoPopover.toggle()
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                .popover(isPresented: $viewModel.isShowingInfoPopover) {
+                    Text("Search Tags by prefixing with # sign. For example, #jazz will search for songs tagged with 'jazz'.")
+                        .font(.caption)
+                        .padding()
+                        .presentationCompactAdaptation(.popover)
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

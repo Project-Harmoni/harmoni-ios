@@ -31,12 +31,22 @@ struct SongDetailView: View {
         .presentationDragIndicator(.visible)
         .background(
             ZStack {
-                CoverArtView(
-                    imagePath: viewModel.song?.coverImagePath,
-                    placeholderName: "music.note",
-                    size: size.width,
-                    cornerRadius: 8
-                )
+                if let coverImagePath = viewModel.song?.coverImagePath {
+                    AsyncImage(url: URL(string: coverImagePath)) { image in
+                        switch image {
+                        case .empty:
+                            EmptyView()
+                        case .success(let image):
+                            image.resizable()
+                        case .failure(_):
+                            EmptyView()
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                } else {
+                    EmptyView()
+                }
                 
                 Rectangle()
                     .foregroundStyle(.clear)

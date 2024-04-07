@@ -5,12 +5,36 @@
 //  Created by Kyle Stokes on 4/6/24.
 //
 
+import Combine
 import Foundation
+
+struct SearchResults {
+    var songs: [Song]
+    var albums: [AlbumDB]
+    var artists: [ArtistDB]
+    var tags: [TagDB]
+}
 
 class SearchViewModel: ObservableObject {
     @MainActor @Published var latestSongs: [Song] = []
+    @Published var isShowingInfoPopover: Bool = false
     @Published var searchString: String = ""
     private let database: DBServiceProviding = DBService()
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init() {
+        $searchString
+            .debounce(for: 2, scheduler: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] query in
+                guard let self else { return }
+                Task {
+                    await self.search(query)
+                }
+            }
+            .store(in: &cancellables)
+        
+    }
     
     @MainActor
     func getLatestSongs(force: Bool = false) async {
@@ -38,5 +62,10 @@ class SearchViewModel: ObservableObject {
             dump(error)
             return nil
         }
+    }
+    
+    @MainActor
+    func search(_ query: String) async {
+        
     }
 }

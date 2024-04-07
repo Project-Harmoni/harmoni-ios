@@ -16,7 +16,7 @@ class AlbumViewModel: ObservableObject {
     @MainActor @Published var isPresentingDeleteConfirm: Bool = false
     @MainActor @Published var isPresentingEdit: Bool = false
     @MainActor @Published var isPresentingViewTags: Bool = false
-    @MainActor @Published var isLoading: Bool = false
+    @MainActor @Published var isLoading: Bool = true
     @MainActor @Published var isDeleting: Bool = false
     @MainActor @Published var isDeleted: Bool = false
     @MainActor @Published var isError: Bool = false
@@ -38,7 +38,7 @@ class AlbumViewModel: ObservableObject {
         do {
             guard let albumID = album.id else { return isError.toggle() }
             guard let artistName = await artistName else { return isError.toggle() }
-            isLoading.toggle()
+            isLoading = true
             let songsOnAlbum = try await database.songsOnAlbum(with: albumID)
                 .sorted(by: { $0.ordinal < $1.ordinal })
             songs = songsOnAlbum.map {
@@ -48,7 +48,7 @@ class AlbumViewModel: ObservableObject {
         } catch {
             dump(error)
             isError.toggle()
-            isLoading.toggle()
+            isLoading = false
         }
     }
     
