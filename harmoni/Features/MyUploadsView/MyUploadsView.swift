@@ -20,11 +20,6 @@ struct MyUploadsView: View {
                 viewModel.currentUser = currentUser
                 await viewModel.getAlbums()
             }
-            .onAppear() {
-                Task {
-                    await viewModel.reload()
-                }
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     if !viewModel.albums.isEmpty {
@@ -91,7 +86,12 @@ struct MyUploadsView: View {
                 NavigationLink {
                     AlbumView(
                         viewModel: AlbumViewModel(
-                            album: album
+                            album: album,
+                            onDelete: {
+                                Task {
+                                    await viewModel.reload()
+                                }
+                            }
                         )
                     )
                 } label: {

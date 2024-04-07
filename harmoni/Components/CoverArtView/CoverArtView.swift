@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct CoverArtView: View {
-    let imagePath: String?
+    var imagePath: String?
     let placeholderName: String
-    let size: CGFloat
+    var size: CGFloat = .zero
     let cornerRadius: CGFloat
     var body: some View {
         coverArt

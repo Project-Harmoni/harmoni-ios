@@ -11,6 +11,7 @@ struct SongDetailView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @ObservedObject var viewModel: SongDetailViewModel
     @StateObject var audioManager = AudioManager.shared
+    @State private var trackBarSize: CGSize = .zero
     @State private var size: CGSize = .zero
     
     var body: some View {
@@ -33,7 +34,7 @@ struct SongDetailView: View {
                 CoverArtView(
                     imagePath: viewModel.song?.coverImagePath,
                     placeholderName: "music.note",
-                    size: .infinity,
+                    size: size.width,
                     cornerRadius: 8
                 )
                 
@@ -42,6 +43,9 @@ struct SongDetailView: View {
                     .background(.regularMaterial)
             }
         )
+        .readSize {
+            size = $0
+        }
     }
     
     private var coverArtContainer: some View {
@@ -77,7 +81,7 @@ struct SongDetailView: View {
                 Rectangle()
                     .frame(height: 8)
                     .foregroundStyle(.gray.opacity(0.6))
-                    .frame(width: size.width * audioManager.elapsedTimeDouble)
+                    .frame(width: trackBarSize.width * audioManager.elapsedTimeDouble)
                     .clipShape(
                         UnevenRoundedRectangle(
                             cornerRadii: .init(
@@ -92,7 +96,7 @@ struct SongDetailView: View {
                 GeometryReader { proxy in
                     Color.clear
                         .onAppear() {
-                            size = proxy.size
+                            trackBarSize = proxy.size
                         }
                 }
             )

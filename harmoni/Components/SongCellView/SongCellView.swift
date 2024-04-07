@@ -7,11 +7,23 @@
 
 import SwiftUI
 
+struct Song: Identifiable {
+    let id = UUID()
+    var details: SongDB
+    var artistName: String
+}
+
 class SongCellViewModel: ObservableObject {
-    var song: SongDB
+    private let database: DBServiceProviding = DBService()
+    var song: Song
+    var isDetailed: Bool = true
     
-    init(song: SongDB) {
+    init(
+        song: Song,
+        isDetailed: Bool = false
+    ) {
         self.song = song
+        self.isDetailed = isDetailed
     }
 }
 
@@ -21,13 +33,29 @@ struct SongCellView: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
-            Text("\(viewModel.song.ordinal + 1)").foregroundStyle(.gray)
-            Text(viewModel.song.name ?? "Song title")
+            if !viewModel.isDetailed {
+                Text("\(viewModel.song.details.ordinal + 1)").foregroundStyle(.gray)
+            }
+            if viewModel.isDetailed {
+                CoverArtView(
+                    imagePath: viewModel.song.details.coverImagePath,
+                    placeholderName: "music.note",
+                    size: 64,
+                    cornerRadius: 8
+                )
+            }
+            VStack(alignment: .leading) {
+                Text(viewModel.song.details.name ?? "Song title")
+                if viewModel.isDetailed {
+                    Text(viewModel.song.artistName)
+                        .foregroundStyle(.gray)
+                }
+            }
             Spacer()
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            nowPlayingManager.song = viewModel.song
+            nowPlayingManager.song = viewModel.song.details
         }
     }
 }
@@ -35,7 +63,7 @@ struct SongCellView: View {
 #Preview {
     SongCellView(
         viewModel: SongCellViewModel(
-            song: .mock
+            song: .init(details: .mock, artistName: "Test Artist")
         )
     )
     .environmentObject(NowPlayingManager())

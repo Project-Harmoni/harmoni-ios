@@ -40,4 +40,8 @@ class AppContainerViewModel: ObservableObject {
             self?.currentUser = await self?.userProvider.currentUser
         }
     }
+    
+    lazy var nowPlayingBar: NowPlayingBar = {
+        NowPlayingBar()
+    }()
 }

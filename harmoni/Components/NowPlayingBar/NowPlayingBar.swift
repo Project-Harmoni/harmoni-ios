@@ -10,11 +10,13 @@ import SwiftUI
 class NowPlayingManager: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var artistName: String?
+    @Published var coverImagePath: String?
     @Published var song: SongDB? {
         didSet {
             guard let path = song?.filePath else { return }
             guard let url = URL(string: path) else { return }
             getArtistName()
+            coverImagePath = song?.coverImagePath
             isPlaying = true
             AudioManager.shared.startAudio(url: url)
         }

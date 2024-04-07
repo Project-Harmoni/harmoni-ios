@@ -20,54 +20,47 @@ struct AppContainerView: View {
     
     var body: some View {
         TabView {
-            AccountView()
+            Group {
+                AccountView()
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("Account")
+                    }
+                
+                NavigationStack {
+                    Text("Library")
+                        .navigationTitle("Library")
+                }
                 .tabItem {
-                    Image(systemName: "person.crop.circle")
-                    Text("Account")
+                    Image(systemName: "music.note")
+                    Text("Library")
                 }
-                .toolbar {
-                    ToolbarItem(placement: .bottomBar) {
-                        if nowPlayingManager.song != nil {
-                            NowPlayingBar()
-                        }
-                    }
+                
+                NavigationStack {
+                    SearchView()
+                        .navigationTitle("Search")
                 }
-            
-            NavigationStack {
-                Text("Library")
-                    .navigationTitle("Library")
-            }
-            .tabItem {
-                Image(systemName: "music.note")
-                Text("Library")
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("Search")
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    if nowPlayingManager.song != nil {
-                        NowPlayingBar()
-                    }
-                }
-            }
-            
-            NavigationStack {
-                Text("Search")
-                    .navigationTitle("Search")
-            }
-            .tabItem {
-                Image(systemName: "magnifyingglass")
-                Text("Search")
-            }
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    if nowPlayingManager.song != nil {
-                        NowPlayingBar()
-                    }
+                    nowPlayingBar
                 }
             }
         }
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.currentUser, viewModel.currentUser)
+    }
+    
+    @ViewBuilder
+    private var nowPlayingBar: some View {
+        if nowPlayingManager.song != nil {
+            viewModel.nowPlayingBar
+        }
     }
 }
 

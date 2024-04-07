@@ -11,8 +11,8 @@ class AlbumViewModel: ObservableObject {
     let database: DBServiceProviding = DBService()
     let storage: StorageProviding = StorageService()
     let album: AlbumDB
-    @MainActor @Published var songs: [SongDB] = []
-    @MainActor @Published var selectedSongs: Set<SongDB.ID> = []
+    @MainActor @Published var songs: [Song] = []
+    @MainActor @Published var selectedSongs: Set<Song.ID> = []
     @MainActor @Published var isPresentingDeleteConfirm: Bool = false
     @MainActor @Published var isPresentingEdit: Bool = false
     @MainActor @Published var isPresentingViewTags: Bool = false
@@ -21,9 +21,11 @@ class AlbumViewModel: ObservableObject {
     @MainActor @Published var isDeleted: Bool = false
     @MainActor @Published var isError: Bool = false
     var allTagsViewModel: AllTagsViewModel
+    var onDelete: (() -> Void)?
     
-    init(album: AlbumDB) {
+    init(album: AlbumDB, onDelete: (() -> Void)? = nil) {
         self.album = album
+        self.onDelete = onDelete
         self.allTagsViewModel = AllTagsViewModel(
             albumID: album.id,
             isReadOnly: true
@@ -35,9 +37,13 @@ class AlbumViewModel: ObservableObject {
         guard songs.isEmpty else { return }
         do {
             guard let albumID = album.id else { return isError.toggle() }
+            guard let artistName = await artistName else { return isError.toggle() }
             isLoading.toggle()
-            songs = try await database.songsOnAlbum(with: albumID)
+            let songsOnAlbum = try await database.songsOnAlbum(with: albumID)
                 .sorted(by: { $0.ordinal < $1.ordinal })
+            songs = songsOnAlbum.map {
+                .init(details: $0, artistName: artistName)
+            }
             isLoading.toggle()
         } catch {
             dump(error)
@@ -46,11 +52,25 @@ class AlbumViewModel: ObservableObject {
         }
     }
     
+    var artistName: String? {
+        get async {
+            guard let artistUUID = UUID(uuidString: album.artistID) else { return nil }
+            do {
+                let artist = try await database.getArtist(with: artistUUID)
+                return artist?.name
+            } catch {
+                dump(error)
+                return nil
+            }
+        }
+    }
+    
     @MainActor
     func deleteAlbum() async {
         do {
             isDeleting.toggle()
             try await database.deleteAlbum(with: album.id, in: storage)
+            onDelete?()
             isDeleting.toggle()
             isDeleted.toggle()
         } catch {

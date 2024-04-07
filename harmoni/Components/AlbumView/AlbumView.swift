@@ -12,12 +12,14 @@ struct AlbumView: View {
     @EnvironmentObject  var nowPlayingManager: NowPlayingManager
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AlbumViewModel
+    @State private var artistName: String?
     
     var body: some View {
         albumContainer
             .task {
                 await viewModel.getAlbum()
                 await viewModel.allTagsViewModel.getTags()
+                artistName = await viewModel.artistName
             }
     }
     
@@ -80,7 +82,7 @@ struct AlbumView: View {
                 UploadView(
                     viewModel: UploadViewModel(
                         album: viewModel.album,
-                        songs: viewModel.songs,
+                        songs: viewModel.songs.map { $0.details },
                         tags: viewModel.tags
                     )
                 )
@@ -147,9 +149,12 @@ struct AlbumView: View {
     
     @ViewBuilder
     private var albumInfo: some View {
-        if let albumTitle = viewModel.albumTitle {
+        if let albumTitle = viewModel.albumTitle, let artistName {
             VStack(alignment: .center) {
-                Text(albumTitle).bold()
+                Text(albumTitle)
+                    .bold()
+                Text(artistName)
+                    .foregroundStyle(.secondary)
             }
             .padding(.top, 4)
         }

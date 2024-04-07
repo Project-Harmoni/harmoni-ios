@@ -22,6 +22,8 @@ protocol DBServiceProviding {
     func albumsByArtist(with id: UUID) async throws -> [AlbumDB]
     /// Get songs on album
     func songsOnAlbum(with id: Int8) async throws -> [SongDB]
+    /// Get latest 20 songs
+    func getLatestSongs() async throws -> [SongDB]
     /// Get tags on album
     func tagsOnAlbum(with id: Int8) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
@@ -97,6 +99,17 @@ struct DBService: DBServiceProviding {
     
     func albumsByArtist(with id: UUID) async throws -> [AlbumDB] {
         return try await Supabase.shared.client.database.albumsByArtist(with: id)
+    }
+    
+    func getLatestSongs() async throws -> [SongDB] {
+        let response = try await Supabase.shared.client.database
+            .songs
+            .select()
+            .order(SongDB.CodingKeys.createdAt.rawValue, ascending: false)
+            .limit(20)
+            .execute()
+        
+        return try JSONDecoder().decode([SongDB].self, from: response.data)
     }
     
     func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
