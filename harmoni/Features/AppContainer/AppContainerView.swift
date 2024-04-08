@@ -36,14 +36,11 @@ struct AppContainerView: View {
                     Text("Library")
                 }
                 
-                NavigationStack {
-                    SearchView()
-                        .navigationTitle("Search")
-                }
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                    Text("Search")
-                }
+                SearchView()
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {

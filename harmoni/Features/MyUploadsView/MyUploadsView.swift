@@ -83,39 +83,18 @@ struct MyUploadsView: View {
     private var albumList: some View {
         List(selection: $viewModel.selectedAlbums) {
             ForEach(viewModel.albums) { album in
-                NavigationLink {
-                    AlbumView(
-                        viewModel: AlbumViewModel(
-                            album: album,
-                            onDelete: {
-                                Task {
-                                    await viewModel.reload()
-                                }
+                AlbumCellView(
+                    viewModel: AlbumViewModel(
+                        album: album,
+                        onDelete: {
+                            Task {
+                                await viewModel.reload()
                             }
-                        )
-                    )
-                } label: {
-                    HStack(spacing: 16) {
-                        coverArt(for: album)
-                        VStack(alignment: .leading) {
-                            Text(album.name ?? "Album title").bold()
-                            Text(album.yearReleased ?? "Year")
-                                .foregroundStyle(.gray)
                         }
-                    }
-                }
+                    )
+                )
             }
         }
-    }
-    
-    @ViewBuilder
-    private func coverArt(for album: AlbumDB) -> some View {
-        CoverArtView(
-            imagePath: album.coverImagePath,
-            placeholderName: "music.note",
-            size: 64,
-            cornerRadius: 4
-        )
     }
     
     @ViewBuilder

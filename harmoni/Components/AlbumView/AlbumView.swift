@@ -9,9 +9,8 @@ import AlertToast
 import SwiftUI
 
 struct AlbumView: View {
-    @EnvironmentObject  var nowPlayingManager: NowPlayingManager
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var viewModel: AlbumViewModel
+    @StateObject var viewModel: AlbumViewModel
     @State private var artistName: String?
     
     var body: some View {
@@ -34,12 +33,12 @@ struct AlbumView: View {
     }
     
     private var album: some View {
-        List(selection: $viewModel.selectedSongs) {
+        List {
             Section {
-                ForEach($viewModel.songs) { song in
+                ForEach(viewModel.songs) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
-                            song: song.wrappedValue
+                            song: song
                         )
                     )
                     .listRowBackground(Color(.secondarySystemGroupedBackground))

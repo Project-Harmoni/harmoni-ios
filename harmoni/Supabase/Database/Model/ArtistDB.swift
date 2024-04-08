@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ArtistDB: Codable {
+struct ArtistDB: Codable, Identifiable {
     var id: UUID
     var name: String?
     var formationDate: Date?

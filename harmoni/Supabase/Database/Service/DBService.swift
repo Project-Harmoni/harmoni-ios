@@ -8,26 +8,36 @@
 import Foundation
 
 protocol DBServiceProviding {
+    // Get
+    
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
     /// Get artist with `UUID`
     func getArtist(with id: UUID) async throws -> ArtistDB?
+    /// Get artist name for song
+    func getArtistNameForSong(_ song: SongDB) async throws -> String?
     /// Get listener with `UUID`
     func getListener(with id: UUID) async throws -> ListenerDB?
     /// Get tag category
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB?
     /// Get all tag categories
     func getTagCategories() async throws -> [TagCategoryDB]?
+    /// Get all tags in category
+    func tags(in category: TagCategory) async throws -> [TagDB]
+    /// Get songs with tags
+    func songsWithTags(_ tags: [String]) async throws -> [Song]
     /// Get albums by artist
     func albumsByArtist(with id: UUID) async throws -> [AlbumDB]
     /// Get songs on album
     func songsOnAlbum(with id: Int8) async throws -> [SongDB]
     /// Get latest 20 songs
-    func getLatestSongs() async throws -> [SongDB]
+    func getLatestSongs() async throws -> [Song]
     /// Get tags on album
     func tagsOnAlbum(with id: Int8) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
+    /// Search by query (albums, artists, songs)
+    func search(with query: SearchQuery) async throws -> SearchResults
     
     // Upsert
     
@@ -85,6 +95,10 @@ struct DBService: DBServiceProviding {
         return try await Supabase.shared.client.database.artist(with: id)
     }
     
+    func getArtistNameForSong(_ song: SongDB) async throws -> String? {
+        return try await Supabase.shared.client.database.artistNameForSong(song)
+    }
+    
     func getListener(with id: UUID) async throws -> ListenerDB? {
         return try await Supabase.shared.client.database.listener(with: id)
     }
@@ -97,11 +111,19 @@ struct DBService: DBServiceProviding {
         return try await Supabase.shared.client.database.tagCategories()
     }
     
+    func tags(in category: TagCategory) async throws -> [TagDB] {
+        return try await Supabase.shared.client.database.tags(in: category)
+    }
+    
+    func songsWithTags(_ tags: [String]) async throws -> [Song] {
+        return try await Supabase.shared.client.database.songsWithTags(tags)
+    }
+    
     func albumsByArtist(with id: UUID) async throws -> [AlbumDB] {
         return try await Supabase.shared.client.database.albumsByArtist(with: id)
     }
     
-    func getLatestSongs() async throws -> [SongDB] {
+    func getLatestSongs() async throws -> [Song] {
         let response = try await Supabase.shared.client.database
             .songs
             .select()
@@ -109,7 +131,13 @@ struct DBService: DBServiceProviding {
             .limit(20)
             .execute()
         
-        return try JSONDecoder().decode([SongDB].self, from: response.data)
+        let songs = try JSONDecoder().decode([SongDB].self, from: response.data)
+        var latest: [Song] = []
+        for song in songs {
+            guard let artistName = try await getArtistNameForSong(song) else { continue }
+            latest.append(.init(details: song, artistName: artistName))
+        }
+        return latest
     }
     
     func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
@@ -125,6 +153,12 @@ struct DBService: DBServiceProviding {
         let user = try await Supabase.shared.client.database.user(with: id)
         guard let user else { return false }
         return user.birthday != nil && user.type != nil
+    }
+    
+    /// Search for results based on query.
+    /// Return artists, songs, and albums that match.
+    func search(with query: SearchQuery) async throws -> SearchResults {
+        return try await Supabase.shared.client.database.search(with: query)
     }
 }
 

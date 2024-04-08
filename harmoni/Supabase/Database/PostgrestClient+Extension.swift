@@ -114,6 +114,11 @@ extension PostgrestClient {
         return artists.first
     }
     
+    func artistNameForSong(_ song: SongDB) async throws -> String? {
+        guard let artistUUID = UUID(uuidString: song.artistID) else { return nil }
+        return try await artist(with: artistUUID)?.name
+    }
+    
     func tagCategory(with category: TagCategory) async throws -> TagCategoryDB? {
         let tagCategories: [TagCategoryDB] = try await tagCategories
             .select()
@@ -239,6 +244,105 @@ extension PostgrestClient {
         
         return Array(tagSet)
     }
+    
+    /// Get tags contained in query
+    func tags(in query: [String]) async throws -> [TagDB] {
+        guard query.isNotEmpty else { return [] }
+        guard let first = query.first, first.isNotEmpty else { return [] }
+        return try await tags
+            .select()
+            .ilike(TagDB.CodingKeys.name.rawValue, value: "*\(query.joined(separator: " "))*")
+            .execute()
+            .value
+    }
+    
+    /// Get tags in category
+    func tags(in category: TagCategory) async throws -> [TagDB] {
+        let categories = try await tagCategories()
+        let categoryID = categories?
+            .filter({ $0.name == category.rawValue })
+            .first?.id
+        guard let categoryID else { return [] }
+        return try await tags
+            .select()
+            .eq(TagDB.CodingKeys.categoryID.rawValue, value: Int(categoryID))
+            .execute()
+            .value
+    }
+    
+    /// Get 5 songs with tag(s)
+    func songsWithTags(_ tags: [String]) async throws -> [Song] {
+        let matchingTags = try await self.tags(in: tags)
+        let matchingTagIDs = matchingTags
+            .compactMap { $0.id }
+            .compactMap { Int($0) }
+        let songID = SongTagDB.CodingKeys.songID.rawValue
+        let tagID = SongTagDB.CodingKeys.tagID.rawValue
+        let taggedSongs: [SongDB] = try await songs
+            .innerJoinIn(
+                table: .songTag,
+                joinedColumn: songID,
+                inColumn: tagID,
+                inValue: matchingTagIDs
+            )
+            .limit(5)
+            .execute()
+            .value
+        
+        var songsWithTags: [Song] = []
+        for song in taggedSongs {
+            let artistID = song.artistID
+            guard let artistUUID = UUID(uuidString: artistID) else { continue }
+            let artist = try await artist(with: artistUUID)
+            if let artistName = artist?.name {
+                songsWithTags.append(.init(details: song, artistName: artistName))
+            }
+        }
+        return songsWithTags
+    }
+    
+    /// Search by query
+    func search(with query: SearchQuery) async throws -> SearchResults {
+        let songsFromSearch: [SongDB] = try await songs
+            .select()
+            .ilike(SongDB.CodingKeys.name.rawValue, value: query.value)
+            .limit(5)
+            .execute()
+            .value
+        
+        var songs: [Song] = []
+        for song in songsFromSearch {
+            let artistID = song.artistID
+            guard let artistUUID = UUID(uuidString: artistID) else { continue }
+            let artist = try await artist(with: artistUUID)
+            if let artistName = artist?.name {
+                songs.append(.init(details: song, artistName: artistName))
+            }
+        }
+        
+        let songsWithTags: [Song] = try await self.songsWithTags(query.tags)
+        
+        let albums: [AlbumDB] = try await albums
+            .select()
+            .ilike(AlbumDB.CodingKeys.name.rawValue, value: query.value)
+            .limit(5)
+            .execute()
+            .value
+        
+        let artists: [ArtistDB] = try await artists
+            .select()
+            .ilike(ArtistDB.CodingKeys.name.rawValue, value: query.value)
+            .limit(5)
+            .execute()
+            .value
+        
+        return .init(
+            songs: songs,
+            songsWithTags: songsWithTags,
+            albums: albums,
+            artists: artists
+        )
+    }
 }
 
 fileprivate extension PostgrestQueryBuilder {
@@ -255,5 +359,16 @@ fileprivate extension PostgrestQueryBuilder {
         try await self
             .innerJoin(table: table, column: joinedColumn)
             .eq("\(table.rawValue).\(equalColumn)", value: equalValue)
+    }
+    
+    func innerJoinIn(
+        table: DatabaseTables,
+        joinedColumn: String,
+        inColumn: String,
+        inValue: [URLQueryRepresentable]
+    ) async throws -> PostgrestFilterBuilder {
+        try await self
+            .innerJoin(table: table, column: joinedColumn)
+            .in("\(table.rawValue).\(inColumn)", value: inValue)
     }
 }
