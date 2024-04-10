@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AllTagsView: View {
     @EnvironmentObject private var uploadStore: UploadStore
-    @ObservedObject var viewModel: AllTagsViewModel = AllTagsViewModel()
+    @ObservedObject var viewModel: AllTagsViewModel
     
     var body: some View {
         Section {
@@ -45,15 +45,5 @@ struct AllTagsView: View {
         .task {
             await viewModel.getTags()
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        List {
-            AllTagsView()
-                .navigationTitle("Tags")
-        }
-        .listSectionSpacing(0)
     }
 }

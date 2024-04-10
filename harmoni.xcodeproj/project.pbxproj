@@ -56,6 +56,8 @@
 		B58FC7C12B9E81B5006F5BDF /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58FC7C02B9E81B5006F5BDF /* SignUpViewModel.swift */; };
 		B58FC7C42B9E92F9006F5BDF /* SignUpPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58FC7C32B9E92F9006F5BDF /* SignUpPath.swift */; };
 		B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58FC7C52B9E930A006F5BDF /* SignUpRole.swift */; };
+		B58FF3FC2BC4A82F006BDBD1 /* SearchFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58FF3FB2BC4A82F006BDBD1 /* SearchFilterView.swift */; };
+		B58FF3FE2BC4A83C006BDBD1 /* SearchFilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58FF3FD2BC4A83C006BDBD1 /* SearchFilterViewModel.swift */; };
 		B59426A92BBB6F0E00A072F9 /* NowPlayingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59426A82BBB6F0E00A072F9 /* NowPlayingBar.swift */; };
 		B5ADE8E52B9D1707009988E5 /* harmoniApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ADE8E42B9D1707009988E5 /* harmoniApp.swift */; };
 		B5ADE8E72B9D1707009988E5 /* AppContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ADE8E62B9D1707009988E5 /* AppContainerView.swift */; };
@@ -163,6 +165,8 @@
 		B58FC7C02B9E81B5006F5BDF /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		B58FC7C32B9E92F9006F5BDF /* SignUpPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPath.swift; sourceTree = "<group>"; };
 		B58FC7C52B9E930A006F5BDF /* SignUpRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpRole.swift; sourceTree = "<group>"; };
+		B58FF3FB2BC4A82F006BDBD1 /* SearchFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFilterView.swift; sourceTree = "<group>"; };
+		B58FF3FD2BC4A83C006BDBD1 /* SearchFilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFilterViewModel.swift; sourceTree = "<group>"; };
 		B59426A82BBB6F0E00A072F9 /* NowPlayingBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingBar.swift; sourceTree = "<group>"; };
 		B5ADE8E12B9D1707009988E5 /* harmoni.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = harmoni.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5ADE8E42B9D1707009988E5 /* harmoniApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = harmoniApp.swift; sourceTree = "<group>"; };
@@ -334,6 +338,7 @@
 		B51AEFC82BC206EA001F0F53 /* SearchView */ = {
 			isa = PBXGroup;
 			children = (
+				B58FF3FA2BC4A824006BDBD1 /* FilterView */,
 				B51AEFD22BC34F82001F0F53 /* Model */,
 				B51AEFC92BC20D45001F0F53 /* SearchView.swift */,
 				B51AEFD02BC25432001F0F53 /* SearchViewModel.swift */,
@@ -532,6 +537,15 @@
 				B58FC7C52B9E930A006F5BDF /* SignUpRole.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B58FF3FA2BC4A824006BDBD1 /* FilterView */ = {
+			isa = PBXGroup;
+			children = (
+				B58FF3FB2BC4A82F006BDBD1 /* SearchFilterView.swift */,
+				B58FF3FD2BC4A83C006BDBD1 /* SearchFilterViewModel.swift */,
+			);
+			path = FilterView;
 			sourceTree = "<group>";
 		};
 		B59426A72BBB6EEB00A072F9 /* NowPlayingBar */ = {
@@ -907,12 +921,14 @@
 				B51AEFD12BC25432001F0F53 /* SearchViewModel.swift in Sources */,
 				B5B060332BB9D02A00AD6F40 /* AllTagsViewSheet.swift in Sources */,
 				B5B060222BB799E300AD6F40 /* AlbumView.swift in Sources */,
+				B58FF3FC2BC4A82F006BDBD1 /* SearchFilterView.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B51AEFD42BC34F8B001F0F53 /* SearchResults.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
 				B518F5492BA63C00002CDCB7 /* AudioManager.swift in Sources */,
 				B5B060302BB904E200AD6F40 /* AllTagsView.swift in Sources */,
 				B5B0602B2BB8C78600AD6F40 /* CoverArtView.swift in Sources */,
+				B58FF3FE2BC4A83C006BDBD1 /* SearchFilterViewModel.swift in Sources */,
 				B5EC13FD2B9FE7CC00F1CCA8 /* PostgrestClient+Extension.swift in Sources */,
 				B58FC79D2B9D573A006F5BDF /* AuthManager.swift in Sources */,
 				B5ADE8E72B9D1707009988E5 /* AppContainerView.swift in Sources */,

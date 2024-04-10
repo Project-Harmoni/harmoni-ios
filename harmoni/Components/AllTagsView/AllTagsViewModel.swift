@@ -13,37 +13,30 @@ class AllTagsViewModel: ObservableObject {
     let albumID: Int8?
     var tags: [Tag] = []
 
-    @Published var genreTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .genres
-    )
-    @Published var moodTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .moods
-    )
-    @Published var instrumentsTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .instruments
-    )
-    @Published var miscTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .miscellaneous
-    )
+    @Published var genreTagsViewModel: TagListViewModel
+    @Published var moodTagsViewModel: TagListViewModel
+    @Published var instrumentsTagsViewModel: TagListViewModel
+    @Published var miscTagsViewModel: TagListViewModel
     
     init(
-        genreTags: [Tag] = [],
-        moodTags: [Tag] = [],
-        instrumentTags: [Tag] = [],
-        miscTags: [Tag] = [],
+        genreTags: TagListViewModel = .init(category: .genres),
+        moodTags: TagListViewModel = .init(category: .moods),
+        instrumentTags: TagListViewModel = .init(category: .instruments),
+        miscTags: TagListViewModel = .init(category: .miscellaneous),
         albumID: Int8? = nil,
         isReadOnly: Bool = false
     ) {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
-        self.genreTagsViewModel.configure(with: genreTags, isReadOnly: isReadOnly)
-        self.moodTagsViewModel.configure(with: moodTags, isReadOnly: isReadOnly)
-        self.instrumentsTagsViewModel.configure(with: instrumentTags, isReadOnly: isReadOnly)
-        self.miscTagsViewModel.configure(with: miscTags, isReadOnly: isReadOnly)
+        self.genreTagsViewModel = genreTags
+        self.moodTagsViewModel = moodTags
+        self.instrumentsTagsViewModel = instrumentTags
+        self.miscTagsViewModel = miscTags
+        
+        self.genreTagsViewModel.isReadOnly = isReadOnly
+        self.moodTagsViewModel.isReadOnly = isReadOnly
+        self.instrumentsTagsViewModel.isReadOnly = isReadOnly
+        self.miscTagsViewModel.isReadOnly = isReadOnly
     }
     
     var allTagsEmpty: Bool {

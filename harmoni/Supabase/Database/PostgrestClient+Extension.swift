@@ -246,14 +246,45 @@ extension PostgrestClient {
     }
     
     /// Get tags contained in query
-    func tags(in query: [String]) async throws -> [TagDB] {
+    private func tags(in query: [String]) async throws -> [TagDB] {
         guard query.isNotEmpty else { return [] }
-        guard let first = query.first, first.isNotEmpty else { return [] }
-        return try await tags
-            .select()
-            .ilike(TagDB.CodingKeys.name.rawValue, value: "*\(query.joined(separator: " "))*")
-            .execute()
-            .value
+        var tagsFromQuery: [TagDB] = []
+        for name in query {
+            if name.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty {
+                let tagsFromDB: [TagDB] = try await self.tags
+                    .select()
+                    .ilike(TagDB.CodingKeys.name.rawValue, value: "*\(name)*")
+                    .execute()
+                    .value
+                
+                for tag in tagsFromDB {
+                    tagsFromQuery.append(tag)
+                }
+            }
+        }
+        return tagsFromQuery
+    }
+    
+    /// Get tags contained in query
+    private func tags(in query: [String], with category: TagCategory) async throws -> [TagDB] {
+        guard query.isNotEmpty else { return [] }
+        guard let categoryID = try await tagCategory(with: category)?.id else { return [] }
+        var tagsFromQuery: [TagDB] = []
+        for name in query {
+            if name.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty {
+                let tagsFromDB: [TagDB] = try await self.tags
+                    .select()
+                    .ilike(TagDB.CodingKeys.name.rawValue, value: "*\(name)*")
+                    .eq(TagDB.CodingKeys.categoryID.rawValue, value: Int(categoryID))
+                    .execute()
+                    .value
+                
+                for tag in tagsFromDB {
+                    tagsFromQuery.append(tag)
+                }
+            }
+        }
+        return tagsFromQuery
     }
     
     /// Get tags in category
@@ -271,8 +302,13 @@ extension PostgrestClient {
     }
     
     /// Get 5 songs with tag(s)
-    func songsWithTags(_ tags: [String]) async throws -> [Song] {
-        let matchingTags = try await self.tags(in: tags)
+    func songsWithTags(_ tags: [String], in category: TagCategory? = nil) async throws -> [Song] {
+        var matchingTags: [TagDB] = []
+        if let category {
+            matchingTags = try await self.tags(in: tags, with: category)
+        } else {
+            matchingTags = try await self.tags(in: tags)
+        }
         let matchingTagIDs = matchingTags
             .compactMap { $0.id }
             .compactMap { Int($0) }
@@ -301,7 +337,7 @@ extension PostgrestClient {
         return songsWithTags
     }
     
-    /// Search by query
+    /// General search by query
     func search(with query: SearchQuery) async throws -> SearchResults {
         let songsFromSearch: [SongDB] = try await songs
             .select()
@@ -320,7 +356,7 @@ extension PostgrestClient {
             }
         }
         
-        let songsWithTags: [Song] = try await self.songsWithTags(query.tags)
+        let songsWithTags: [Song] = try await self.songsWithTags(query.tagValue)
         
         let albums: [AlbumDB] = try await albums
             .select()
@@ -339,6 +375,74 @@ extension PostgrestClient {
         return .init(
             songs: songs,
             songsWithTags: songsWithTags,
+            albums: albums,
+            artists: artists
+        )
+    }
+    
+    /// Advanced search by query
+    func advancedSearch(with query: SearchQuery) async throws -> SearchResults {
+        var songs: [Song] = []
+        if query.isAdvancedSongTitleAvailable {
+            let songsFromSearch: [SongDB] = try await self.songs
+                .select()
+                .ilike(SongDB.CodingKeys.name.rawValue, value: query.advancedSongTitleValue)
+                .limit(5)
+                .execute()
+                .value
+            
+            for song in songsFromSearch {
+                let artistID = song.artistID
+                guard let artistUUID = UUID(uuidString: artistID) else { continue }
+                let artist = try await artist(with: artistUUID)
+                if let artistName = artist?.name {
+                    songs.append(.init(details: song, artistName: artistName))
+                }
+            }
+        }
+        
+        var genreSongs: [Song] = []
+        if query.genreTags.isNotEmpty {
+            genreSongs = try await self.songsWithTags(query.genreTagsQuery, in: .genres)
+        }
+        var moodSongs: [Song] = []
+        if query.moodTags.isNotEmpty {
+            moodSongs = try await self.songsWithTags(query.moodTagsQuery, in: .moods)
+        }
+        var instrumentsSongs: [Song] = []
+        if query.instrumentsTags.isNotEmpty {
+            instrumentsSongs = try await self.songsWithTags(query.instrumentsTagsQuery, in: .instruments)
+        }
+        var miscSongs: [Song] = []
+        if query.miscTags.isNotEmpty {
+            miscSongs = try await self.songsWithTags(query.miscTagsQuery, in: .miscellaneous)
+        }
+        
+        var albums: [AlbumDB] = []
+        if query.isAdvancedAlbumTitleAvailable {
+            albums = try await self.albums
+                .select()
+                .ilike(AlbumDB.CodingKeys.name.rawValue, value: query.advancedAlbumTitleValue)
+                .limit(5)
+                .execute()
+                .value
+        }
+        var artists: [ArtistDB] = []
+        if query.isAdvancedAlbumTitleAvailable {
+            artists = try await self.artists
+                .select()
+                .ilike(ArtistDB.CodingKeys.name.rawValue, value: query.advancedArtistNameValue)
+                .limit(5)
+                .execute()
+                .value
+        }
+        
+        return .init(
+            songs: songs,
+            genreTaggedSongs: genreSongs,
+            moodTaggedSongs: moodSongs,
+            instrumentTaggedSongs: instrumentsSongs,
+            miscTaggedSongs: miscSongs,
             albums: albums,
             artists: artists
         )

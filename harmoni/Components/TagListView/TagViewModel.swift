@@ -15,23 +15,27 @@ class TagListViewModel: ObservableObject {
     @Published var editedTagName: String = ""
     @Published var selectedTag: Tag?
     @Published var tags: [Tag] = []
+    var onChanged: (([Tag]) -> Void)?
     var isReadOnly: Bool
+    var isSearching: Bool = false
     let category: TagCategory
     
-    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false) {
+    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false, isSearching: Bool = false) {
         self.tags = tags
         self.category = category
         self.isReadOnly = isReadOnly
+        self.isSearching = isSearching
     }
     
-    func configure(with tags: [Tag], isReadOnly: Bool) {
+    func configure(with tags: [Tag], isReadOnly: Bool, isSearching: Bool) {
         self.tags = tags
         self.isReadOnly = isReadOnly
+        self.isSearching = isSearching
     }
     
     func createTag() {
         guard !newTagName.isEmpty else { return }
-        let tag = Tag(name: newTagName, category: category, createdAt: .now)
+        let tag = Tag(name: newTagName, category: category)
         tags.append(tag)
     }
     
@@ -49,7 +53,8 @@ class TagListViewModel: ObservableObject {
     }
     
     var createTagTitle: String {
-        "Create '\(category.rawValue.capitalized)' Tag"
+        let action = isSearching ? "Add" : "Create"
+        return "\(action) '\(category.rawValue.capitalized)' Tag"
     }
     
     var editTagTitle: String {
@@ -61,10 +66,20 @@ class TagListViewModel: ObservableObject {
     }
     
     var deleteTagTitle: String {
+        let action = isSearching ? "Remove" : "Delete"
         if let selectedTag {
-            return "Delete '\(selectedTag.name.capitalized)'?"
+            return "\(action) '\(selectedTag.name.capitalized)'?"
         } else {
-            return "Delete Tag"
+            return "\(action) Tag"
         }
+    }
+}
+
+// MARK: - Equatable
+
+extension TagListViewModel: Equatable {
+    static func == (lhs: TagListViewModel, rhs: TagListViewModel) -> Bool {
+        lhs.category == rhs.category &&
+        lhs.tags == rhs.tags
     }
 }

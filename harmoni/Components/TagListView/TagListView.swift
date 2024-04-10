@@ -21,7 +21,7 @@ struct TagListView: View {
             ) {
                 TextField("Name", text: $viewModel.newTagName)
                 Button("Cancel", role: .cancel, action: {})
-                Button("Create", role: .none, action: {
+                Button(isSearching ? "Add" : "Create", role: .none, action: {
                     viewModel.createTag()
                 })
             } message: {}
@@ -31,7 +31,7 @@ struct TagListView: View {
             ) {
                 TextField("Edit name", text: $viewModel.editedTagName)
                 Button("Cancel", role: .cancel, action: {})
-                Button("Delete", role: .destructive, action: {
+                Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
                     viewModel.isDisplayingDeleteTagAlert.toggle()
                 })
                 Button("Save", role: .none, action: {
@@ -43,7 +43,7 @@ struct TagListView: View {
                 isPresented: $viewModel.isDisplayingDeleteTagAlert
             ) {
                 Button("Cancel", role: .cancel, action: {})
-                Button("Delete", role: .destructive, action: {
+                Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
                     viewModel.removeTag()
                 })
             } message: {}
@@ -106,16 +106,20 @@ struct TagListView: View {
             .tint(.secondary)
         }
     }
+    
+    private var isSearching: Bool {
+        viewModel.isSearching
+    }
 }
 
 #Preview {
     TagListView(
         viewModel: TagListViewModel(
             tags: [
-                Tag(name: "Test", category: .genres, createdAt: .now),
-                Tag(name: "Test2", category: .genres, createdAt: .now),
-                Tag(name: "Test3", category: .genres, createdAt: .now),
-                Tag(name: "Test4", category: .genres, createdAt: .now)
+                Tag(name: "Test", category: .genres),
+                Tag(name: "Test2", category: .genres),
+                Tag(name: "Test3", category: .genres),
+                Tag(name: "Test4", category: .genres)
             ],
             category: .genres
         )

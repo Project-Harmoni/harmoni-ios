@@ -12,7 +12,6 @@ struct Tag: Identifiable, Equatable, Hashable {
     var serverID: Int8?
     var name: String
     var category: TagCategory
-    var createdAt: Date?
 }
 // MARK: - Filter specific categories
 

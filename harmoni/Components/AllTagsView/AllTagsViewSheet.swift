@@ -51,7 +51,3 @@ struct AllTagsViewSheet: View {
         viewModel.allTagsEmpty ? 0.25 : 0.7
     }
 }
-
-#Preview {
-    AllTagsViewSheet(viewModel: AllTagsViewModel())
-}

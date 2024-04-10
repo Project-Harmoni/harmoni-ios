@@ -36,8 +36,10 @@ protocol DBServiceProviding {
     func tagsOnAlbum(with id: Int8) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
-    /// Search by query (albums, artists, songs)
+    /// Search by query (albums, artists, songs, tag)
     func search(with query: SearchQuery) async throws -> SearchResults
+    /// Advanced search by query (albums, artists, songs, tags)
+    func advancedSearch(with query: SearchQuery) async throws -> SearchResults
     
     // Upsert
     
@@ -159,6 +161,12 @@ struct DBService: DBServiceProviding {
     /// Return artists, songs, and albums that match.
     func search(with query: SearchQuery) async throws -> SearchResults {
         return try await Supabase.shared.client.database.search(with: query)
+    }
+    
+    /// Advanced search for results based on query.
+    /// Return artists, songs, albums, tags that match.
+    func advancedSearch(with query: SearchQuery) async throws -> SearchResults {
+        return try await Supabase.shared.client.database.advancedSearch(with: query)
     }
 }
 
