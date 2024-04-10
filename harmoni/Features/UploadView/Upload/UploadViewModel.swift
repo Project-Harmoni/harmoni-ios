@@ -90,10 +90,10 @@ class UploadViewModel: ObservableObject {
     @MainActor init(album: AlbumDB, songs: [SongDB], tags: [Tag]) {
         isEditingAlbum = true
         allTagsViewModel = AllTagsViewModel(
-            genreTags: .init(tags: tags.genres, category: .genres),
-            moodTags: .init(tags: tags.moods, category: .moods),
-            instrumentTags: .init(tags: tags.instruments, category: .instruments),
-            miscTags: .init(tags: tags.misc, category: .miscellaneous),
+            genreViewModel: .init(tags: tags.genres, category: .genres),
+            moodViewModel: .init(tags: tags.moods, category: .moods),
+            instrumentViewModel: .init(tags: tags.instruments, category: .instruments),
+            miscViewModel: .init(tags: tags.misc, category: .miscellaneous),
             albumID: album.id
         )
         albumTitle = album.name ?? ""

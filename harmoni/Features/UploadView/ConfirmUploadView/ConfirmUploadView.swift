@@ -81,10 +81,10 @@ struct ConfirmUploadView: View {
     private var tags: some View {
         AllTagsView(
             viewModel: AllTagsViewModel(
-                genreTags: uploadStore.genreTagsViewModel,
-                moodTags: uploadStore.moodTagsViewModel,
-                instrumentTags: uploadStore.instrumentsTagsViewModel,
-                miscTags: uploadStore.miscTagsViewModel,
+                genreViewModel: uploadStore.genreTagsViewModel,
+                moodViewModel: uploadStore.moodTagsViewModel,
+                instrumentViewModel: uploadStore.instrumentsTagsViewModel,
+                miscViewModel: uploadStore.miscTagsViewModel,
                 isReadOnly: true
             )
         )

@@ -9,7 +9,6 @@ import Combine
 import Foundation
 
 class SearchFilterViewModel: ObservableObject {
-    @Published var areFiltersApplied: Bool = true
     @Published var songTitle: String = ""
     @Published var albumTitle: String = ""
     @Published var artistName: String = ""
@@ -78,5 +77,15 @@ class SearchFilterViewModel: ObservableObject {
                 self.miscTagsViewModel.tags = tags
             }
             .store(in: &cancellables)
+    }
+    
+    var areFiltersApplied: Bool {
+        songTitle.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty ||
+        albumTitle.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty ||
+        artistName.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty ||
+        genreTagsViewModel.tags.isNotEmpty ||
+        moodTagsViewModel.tags.isNotEmpty ||
+        instrumentsTagsViewModel.tags.isNotEmpty ||
+        miscTagsViewModel.tags.isNotEmpty
     }
 }

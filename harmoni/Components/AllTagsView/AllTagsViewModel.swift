@@ -19,19 +19,19 @@ class AllTagsViewModel: ObservableObject {
     @Published var miscTagsViewModel: TagListViewModel
     
     init(
-        genreTags: TagListViewModel = .init(category: .genres),
-        moodTags: TagListViewModel = .init(category: .moods),
-        instrumentTags: TagListViewModel = .init(category: .instruments),
-        miscTags: TagListViewModel = .init(category: .miscellaneous),
+        genreViewModel: TagListViewModel = .init(category: .genres),
+        moodViewModel: TagListViewModel = .init(category: .moods),
+        instrumentViewModel: TagListViewModel = .init(category: .instruments),
+        miscViewModel: TagListViewModel = .init(category: .miscellaneous),
         albumID: Int8? = nil,
         isReadOnly: Bool = false
     ) {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
-        self.genreTagsViewModel = genreTags
-        self.moodTagsViewModel = moodTags
-        self.instrumentsTagsViewModel = instrumentTags
-        self.miscTagsViewModel = miscTags
+        self.genreTagsViewModel = genreViewModel
+        self.moodTagsViewModel = miscViewModel
+        self.instrumentsTagsViewModel = instrumentViewModel
+        self.miscTagsViewModel = miscViewModel
         
         self.genreTagsViewModel.isReadOnly = isReadOnly
         self.moodTagsViewModel.isReadOnly = isReadOnly

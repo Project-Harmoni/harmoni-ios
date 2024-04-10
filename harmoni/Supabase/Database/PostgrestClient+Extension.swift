@@ -428,7 +428,7 @@ extension PostgrestClient {
                 .value
         }
         var artists: [ArtistDB] = []
-        if query.isAdvancedAlbumTitleAvailable {
+        if query.isAdvancedArtistNameAvailable {
             artists = try await self.artists
                 .select()
                 .ilike(ArtistDB.CodingKeys.name.rawValue, value: query.advancedArtistNameValue)
