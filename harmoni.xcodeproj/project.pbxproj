@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F85914E2BC8AE6700D1DE08 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85914D2BC8AE6700D1DE08 /* WelcomeView.swift */; };
+		6F8591502BC8AE7500D1DE08 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85914F2BC8AE7500D1DE08 /* WelcomeViewModel.swift */; };
 		B518F53E2BA2B584002CDCB7 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518F53D2BA2B584002CDCB7 /* Date+Extension.swift */; };
 		B518F5412BA536AB002CDCB7 /* UploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518F5402BA536AB002CDCB7 /* UploadView.swift */; };
 		B518F5442BA53AC1002CDCB7 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518F5432BA53AC1002CDCB7 /* StorageService.swift */; };
@@ -90,6 +92,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6F85914D2BC8AE6700D1DE08 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		6F85914F2BC8AE7500D1DE08 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		B518F53D2BA2B584002CDCB7 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		B518F5402BA536AB002CDCB7 /* UploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadView.swift; sourceTree = "<group>"; };
 		B518F5432BA53AC1002CDCB7 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -187,6 +191,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F85914C2BC8AE4E00D1DE08 /* WelcomeView */ = {
+			isa = PBXGroup;
+			children = (
+				6F85914D2BC8AE6700D1DE08 /* WelcomeView.swift */,
+				6F85914F2BC8AE7500D1DE08 /* WelcomeViewModel.swift */,
+			);
+			path = WelcomeView;
+			sourceTree = "<group>";
+		};
 		B518F53F2BA53696002CDCB7 /* UploadView */ = {
 			isa = PBXGroup;
 			children = (
@@ -366,6 +379,7 @@
 		B58FC7A42B9D6938006F5BDF /* AccountView */ = {
 			isa = PBXGroup;
 			children = (
+				6F85914C2BC8AE4E00D1DE08 /* WelcomeView */,
 				B58FC7A52B9D694B006F5BDF /* AccountView.swift */,
 				B58FC7A72B9D697F006F5BDF /* AccountViewModel.swift */,
 				B5B060202BB530BC00AD6F40 /* Router */,
@@ -683,6 +697,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5B05FED2BABCF3C00AD6F40 /* Tag.swift in Sources */,
+				6F8591502BC8AE7500D1DE08 /* WelcomeViewModel.swift in Sources */,
 				B518F5462BA53BFD002CDCB7 /* SupabaseStorageClient+Extension.swift in Sources */,
 				B58FC79A2B9D56D5006F5BDF /* Supabase.swift in Sources */,
 				B5B05FF42BAE48F700AD6F40 /* TrackPayoutType.swift in Sources */,
@@ -750,6 +765,7 @@
 				B518F5442BA53AC1002CDCB7 /* StorageService.swift in Sources */,
 				B5B060032BB2417700AD6F40 /* ConfirmUploadView.swift in Sources */,
 				B58CDC1D2BA2A88000E51964 /* CompleteRegistrationViewModel.swift in Sources */,
+				6F85914E2BC8AE6700D1DE08 /* WelcomeView.swift in Sources */,
 				B518F5512BA63DF9002CDCB7 /* SongDetailView.swift in Sources */,
 				B518F54F2BA63D1F002CDCB7 /* UploadViewModel.swift in Sources */,
 			);

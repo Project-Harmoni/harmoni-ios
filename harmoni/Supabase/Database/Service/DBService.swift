@@ -10,6 +10,8 @@ import Foundation
 protocol DBServiceProviding {
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
+    /// Check if user is new
+    func isNew(with id: UUID) async throws -> Bool
     /// Get artist with `UUID`
     func getArtist(with id: UUID) async throws -> ArtistDB?
     /// Get listener with `UUID`
@@ -50,12 +52,21 @@ struct DBService: DBServiceProviding {
         return user?.isAdmin ?? false
     }
     
+    func isNew(with id: UUID) async throws -> Bool {
+        let user = try await Supabase.shared.client.database.user(with: id)
+        return user?.isNew ?? false
+    }
+    
     func getArtist(with id: UUID) async throws -> ArtistDB? {
         return try await Supabase.shared.client.database.artist(with: id)
     }
     
     func getListener(with id: UUID) async throws -> ListenerDB? {
         return try await Supabase.shared.client.database.listener(with: id)
+    }
+    
+    func getUser(with id: UUID) async throws -> UserDB? {
+        return try await Supabase.shared.client.database.user(with: id)
     }
     
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB? {
