@@ -72,7 +72,12 @@ struct SongDetailView: View {
     private var songInfo: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(viewModel.song?.name ?? "Title")
+                HStack {
+                    Text(viewModel.song?.name ?? "Title")
+                    if viewModel.song?.isExplicit ?? false {
+                        Image(systemName: "e.square.fill")
+                    }
+                }
                 Text(nowPlayingManager.artistName ?? "Artist")
                     .foregroundStyle(.secondary)
             }

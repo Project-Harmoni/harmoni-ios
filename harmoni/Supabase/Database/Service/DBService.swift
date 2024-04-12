@@ -12,6 +12,8 @@ protocol DBServiceProviding {
     
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
+    /// Get user with id
+    func getUser(with id: UUID) async throws -> UserDB?
     /// Get artist with `UUID`
     func getArtist(with id: UUID) async throws -> ArtistDB?
     /// Get artist name for song
@@ -91,6 +93,10 @@ struct DBService: DBServiceProviding {
     func isAdmin(with id: UUID) async throws -> Bool {
         let user = try await Supabase.shared.client.database.user(with: id)
         return user?.isAdmin ?? false
+    }
+    
+    func getUser(with id: UUID) async throws -> UserDB? {
+        return try await Supabase.shared.client.database.user(with: id)
     }
     
     func getArtist(with id: UUID) async throws -> ArtistDB? {

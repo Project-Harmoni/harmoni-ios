@@ -28,7 +28,7 @@ class SongCellViewModel: ObservableObject {
 }
 
 struct SongCellView: View {
-    @EnvironmentObject var nowPlayingManager: NowPlayingManager
+    @EnvironmentObject private var nowPlayingManager: NowPlayingManager
     @ObservedObject var viewModel: SongCellViewModel
     
     var body: some View {
@@ -45,7 +45,12 @@ struct SongCellView: View {
                 )
             }
             VStack(alignment: .leading) {
-                Text(viewModel.song.details.name ?? "Song title")
+                HStack {
+                    Text(viewModel.song.details.name ?? "Song title")
+                    if viewModel.song.details.isExplicit {
+                        Image(systemName: "e.square.fill")
+                    }
+                }
                 if viewModel.isDetailed {
                     Text(viewModel.song.artistName)
                         .foregroundStyle(.gray)

@@ -22,7 +22,12 @@ struct AlbumCellView: View {
                     cornerRadius: 4
                 )
                 VStack(alignment: .leading) {
-                    Text(viewModel.album.name ?? "Album title").bold()
+                    HStack {
+                        Text(viewModel.album.name ?? "Album title").bold()
+                        if viewModel.album.isExplicit {
+                            Image(systemName: "e.square.fill")
+                        }
+                    }
                     Text(viewModel.album.yearReleased ?? "Year")
                         .foregroundStyle(.gray)
                 }

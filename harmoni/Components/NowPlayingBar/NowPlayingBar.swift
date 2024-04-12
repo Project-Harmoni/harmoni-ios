@@ -49,7 +49,12 @@ struct NowPlayingBar: View {
     var body: some View {
         if let name = nowPlayingManager.song?.name {
             HStack {
-                Text(name)
+                HStack {
+                    Text(name)
+                    if nowPlayingManager.song?.isExplicit ?? false {
+                        Image(systemName: "e.square.fill")
+                    }
+                }
                 Spacer()
                 Button {
                     nowPlayingManager.isPlaying.toggle()

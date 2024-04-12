@@ -37,6 +37,7 @@
 		B51AEFDE2BC3676D001F0F53 /* ArtistCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFDD2BC3676D001F0F53 /* ArtistCellView.swift */; };
 		B51AEFE12BC36AB0001F0F53 /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFE02BC36AB0001F0F53 /* ArtistView.swift */; };
 		B51AEFE32BC36E23001F0F53 /* ArtistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFE22BC36E23001F0F53 /* ArtistViewModel.swift */; };
+		B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */; };
 		B58CDC1B2BA2A6B300E51964 /* CompleteRegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58CDC1A2BA2A6B300E51964 /* CompleteRegistrationView.swift */; };
 		B58CDC1D2BA2A88000E51964 /* CompleteRegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58CDC1C2BA2A88000E51964 /* CompleteRegistrationViewModel.swift */; };
 		B58CDC1F2BA2A8AD00E51964 /* ChooseRoleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58CDC1E2BA2A8AD00E51964 /* ChooseRoleViewModel.swift */; };
@@ -146,6 +147,7 @@
 		B51AEFDD2BC3676D001F0F53 /* ArtistCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCellView.swift; sourceTree = "<group>"; };
 		B51AEFE02BC36AB0001F0F53 /* ArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistView.swift; sourceTree = "<group>"; };
 		B51AEFE22BC36E23001F0F53 /* ArtistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewModel.swift; sourceTree = "<group>"; };
+		B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultEnvironmentKey.swift; sourceTree = "<group>"; };
 		B58CDC1A2BA2A6B300E51964 /* CompleteRegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteRegistrationView.swift; sourceTree = "<group>"; };
 		B58CDC1C2BA2A88000E51964 /* CompleteRegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteRegistrationViewModel.swift; sourceTree = "<group>"; };
 		B58CDC1E2BA2A8AD00E51964 /* ChooseRoleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleViewModel.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				B518F55E2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift */,
+				B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */,
 				B518F5612BA66E70002CDCB7 /* ArtistEnvironmentKey.swift */,
 				B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */,
 			);
@@ -904,6 +907,7 @@
 				B5B05FF42BAE48F700AD6F40 /* TrackPayoutType.swift in Sources */,
 				B5B060072BB2801400AD6F40 /* Int+Extension.swift in Sources */,
 				B518F5542BA63E84002CDCB7 /* SongDetailViewModel.swift in Sources */,
+				B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */,
 				B518F5622BA66E70002CDCB7 /* ArtistEnvironmentKey.swift in Sources */,
 				B5B05FF22BABCFF100AD6F40 /* EditTrackPayoutView.swift in Sources */,
 				B51AEFDB2BC3670D001F0F53 /* Collection+Extension.swift in Sources */,

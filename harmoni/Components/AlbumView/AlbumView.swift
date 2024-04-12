@@ -150,8 +150,13 @@ struct AlbumView: View {
     private var albumInfo: some View {
         if let albumTitle = viewModel.albumTitle, let artistName {
             VStack(alignment: .center) {
-                Text(albumTitle)
-                    .bold()
+                HStack {
+                    Text(albumTitle)
+                        .bold()
+                    if viewModel.album.isExplicit {
+                        Image(systemName: "e.square.fill")
+                    }
+                }
                 Text(artistName)
                     .foregroundStyle(.secondary)
             }

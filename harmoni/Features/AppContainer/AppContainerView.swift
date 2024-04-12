@@ -50,6 +50,7 @@ struct AppContainerView: View {
         }
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
+        .environment(\.isAdult, viewModel.isAdult)
         .environment(\.currentUser, viewModel.currentUser)
     }
     

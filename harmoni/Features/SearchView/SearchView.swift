@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SearchView: View {
+    @Environment(\.isAdult) var isAdult
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @StateObject var viewModel = SearchViewModel()
     
@@ -67,7 +68,7 @@ struct SearchView: View {
     private func section(from songs: [Song], with title: String) -> some View {
         if songs.isNotEmpty {
             Section(title) {
-                ForEach(songs) { song in
+                ForEach(songs.filter { isAdult || !$0.details.isExplicit }) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
                             song: song,
@@ -83,7 +84,7 @@ struct SearchView: View {
     private func section(from albums: [AlbumDB], with title: String) -> some View {
         if albums.isNotEmpty {
             Section(title) {
-                ForEach(albums) { album in
+                ForEach(albums.filter { isAdult || !$0.isExplicit }) { album in
                     AlbumCellView(
                         viewModel: AlbumViewModel(
                             album: album
@@ -109,7 +110,7 @@ struct SearchView: View {
     private func section(from songs: [Song], with tags: [Tag], with title: String) -> some View {
         if songs.isNotEmpty {
             Section {
-                ForEach(songs) { song in
+                ForEach(songs.filter { isAdult || !$0.details.isExplicit }) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
                             song: song,
@@ -154,7 +155,7 @@ struct SearchView: View {
     private var taggedSongs: some View {
         if viewModel.songsWithTags.isNotEmpty {
             Section {
-                ForEach(viewModel.songsWithTags) { song in
+                ForEach(viewModel.songsWithTags.filter { isAdult || !$0.details.isExplicit }) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
                             song: song,

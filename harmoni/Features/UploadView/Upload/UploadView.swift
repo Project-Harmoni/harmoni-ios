@@ -10,7 +10,10 @@ import SwiftUI
 import Supabase
 
 struct UploadView: View {
+    @Environment(\.isAdult) private var isAdult
     @StateObject var viewModel = UploadViewModel()
+    @State private var isUnableToUpload: Bool = false
+    @State private var isUnableToContinue: Bool = false
     
     var body: some View {
         form
@@ -73,6 +76,17 @@ struct UploadView: View {
                 Text("Enter new name for track")
             }
         }
+        .alert("Unable to Upload", isPresented: $isUnableToUpload) {
+            Button("OK", role: .none, action: {
+                isUnableToContinue = true
+            })
+        } message: {
+            Text("You must be 18+ to upload explicit content.")
+        }
+        .onChange(of: viewModel.isExplicit) { _, isExplicit in
+            isUnableToUpload = isExplicit && !isAdult
+        }
+
     }
     
     private var artistNameField: some View {
@@ -115,6 +129,7 @@ struct UploadView: View {
     
     private var isExplicit: some View {
         Toggle("Contains explicit material (18+)", isOn: $viewModel.isExplicit)
+            .disabled(isUnableToContinue)
     }
     
     private var selectTracksButton: some View {
@@ -202,6 +217,8 @@ struct UploadView: View {
             .environmentObject(viewModel.uploadStore)
         }
         .foregroundStyle(.white)
+        .disabled(isUnableToContinue)
+        .opacity(isUnableToContinue ? 0.5 : 1)
     }
     
     private var navigationTitle: String {
