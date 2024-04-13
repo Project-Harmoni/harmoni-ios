@@ -13,6 +13,7 @@ class AppContainerViewModel: ObservableObject {
     @Published var isArtist: Bool = false
     @Published var isAdmin: Bool = false
     @Published var isNew: Bool = false
+    @Published var isAdult: Bool = false
     @Published var currentUser: User?
     private var userProvider: UserProviding = UserProvider()
     private var cancellables: Set<AnyCancellable> = []
@@ -39,7 +40,12 @@ class AppContainerViewModel: ObservableObject {
             self?.isArtist = await self?.userProvider.isArtist ?? false
             self?.isAdmin = await self?.userProvider.isAdmin ?? false
             self?.isNew = await self?.userProvider.isNew ?? false
+            self?.isAdult = await self?.userProvider.isAdult ?? false
             self?.currentUser = await self?.userProvider.currentUser
         }
     }
+    
+    lazy var nowPlayingBar: NowPlayingBar = {
+        NowPlayingBar()
+    }()
 }

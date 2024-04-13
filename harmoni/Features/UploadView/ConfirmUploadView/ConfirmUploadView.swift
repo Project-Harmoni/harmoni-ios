@@ -32,14 +32,15 @@ struct ConfirmUploadView: View {
             .listRowBackground(
                 Rectangle().foregroundStyle(.blue)
             )
-            
         }
-        .navigationTitle("Confirm Upload")
+        .navigationTitle(uploadStore.isEditing ? "Confirm Changes" : "Confirm Upload")
         .alert(
             "Uh oh!",
             isPresented: $viewModel.isError,
             actions: {
-                Button("OK", role: .none, action: {})
+                Button("OK", role: .none, action: {
+                    viewModel.isSaving = false
+                })
             }, message: {
                 Text("An error occurred uploading. Please try again.")
             }
@@ -57,6 +58,12 @@ struct ConfirmUploadView: View {
                 router.popToRoot()
             }
         )
+        .toast(isPresenting: $viewModel.isSaving) {
+            AlertToast(
+                type: .loading,
+                title: "Uploading"
+            )
+        }
     }
     
     private var metadata: some View {
@@ -72,30 +79,15 @@ struct ConfirmUploadView: View {
     
     @ViewBuilder
     private var tags: some View {
-        Section {
-            TagListView(viewModel: uploadStore.genreTagsViewModel)
-        } header: {
-            Text("Genres")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.moodTagsViewModel)
-        } header: {
-            Text("Moods")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.instrumentsTagsViewModel)
-        } header: {
-            Text("Instruments")
-                .font(.subheadline)
-        }
-        Section {
-            TagListView(viewModel: uploadStore.miscTagsViewModel)
-        } header: {
-            Text("Miscellaneous")
-                .font(.subheadline)
-        }
+        AllTagsView(
+            viewModel: AllTagsViewModel(
+                genreViewModel: uploadStore.genreTagsViewModel,
+                moodViewModel: uploadStore.moodTagsViewModel,
+                instrumentViewModel: uploadStore.instrumentsTagsViewModel,
+                miscViewModel: uploadStore.miscTagsViewModel,
+                isReadOnly: true
+            )
+        )
     }
     
     @ViewBuilder
@@ -110,7 +102,7 @@ struct ConfirmUploadView: View {
                         .scaledToFill()
                 )
                 .frame(width: 250, height: 250)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 4))
         }
     }
     
@@ -183,19 +175,10 @@ struct ConfirmUploadView: View {
     
     @ViewBuilder
     private var uploadLabel: some View {
-        if isUploading {
-            HStack {
-                Text("Uploading...").bold()
-                Spacer()
-                ProgressView()
-                    .tint(.white)
-            }
-        } else {
-            Text("Upload").bold()
-            Spacer()
-            Image(systemName: "arrow.up")
-                .bold()
-        }
+        Text(uploadStore.isEditing ? "Upload Changes" : "Upload").bold()
+        Spacer()
+        Image(systemName: "arrow.up")
+            .bold()
     }
     
     private var isUploading: Bool {

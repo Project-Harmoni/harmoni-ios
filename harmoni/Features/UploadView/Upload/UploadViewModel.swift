@@ -15,7 +15,6 @@ class UploadViewModel: ObservableObject {
     @MainActor @Published var currentArtistName: String = ""
     @MainActor @Published var payoutThreshold: Int = 0
     @MainActor @Published var listenerPayoutPercentage: Double = 20
-    @MainActor @Published var fileURL: URL?
     @MainActor @Published var isError: Bool = false
     
     // Upload Store
@@ -63,22 +62,7 @@ class UploadViewModel: ObservableObject {
     }
     
     // Tags
-    @Published var genreTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .genres
-    )
-    @Published var moodTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .moods
-    )
-    @Published var instrumentsTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .instruments
-    )
-    @Published var miscTagsViewModel = TagListViewModel(
-        tags: [],
-        category: .miscellaneous
-    )
+    @Published var allTagsViewModel: AllTagsViewModel
     
     // Payout
     @Published var payoutViewModel = EditPayoutViewModel(tracks: [])
@@ -93,8 +77,40 @@ class UploadViewModel: ObservableObject {
     private let userProvider: UserProviding = UserProvider()
     private let storage: StorageProviding = StorageService()
     private var cancellables: Set<AnyCancellable> = []
+    let isEditingAlbum: Bool
     
     init() {
+        isEditingAlbum = false
+        allTagsViewModel = AllTagsViewModel()
+        observeAlbumCoverChanges()
+        getArtistName()
+    }
+    
+    /// Initializer for edit album
+    @MainActor init(album: AlbumDB, songs: [SongDB], tags: [Tag]) {
+        isEditingAlbum = true
+        allTagsViewModel = AllTagsViewModel(
+            genreViewModel: .init(tags: tags.genres, category: .genres),
+            moodViewModel: .init(tags: tags.moods, category: .moods),
+            instrumentViewModel: .init(tags: tags.instruments, category: .instruments),
+            miscViewModel: .init(tags: tags.misc, category: .miscellaneous),
+            albumID: album.id
+        )
+        albumTitle = album.name ?? ""
+        yearReleased = album.yearReleased ?? ""
+        recordLabel = album.recordLabel ?? ""
+        isExplicit = album.isExplicit
+        tracks = songs.compactMap { $0.toTrack() }
+        uploadStore.loadedTracks = tracks
+        uploadStore.loadedTags = tags
+        uploadStore.isEditing = true
+        uploadStore.albumToEdit = album
+        getCoverArt(for: album)
+        getArtistName()
+        observeAlbumCoverChanges()
+    }
+    
+    private func observeAlbumCoverChanges() {
         $albumCoverItem
             .receive(on: DispatchQueue.main)
             .sink { [weak self] item in
@@ -102,8 +118,6 @@ class UploadViewModel: ObservableObject {
                 self?.handle(picked: item)
             }
             .store(in: &cancellables)
-        
-        getArtistName()
     }
     
     private func getArtistName() {
@@ -163,42 +177,36 @@ class UploadViewModel: ObservableObject {
         }
     }
     
-    func uploadFiles() {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            do {
-                for file in self.tracks {
-                    let data = try Data(contentsOf: file.url)
-                    let fileName = file.name + file.fileExtension
-                    self.upload(data: data, name: fileName)
-                }
-                self.isError = false
-            } catch {
-                dump(error)
-                self.isError = true
-            }
-        }
-    }
-    
-    private func upload(data: Data, name: String) {
-        Task(priority: .utility) { @MainActor [weak self] in
-            do {
-                guard let result = try await self?.storage.uploadSong(data, name: name) else { return }
-                self?.fileURL = try self?.storage.getMusicURL(for: result)
-            } catch {
-                dump(error)
-                self?.isError = true
-            }
-        }
-    }
-    
     /// Convert chosen album cover item as image
     private func handle(picked item: PhotosPickerItem?) {
         Task { @MainActor [weak self] in
-            if let loaded = try? await item?.loadTransferable(type: Image.self) {
-                self?.albumCoverImage = loaded
+            if let data = try? await item?.loadTransferable(type: Data.self),
+               let uiImage = UIImage(data: data){
+                self?.albumCoverImage = Image(uiImage: uiImage)
             } else {
                 self?.isError = true
+            }
+        }
+    }
+}
+
+
+// MARK: - Edit Helpers
+
+extension UploadViewModel {
+    private func getCoverArt(for album: AlbumDB) {
+        Task.detached {
+            if let coverImagePath = album.coverImagePath,
+               let url = URL(string: coverImagePath) {
+                do {
+                    let data = try Data(contentsOf: url)
+                    guard let uiImage = UIImage(data: data) else { return }
+                    await MainActor.run { [weak self] in
+                        self?.albumCoverImage = Image(uiImage: uiImage)
+                    }
+                } catch {
+                    dump(error)
+                }
             }
         }
     }

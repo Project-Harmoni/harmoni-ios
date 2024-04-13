@@ -9,14 +9,19 @@ import PhotosUI
 import SwiftUI
 
 class UploadStore: ObservableObject {
+    var isEditing: Bool = false
+    var albumToEdit: AlbumDB? { didSet { handleAlbumToEdit() } }
     var tracks: [Track] = []
+    var loadedTracks: [Track] = []
+    var loadedTags: [Tag] = []
     var albumTitle: String = ""
     var artistName: String = ""
     var isExplicit: Bool = false
     var yearReleased: String = ""
     var recordLabel: String = ""
-    var albumCoverItem: PhotosPickerItem?
+    var albumCoverItem: PhotosPickerItem? { didSet { handleAlbumCoverItem() } }
     var albumCoverImage: Image?
+    var albumCoverData: Data?
     private let userProvider: UserProviding?
     
     init(userProvider: UserProviding = UserProvider()) {
@@ -49,14 +54,13 @@ class UploadStore: ObservableObject {
 extension UploadStore {
     func name(for track: Track) async -> String? {
         guard let artistID = await userProvider?.currentUserID else { return nil }
-        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)"
+        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)_\(UUID())\(track.fileExtension)"
     }
     
-    // TODO: - Add better handling if artist uploads cover for 2+ tracks with same album title and year released
     var albumCoverName: String? {
         get async {
             guard let artistID = await userProvider?.currentUserID else { return nil }
-            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)".toJPG
+            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(UUID())".toJPG
         }
     }
     
@@ -72,6 +76,43 @@ extension UploadStore {
                 return duration
             } catch {
                 return nil
+            }
+        }
+    }
+}
+
+// MARK: - Helpers
+
+extension UploadStore {
+    var tagsAreEmpty: Bool {
+        genreTagsViewModel.tags.isEmpty &&
+        moodTagsViewModel.tags.isEmpty &&
+        instrumentsTagsViewModel.tags.isEmpty &&
+        miscTagsViewModel.tags.isEmpty
+    }
+}
+
+// MARK: - Private Helpers
+
+private extension UploadStore {
+    func handleAlbumToEdit() {
+        Task.detached { [weak self] in
+            guard let self else { return }
+            do {
+                self.albumCoverData = try self.albumToEdit?.coverImageData
+            } catch {
+                dump(error)
+            }
+        }
+    }
+    
+    func handleAlbumCoverItem() {
+        Task.detached { [weak self] in
+            guard let self else { return }
+            do {
+                self.albumCoverData = try await self.albumCoverItem?.loadTransferable(type: Data.self)
+            } catch {
+                dump(error)
             }
         }
     }

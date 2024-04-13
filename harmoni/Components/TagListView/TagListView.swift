@@ -12,27 +12,30 @@ struct TagListView: View {
     @EnvironmentObject private var uploadStore: UploadStore
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: TagListViewModel
+    @State private var isDisplayingCreateTagAlert: Bool = false
+    @State private var isDisplayingEditTagAlert: Bool = false
+    @State private var isDisplayingDeleteTagAlert: Bool = false
     
     var body: some View {
         tags
             .alert(
                 viewModel.createTagTitle,
-                isPresented: $viewModel.isDisplayingCreateTagAlert
+                isPresented: $isDisplayingCreateTagAlert
             ) {
                 TextField("Name", text: $viewModel.newTagName)
                 Button("Cancel", role: .cancel, action: {})
-                Button("Create", role: .none, action: {
+                Button(isSearching ? "Add" : "Create", role: .none, action: {
                     viewModel.createTag()
                 })
             } message: {}
             .alert(
                 viewModel.editTagTitle,
-                isPresented: $viewModel.isDisplayingEditTagAlert
+                isPresented: $isDisplayingEditTagAlert
             ) {
                 TextField("Edit name", text: $viewModel.editedTagName)
                 Button("Cancel", role: .cancel, action: {})
-                Button("Delete", role: .destructive, action: {
-                    viewModel.isDisplayingDeleteTagAlert.toggle()
+                Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
+                    isDisplayingDeleteTagAlert.toggle()
                 })
                 Button("Save", role: .none, action: {
                     viewModel.editTag()
@@ -40,10 +43,10 @@ struct TagListView: View {
             } message: {}
             .alert(
                 viewModel.deleteTagTitle,
-                isPresented: $viewModel.isDisplayingDeleteTagAlert
+                isPresented: $isDisplayingDeleteTagAlert
             ) {
                 Button("Cancel", role: .cancel, action: {})
-                Button("Delete", role: .destructive, action: {
+                Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
                     viewModel.removeTag()
                 })
             } message: {}
@@ -81,7 +84,7 @@ struct TagListView: View {
         Button {
             viewModel.selectedTag = tag
             viewModel.editedTagName = tag.name
-            viewModel.isDisplayingEditTagAlert.toggle()
+            isDisplayingEditTagAlert.toggle()
         } label: {
             Text(tag.name)
                 .foregroundStyle(viewModel.isReadOnly ? Color.primary : .blue)
@@ -96,7 +99,7 @@ struct TagListView: View {
         if !viewModel.isReadOnly {
             Button {
                 viewModel.newTagName = ""
-                viewModel.isDisplayingCreateTagAlert.toggle()
+                isDisplayingCreateTagAlert.toggle()
             } label: {
                 Image(systemName: "plus")
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
@@ -106,16 +109,20 @@ struct TagListView: View {
             .tint(.secondary)
         }
     }
+    
+    private var isSearching: Bool {
+        viewModel.isSearching
+    }
 }
 
 #Preview {
     TagListView(
         viewModel: TagListViewModel(
             tags: [
-                Tag(name: "Test", category: .genres, createdAt: .now),
-                Tag(name: "Test2", category: .genres, createdAt: .now),
-                Tag(name: "Test3", category: .genres, createdAt: .now),
-                Tag(name: "Test4", category: .genres, createdAt: .now)
+                Tag(name: "Test", category: .genres),
+                Tag(name: "Test2", category: .genres),
+                Tag(name: "Test3", category: .genres),
+                Tag(name: "Test4", category: .genres)
             ],
             category: .genres
         )

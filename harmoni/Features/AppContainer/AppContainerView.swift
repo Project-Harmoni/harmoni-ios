@@ -10,6 +10,7 @@ import Supabase
 
 /// Root level container for all views
 struct AppContainerView: View {
+    @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @State private var user: User?
     @StateObject var viewModel = AppContainerViewModel()
     
@@ -19,35 +20,46 @@ struct AppContainerView: View {
     
     var body: some View {
         TabView {
-            AccountView()
-                .tabItem {
-                    Image(systemName: "person.crop.circle")
-                    Text("Account")
+            Group {
+                AccountView()
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("Account")
+                    }
+                
+                NavigationStack {
+                    Text("Library")
+                        .navigationTitle("Library")
                 }
-            
-            NavigationStack {
-                Text("Library")
-                    .navigationTitle("Library")
+                .tabItem {
+                    Image(systemName: "music.note")
+                    Text("Library")
+                }
+                
+                SearchView()
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
             }
-            .tabItem {
-                Image(systemName: "music.note")
-                Text("Library")
-            }
-            
-            NavigationStack {
-                Text("Search")
-                    .navigationTitle("Search")
-            }
-            .navigationTitle("Search")
-            .tabItem {
-                Image(systemName: "magnifyingglass")
-                Text("Search")
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    nowPlayingBar
+                }
             }
         }
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.isNew, viewModel.isNew)
+        .environment(\.isAdult, viewModel.isAdult)
         .environment(\.currentUser, viewModel.currentUser)
+    }
+    
+    @ViewBuilder
+    private var nowPlayingBar: some View {
+        if nowPlayingManager.song != nil {
+            viewModel.nowPlayingBar
+        }
     }
 }
 

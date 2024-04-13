@@ -202,9 +202,10 @@ private extension AccountViewModel {
     /// Convert chosen profile picture item as image
     func handle(picked item: PhotosPickerItem) async throws {
         // update locally immediately
-        if let image = try? await item.loadTransferable(type: Image.self) {
+        if let data = try? await item.loadTransferable(type: Data.self),
+           let uiImage = UIImage(data: data) {
             await MainActor.run { [weak self] in
-                self?.justChangedProfileImage = image
+                self?.justChangedProfileImage = Image(uiImage: uiImage)
             }
         }
         

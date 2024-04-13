@@ -60,6 +60,7 @@ struct AccountView: View {
                 if !isEditing { menu }
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Account")
         .alert("Uh Oh!", isPresented: $viewModel.isError) {
             Button("OK", role: .none, action: {})
@@ -215,6 +216,7 @@ private extension AccountView {
     private var menu: some View {
         Menu {
             Button {
+                UserDefaults.standard.set(false, forKey: "isAdminRequested")
                 viewModel.logout()
             } label: {
                 Text("Sign Out")

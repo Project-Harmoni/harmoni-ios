@@ -12,6 +12,7 @@ struct harmoniApp: App {
     var body: some Scene {
         WindowGroup {
             AppContainerView()
+                .environmentObject(NowPlayingManager())
         }
     }
 }

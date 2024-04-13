@@ -1,16 +1,15 @@
 //
-//  SongDB.swift
+//  SongUpdateDB.swift
 //  harmoni
 //
-//  Created by Kyle Stokes on 3/26/24.
+//  Created by Kyle Stokes on 3/31/24.
 //
 
 import Foundation
 
-struct SongDB: Codable {
-    var id: Int8?
+struct SongUpdateDB: Codable {
     var albumName: String?
-    var artistID: UUID
+    var artistID: String
     var coverImagePath: String?
     var isExplicit: Bool = false
     var payoutThreshold: Int
@@ -24,7 +23,6 @@ struct SongDB: Codable {
     var payoutType: String?
     
     enum CodingKeys: String, CodingKey {
-        case id = "song_id"
         case albumName = "album_name"
         case artistID = "artist_id"
         case coverImagePath = "cover_image_path"
@@ -38,32 +36,5 @@ struct SongDB: Codable {
         case ordinal
         case isFree = "is_free"
         case payoutType = "payout_type"
-    }
-}
-
-// MARK: - Initialize from upload details
-
-extension SongDB {
-    init(
-        track: Track,
-        albumName: String,
-        artistID: UUID,
-        coverImagePath: String,
-        filePath: String,
-        isExplicit: Bool
-    ) {
-        self.id = nil
-        self.albumName = albumName
-        self.artistID = artistID
-        self.coverImagePath = coverImagePath
-        self.isExplicit = isExplicit
-        self.payoutThreshold = track.streamThreshold
-        self.artistPayoutPercentage = Int(track.artistPercentage)
-        self.filePath = filePath
-        self.name = track.name
-        self.streamCount = 0
-        self.ordinal = track.ordinal
-        self.isFree = track.isFreeToStream
-        self.payoutType = track.payoutType.rawValue
     }
 }

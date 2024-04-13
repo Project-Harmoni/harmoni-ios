@@ -19,12 +19,9 @@ struct EditPayoutView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-                
-                ToolbarItemGroup(placement: .bottomBar) {
-                    configureMenu
-                    selectionToggle
+                    if !viewModel.tracks.isEmpty {
+                        EditButton()
+                    }
                 }
             }
             .alert("Edit Streams", isPresented: $viewModel.isShowingEditStreamAlert) {
@@ -49,6 +46,17 @@ struct EditPayoutView: View {
             }
             .onChange(of: viewModel.tracks) { _, tracks in
                 uploadStore.tracks = tracks
+            }
+            .safeAreaInset(edge: .bottom) {
+                if isEditing {
+                    HStack {
+                        configureMenu
+                        Spacer()
+                        selectionToggle
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                }
             }
     }
     
@@ -125,7 +133,6 @@ struct EditPayoutView: View {
     @ViewBuilder
     private var selectionToggle: some View {
         if isEditing {
-            Spacer()
             Button(viewModel.isSelectingAll ? "Select All" : "Deselect All") {
                 if viewModel.isSelectingAll {
                     viewModel.tracks.forEach { track in
@@ -148,26 +155,17 @@ struct EditPayoutView: View {
     
     @ViewBuilder
     private var cta: some View {
-        if viewModel.isEditing {
-            Button {
-                //
-            } label: {
-                Text("Save")
+        Section {
+            NavigationLink("Continue") {
+                ConfirmUploadView()
+                    .environmentObject(uploadStore)
             }
-            .buttonStyle(.borderedProminent)
-        } else {
-            Section {
-                NavigationLink("Continue") {
-                    ConfirmUploadView()
-                        .environmentObject(uploadStore)
-                }
-                .foregroundStyle(.white)
-            }
-            .listRowBackground(
-                Rectangle()
-                    .foregroundStyle(.blue)
-            )
+            .foregroundStyle(.white)
         }
+        .listRowBackground(
+            Rectangle()
+                .foregroundStyle(.blue)
+        )
     }
     
     private var isEditing: Bool {
