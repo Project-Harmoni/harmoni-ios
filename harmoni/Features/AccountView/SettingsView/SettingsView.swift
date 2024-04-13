@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/23/24.
 //
 
+import AlertToast
 import MessageUI
 import SwiftUI
 
@@ -13,6 +14,7 @@ struct SettingsView: View {
     @Environment(\.currentUser) private var currentUser
     @AppStorage("isAdminRequested") var isAdminRequested: Bool = false
     @State private var isDisplayingAdminRequest: Bool = false
+    @State private var isDisplayingRequestSent: Bool = false
     
     var body: some View {
         List {
@@ -39,13 +41,21 @@ struct SettingsView: View {
             }
         }
         .sheet(isPresented: $isDisplayingAdminRequest) {
-            SendMailView(
-                content: "Harmoni,\n\n\(currentUser?.email ?? "email") is requesting to be an admin.",
-                to: "teamharmonirequests@gmail.com",
-                subject: "Admin Request") {
+            if let email = currentUser?.email {
+                SendMailView.adminRequest(for: email) {
                     isAdminRequested = true
+                    isDisplayingRequestSent.toggle()
                 }
+            }
         }
+        .toast(
+            isPresenting: $isDisplayingRequestSent,
+            duration: 2,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(type: .complete(.green), title: "Request Sent")
+            }
+        )
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
     }

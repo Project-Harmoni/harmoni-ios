@@ -7,60 +7,90 @@
 
 import SwiftUI
 
-struct Song: Identifiable {
-    let id = UUID()
-    var details: SongDB
-    var artistName: String
-}
-
-class SongCellViewModel: ObservableObject {
-    private let database: DBServiceProviding = DBService()
-    var song: Song
-    var isDetailed: Bool = true
-    
-    init(
-        song: Song,
-        isDetailed: Bool = false
-    ) {
-        self.song = song
-        self.isDetailed = isDetailed
-    }
-}
-
 struct SongCellView: View {
     @EnvironmentObject private var nowPlayingManager: NowPlayingManager
+    @Environment(\.isAdmin) var isAdmin
+    @Environment(\.currentUser) var currentUser
     @ObservedObject var viewModel: SongCellViewModel
+    @State private var isDisplayingCopyrightInfringementRequest: Bool = false
+    @State private var isDisplayingBlacklistRequest: Bool = false
     
     var body: some View {
+        song
+            .sheet(isPresented: $isDisplayingCopyrightInfringementRequest) {
+                if let email = currentUser?.email {
+                    SendMailView.copyrightRequest(for: "song " + viewModel.song.id.uuidString, from: email)
+                }
+            }
+            .sheet(isPresented: $isDisplayingBlacklistRequest) {
+                if let email = currentUser?.email {
+                    SendMailView.countryBlacklistRequest(for: "song " + viewModel.song.id.uuidString, from: email)
+                }
+            }
+    }
+    
+    private var song: some View {
         HStack(alignment: .center, spacing: 16) {
-            if !viewModel.isDetailed {
-                Text("\(viewModel.song.details.ordinal + 1)").foregroundStyle(.gray)
-            }
-            if viewModel.isDetailed {
-                CoverArtView(
-                    imagePath: viewModel.song.details.coverImagePath,
-                    placeholderName: "music.note",
-                    size: 64,
-                    cornerRadius: 8
-                )
-            }
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(viewModel.song.details.name ?? "Song title")
-                    if viewModel.song.details.isExplicit {
-                        Image(systemName: "e.square.fill")
-                    }
+            HStack(alignment: .center, spacing: 16) {
+                if !viewModel.isDetailed {
+                    Text("\(viewModel.song.details.ordinal + 1)").foregroundStyle(.gray)
                 }
                 if viewModel.isDetailed {
-                    Text(viewModel.song.artistName)
-                        .foregroundStyle(.gray)
+                    CoverArtView(
+                        imagePath: viewModel.song.details.coverImagePath,
+                        placeholderName: "music.note",
+                        size: 64,
+                        cornerRadius: 8
+                    )
+                }
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(viewModel.song.details.name ?? "Song title")
+                        if viewModel.song.details.isExplicit {
+                            Image(systemName: "e.square.fill")
+                        }
+                    }
+                    if viewModel.isDetailed {
+                        Text(viewModel.song.artistName)
+                            .foregroundStyle(.gray)
+                    }
+                }
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                nowPlayingManager.song = viewModel.song.details
+            }
+            menu
+        }
+    }
+    
+    private var menu: some View {
+        Menu {
+            Button {
+                isDisplayingCopyrightInfringementRequest.toggle()
+            } label: {
+                HStack {
+                    Text("Flag for Copyright")
+                    Spacer()
+                    Image(systemName: "flag")
                 }
             }
-            Spacer()
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            nowPlayingManager.song = viewModel.song.details
+            if isAdmin {
+                Button {
+                    isDisplayingBlacklistRequest.toggle()
+                } label: {
+                    HStack {
+                        Text("Country Blacklist")
+                        Spacer()
+                        Image(systemName: "slash.circle")
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .tint(.primary)
+                .frame(height: viewModel.isDetailed ? 64 : 32)
         }
     }
 }

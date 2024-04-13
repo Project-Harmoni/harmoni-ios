@@ -48,3 +48,42 @@ struct SendMailView : UIViewControllerRepresentable {
         }
     }
 }
+
+// MARK: - Common Mail
+
+extension SendMailView {
+    static func adminRequest(for email: String, with completion: (() -> Void)? = nil) -> SendMailView {
+        SendMailView(
+            content: "Harmoni,\n\n\(email) is requesting to be an admin.",
+            to: "teamharmonirequests@gmail.com",
+            subject: "Admin Request") {
+                completion?()
+            }
+    }
+    
+    static func copyrightRequest(
+        for media: String,
+        from flagger: String,
+        with completion: (() -> Void)? = nil
+    ) -> SendMailView {
+        SendMailView(
+            content: "Harmoni,\n\n\(flagger) is flagging \(media) for copyright infringement. Please proceed with process.",
+            to: "teamharmonirequests@gmail.com",
+            subject: "Copyright Infringement Flag") {
+                completion?()
+            }
+    }
+    
+    static func countryBlacklistRequest(
+        for media: String,
+        from flagger: String,
+        with completion: (() -> Void)? = nil
+    ) -> SendMailView {
+        SendMailView(
+            content: "Harmoni,\n\n\(flagger) is country blacklisting \(media). Please proceed with process.",
+            to: "teamharmonirequests@gmail.com",
+            subject: "Country Blacklist Request") {
+                completion?()
+            }
+    }
+}

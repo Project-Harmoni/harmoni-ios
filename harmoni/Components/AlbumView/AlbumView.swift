@@ -10,8 +10,12 @@ import SwiftUI
 
 struct AlbumView: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.isAdmin) var isAdmin
+    @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: AlbumViewModel
     @State private var artistName: String?
+    @State private var isDisplayingCopyrightInfringementRequest: Bool = false
+    @State private var isDisplayingBlacklistRequest: Bool = false
     
     var body: some View {
         albumContainer
@@ -19,6 +23,16 @@ struct AlbumView: View {
                 await viewModel.getAlbum()
                 await viewModel.allTagsViewModel.getTags()
                 artistName = await viewModel.artistName
+            }
+            .sheet(isPresented: $isDisplayingCopyrightInfringementRequest) {
+                if let email = currentUser?.email, let id = viewModel.album.id {
+                    SendMailView.copyrightRequest(for: "album " + String(id), from: email)
+                }
+            }
+            .sheet(isPresented: $isDisplayingBlacklistRequest) {
+                if let email = currentUser?.email, let id = viewModel.album.id {
+                    SendMailView.countryBlacklistRequest(for: "album " + String(id), from: email)
+                }
             }
     }
     
@@ -69,6 +83,26 @@ struct AlbumView: View {
                     }
                     Button("Delete", role: .destructive) {
                         viewModel.isPresentingDeleteConfirm.toggle()
+                    }
+                    Button {
+                        isDisplayingCopyrightInfringementRequest.toggle()
+                    } label: {
+                        HStack {
+                            Text("Flag for Copyright")
+                            Spacer()
+                            Image(systemName: "flag")
+                        }
+                    }
+                    if isAdmin {
+                        Button {
+                            isDisplayingBlacklistRequest.toggle()
+                        } label: {
+                            HStack {
+                                Text("Country Blacklist")
+                                Spacer()
+                                Image(systemName: "slash.circle")
+                            }
+                        }
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")

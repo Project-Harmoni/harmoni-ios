@@ -213,6 +213,7 @@ private extension AccountView {
     private var menu: some View {
         Menu {
             Button {
+                UserDefaults.standard.set(false, forKey: "isAdminRequested")
                 viewModel.logout()
             } label: {
                 Text("Sign Out")
