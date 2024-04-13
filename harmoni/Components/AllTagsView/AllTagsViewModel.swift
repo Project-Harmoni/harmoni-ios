@@ -29,7 +29,7 @@ class AllTagsViewModel: ObservableObject {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
         self.genreTagsViewModel = genreViewModel
-        self.moodTagsViewModel = miscViewModel
+        self.moodTagsViewModel = moodViewModel
         self.instrumentsTagsViewModel = instrumentViewModel
         self.miscTagsViewModel = miscViewModel
         

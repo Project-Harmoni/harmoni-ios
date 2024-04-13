@@ -8,9 +8,6 @@
 import Foundation
 
 class TagListViewModel: ObservableObject {
-    @MainActor @Published var isDisplayingCreateTagAlert: Bool = false
-    @MainActor @Published var isDisplayingEditTagAlert: Bool = false
-    @MainActor @Published var isDisplayingDeleteTagAlert: Bool = false
     @Published var newTagName: String = ""
     @Published var editedTagName: String = ""
     @Published var selectedTag: Tag?

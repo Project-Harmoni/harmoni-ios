@@ -17,6 +17,7 @@ struct UploadView: View {
     
     var body: some View {
         form
+            .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     private var form: some View {

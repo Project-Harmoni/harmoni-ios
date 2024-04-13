@@ -12,6 +12,7 @@ struct SearchFilterView: View {
     
     var body: some View {
         filters
+            .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     private var filters: some View {

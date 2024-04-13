@@ -12,12 +12,15 @@ struct TagListView: View {
     @EnvironmentObject private var uploadStore: UploadStore
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject var viewModel: TagListViewModel
+    @State private var isDisplayingCreateTagAlert: Bool = false
+    @State private var isDisplayingEditTagAlert: Bool = false
+    @State private var isDisplayingDeleteTagAlert: Bool = false
     
     var body: some View {
         tags
             .alert(
                 viewModel.createTagTitle,
-                isPresented: $viewModel.isDisplayingCreateTagAlert
+                isPresented: $isDisplayingCreateTagAlert
             ) {
                 TextField("Name", text: $viewModel.newTagName)
                 Button("Cancel", role: .cancel, action: {})
@@ -27,12 +30,12 @@ struct TagListView: View {
             } message: {}
             .alert(
                 viewModel.editTagTitle,
-                isPresented: $viewModel.isDisplayingEditTagAlert
+                isPresented: $isDisplayingEditTagAlert
             ) {
                 TextField("Edit name", text: $viewModel.editedTagName)
                 Button("Cancel", role: .cancel, action: {})
                 Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
-                    viewModel.isDisplayingDeleteTagAlert.toggle()
+                    isDisplayingDeleteTagAlert.toggle()
                 })
                 Button("Save", role: .none, action: {
                     viewModel.editTag()
@@ -40,7 +43,7 @@ struct TagListView: View {
             } message: {}
             .alert(
                 viewModel.deleteTagTitle,
-                isPresented: $viewModel.isDisplayingDeleteTagAlert
+                isPresented: $isDisplayingDeleteTagAlert
             ) {
                 Button("Cancel", role: .cancel, action: {})
                 Button(isSearching ? "Remove" : "Delete", role: .destructive, action: {
@@ -81,7 +84,7 @@ struct TagListView: View {
         Button {
             viewModel.selectedTag = tag
             viewModel.editedTagName = tag.name
-            viewModel.isDisplayingEditTagAlert.toggle()
+            isDisplayingEditTagAlert.toggle()
         } label: {
             Text(tag.name)
                 .foregroundStyle(viewModel.isReadOnly ? Color.primary : .blue)
@@ -96,7 +99,7 @@ struct TagListView: View {
         if !viewModel.isReadOnly {
             Button {
                 viewModel.newTagName = ""
-                viewModel.isDisplayingCreateTagAlert.toggle()
+                isDisplayingCreateTagAlert.toggle()
             } label: {
                 Image(systemName: "plus")
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
