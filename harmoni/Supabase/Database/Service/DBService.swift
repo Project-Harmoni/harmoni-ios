@@ -14,7 +14,7 @@ protocol DBServiceProviding {
     func isAdmin(with id: UUID) async throws -> Bool
     /// Check if user is new
     func isNew(with id: UUID) async throws -> Bool
-    /// Get user with id
+    /// Get user with `UUID`
     func getUser(with id: UUID) async throws -> UserDB?
     /// Get artist with `UUID`
     func getArtist(with id: UUID) async throws -> ArtistDB?
@@ -22,8 +22,6 @@ protocol DBServiceProviding {
     func getArtistNameForSong(_ song: SongDB) async throws -> String?
     /// Get listener with `UUID`
     func getListener(with id: UUID) async throws -> ListenerDB?
-    /// Get user with `UUID`
-    func getUser(with id: UUID) async throws -> UserDB?
     /// Get tag category
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB?
     /// Get all tag categories
@@ -118,10 +116,6 @@ struct DBService: DBServiceProviding {
     
     func getListener(with id: UUID) async throws -> ListenerDB? {
         return try await Supabase.shared.client.database.listener(with: id)
-    }
-    
-    func getUser(with id: UUID) async throws -> UserDB? {
-        return try await Supabase.shared.client.database.user(with: id)
     }
     
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB? {

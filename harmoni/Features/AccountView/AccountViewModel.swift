@@ -12,8 +12,8 @@ import Supabase
 
 class AccountViewModel: ObservableObject {
     /// Registered users have provided birthday and role selection
-    @Published var isRegistrationComplete: Bool = false
-    @Published var isDisplayingWelcomeView: Bool = false
+    @MainActor @Published var isRegistrationComplete: Bool = false
+    @MainActor @Published var isDisplayingWelcomeView: Bool = false
     @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var isError: Bool = false
@@ -49,11 +49,11 @@ class AccountViewModel: ObservableObject {
         
         AuthManager.shared.$isRegistrationComplete
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isComplete in
+            .sink { isComplete in
                 guard let isComplete else { return }
-                guard let self else { return }
-                self.isRegistrationComplete = isComplete
-                Task {
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.isRegistrationComplete = isComplete
                     self.isDisplayingWelcomeView = await self.userProvider.isNew
                 }
             }
@@ -69,11 +69,6 @@ class AccountViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        
-        /* Task { @MainActor [weak self] in
-            guard let self else { return }
-            self.isDisplayingWelcomeView = await self.userProvider.isNew
-        } */
     }
     
     @MainActor
