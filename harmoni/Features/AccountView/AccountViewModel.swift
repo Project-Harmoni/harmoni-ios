@@ -13,6 +13,7 @@ import Supabase
 class AccountViewModel: ObservableObject {
     /// Registered users have provided birthday and role selection
     @Published var isRegistrationComplete: Bool = false
+    @Published var isDisplayingWelcomeView: Bool = false
     @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var isError: Bool = false
@@ -33,6 +34,7 @@ class AccountViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private let database: DBServiceProviding = DBService()
     private let storage: StorageProviding = StorageService()
+    private let userProvider: UserProviding = UserProvider()
     
     init() {
         AuthManager.shared.$isSignedIn
@@ -49,7 +51,11 @@ class AccountViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] isComplete in
                 guard let isComplete else { return }
-                self?.isRegistrationComplete = isComplete
+                guard let self else { return }
+                self.isRegistrationComplete = isComplete
+                Task {
+                    self.isDisplayingWelcomeView = await self.userProvider.isNew
+                }
             }
             .store(in: &cancellables)
         
@@ -63,12 +69,18 @@ class AccountViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        
+        /* Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.isDisplayingWelcomeView = await self.userProvider.isNew
+        } */
     }
     
     @MainActor
     private func handleSignIn(_ isSignedIn: Bool) async {
         self.user = await AuthManager.shared.currentUser
         self.isSignedIn = isSignedIn
+        self.isDisplayingWelcomeView = await self.userProvider.isNew
     }
     
     @MainActor

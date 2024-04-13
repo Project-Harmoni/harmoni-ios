@@ -46,6 +46,7 @@ struct AppContainerView: View {
         }
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
+        .environment(\.isNew, viewModel.isNew)
         .environment(\.currentUser, viewModel.currentUser)
     }
 }

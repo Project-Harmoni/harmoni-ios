@@ -66,6 +66,9 @@ struct AccountView: View {
         } message: {
             Text("Hm, that didn't work. Please try again.")
         }
+        .sheet(isPresented: $viewModel.isDisplayingWelcomeView, content: {
+            WelcomeView()
+        })
         .navigationDestination(for: AccountViewPath.self) { destination in
             switch destination {
             case .uploader: UploadView()

@@ -16,6 +16,8 @@ protocol DBServiceProviding {
     func getArtist(with id: UUID) async throws -> ArtistDB?
     /// Get listener with `UUID`
     func getListener(with id: UUID) async throws -> ListenerDB?
+    /// Get user with `UUID`
+    func getUser(with id: UUID) async throws -> UserDB?
     /// Get tag category
     func getTagCategory(with category: TagCategory) async throws -> TagCategoryDB?
     /// Get albums by artist

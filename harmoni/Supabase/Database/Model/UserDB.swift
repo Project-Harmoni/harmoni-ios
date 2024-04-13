@@ -16,7 +16,7 @@ struct UserDB: Codable {
     var isAdmin: Bool = false
     var createdAt: Date?
     var birthday: String?
-    var isNew: Bool = false
+    var isNew: Bool = true
     
     enum CodingKeys: String, CodingKey {
         case id = "user_id"
