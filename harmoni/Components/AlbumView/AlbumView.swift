@@ -78,11 +78,25 @@ struct AlbumView: View {
                     Image(systemName: "tag")
                 }
                 Menu {
-                    Button("Edit", role: .none) {
-                        viewModel.isPresentingEdit.toggle()
-                    }
-                    Button("Delete", role: .destructive) {
-                        viewModel.isPresentingDeleteConfirm.toggle()
+                    if viewModel.isOwner {
+                        Button {
+                            viewModel.isPresentingEdit.toggle()
+                        } label: {
+                            HStack {
+                                Text("Edit")
+                                Spacer()
+                                Image(systemName: "pencil")
+                            }
+                        }
+                        Button(role: .destructive) {
+                            viewModel.isPresentingDeleteConfirm.toggle()
+                        } label: {
+                            HStack {
+                                Text("Delete")
+                                Spacer()
+                                Image(systemName: "trash")
+                            }
+                        }
                     }
                     Button {
                         isDisplayingCopyrightInfringementRequest.toggle()

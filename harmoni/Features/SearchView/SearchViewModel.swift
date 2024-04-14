@@ -55,16 +55,21 @@ class SearchViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        Publishers.CombineLatest4(filterViewModel.genreTagsViewModel.$tags, filterViewModel.moodTagsViewModel.$tags, filterViewModel.instrumentsTagsViewModel.$tags, filterViewModel.miscTagsViewModel.$tags)
-            .debounce(for: 0.5, scheduler: DispatchQueue.main)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                Task { @MainActor in
-                    await self.advancedSearch(SearchQuery(filters: self.filterViewModel))
-                }
+        Publishers.CombineLatest4(
+            filterViewModel.genreTagsViewModel.$tags,
+            filterViewModel.moodTagsViewModel.$tags,
+            filterViewModel.instrumentsTagsViewModel.$tags,
+            filterViewModel.miscTagsViewModel.$tags
+        )
+        .debounce(for: 0.5, scheduler: DispatchQueue.main)
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] _ in
+            guard let self else { return }
+            Task { @MainActor in
+                await self.advancedSearch(SearchQuery(filters: self.filterViewModel))
             }
-            .store(in: &cancellables)
+        }
+        .store(in: &cancellables)
     }
     
     @MainActor

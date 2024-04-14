@@ -8,13 +8,13 @@
 import Foundation
 
 protocol DBServiceProviding {
-    // Get
-    
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
     /// Check if user is new
     func isNew(with id: UUID) async throws -> Bool
-    /// Get user with `UUID`
+    /// Check if user is owner of album
+    func does(artist: UUID, own album: Int8) async throws -> Bool
+    /// Get user with id
     func getUser(with id: UUID) async throws -> UserDB?
     /// Get artist with `UUID`
     func getArtist(with id: UUID) async throws -> ArtistDB?
@@ -45,8 +45,6 @@ protocol DBServiceProviding {
     /// Advanced search by query (albums, artists, songs, tags)
     func advancedSearch(with query: SearchQuery) async throws -> SearchResults
     
-    // Upsert
-    
     /// Upsert (update or insert) user in DB
     func upsert(user: UserDB) async throws
     /// Upsert (update or insert) listener in DB
@@ -66,12 +64,7 @@ protocol DBServiceProviding {
     /// Upsert (update or insert) tag category in DB
     func upsert(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
     
-    // Update
-    
-    /// Update user in DB
-    func update(user: UserDB) async throws
-    /// Update listener in DB
-    func update(listener: ListenerDB) async throws
+
     /// Update artist in DB
     func update(artist: ArtistDB) async throws
     /// Update song in DB
@@ -80,10 +73,6 @@ protocol DBServiceProviding {
     func update(album: AlbumDB) async throws -> AlbumDB?
     /// Update tag in DB
     func update(tag: TagDB) async throws -> TagDB?
-    /// Udate tag category in DB
-    func update(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
-    
-    // Delete
     
     // Delete song in DB
     func deleteSong(with id: Int8?) async throws
@@ -100,6 +89,9 @@ struct DBService: DBServiceProviding {
     func isNew(with id: UUID) async throws -> Bool {
         let user = try await Supabase.shared.client.database.user(with: id)
         return user?.isNew ?? false
+
+    func does(artist: UUID, own album: Int8) async throws -> Bool {
+        try await Supabase.shared.client.database.does(artist: artist, own: album)
     }
     
     func getUser(with id: UUID) async throws -> UserDB? {
@@ -143,7 +135,7 @@ struct DBService: DBServiceProviding {
             .songs
             .select()
             .order(SongDB.CodingKeys.createdAt.rawValue, ascending: false)
-            .limit(20)
+            .limit(30)
             .execute()
         
         let songs = try JSONDecoder().decode([SongDB].self, from: response.data)
@@ -271,22 +263,6 @@ extension DBService {
 // MARK: - DB Service Update
 
 extension DBService {
-    func update(user: UserDB) async throws {
-        _ = try await Supabase.shared.client.database
-            .users
-            .update(user)
-            .eq(UserDB.CodingKeys.id.rawValue, value: user.id)
-            .execute()
-    }
-    
-    func update(listener: ListenerDB) async throws {
-        _ = try await Supabase.shared.client.database
-            .listeners
-            .update(listener)
-            .eq(ListenerDB.CodingKeys.id.rawValue, value: listener.id)
-            .execute()
-    }
-    
     func update(artist: ArtistDB) async throws {
         _ = try await Supabase.shared.client.database
             .artists
@@ -333,19 +309,6 @@ extension DBService {
         
         let tags = try JSONDecoder().decode([TagDB].self, from: response.data)
         return tags.first
-    }
-    
-    func update(tagCategory: TagCategoryDB) async throws -> TagCategoryDB? {
-        guard let id = tagCategory.id else { return nil }
-        let response = try await Supabase.shared.client.database
-            .tagCategories
-            .update(tagCategory.updateable())
-            .eq(TagCategoryDB.CodingKeys.id.rawValue, value: Int(id))
-            .select()
-            .execute()
-        
-        let categories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
-        return categories.first
     }
 }
 
