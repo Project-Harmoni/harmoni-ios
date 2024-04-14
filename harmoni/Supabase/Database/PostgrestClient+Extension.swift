@@ -119,6 +119,11 @@ extension PostgrestClient {
         return try await artist(with: artistUUID)?.name
     }
     
+    func does(artist: UUID, own album: Int8) async throws -> Bool {
+        let albums = try await albumsByArtist(with: artist)
+        return albums.contains(where: { $0.id == album })
+    }
+    
     func tagCategory(with category: TagCategory) async throws -> TagCategoryDB? {
         let tagCategories: [TagCategoryDB] = try await tagCategories
             .select()

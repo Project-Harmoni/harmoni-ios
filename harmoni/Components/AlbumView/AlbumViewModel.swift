@@ -9,8 +9,10 @@ import Foundation
 
 class AlbumViewModel: ObservableObject {
     let database: DBServiceProviding = DBService()
+    let userProvider: UserProviding = UserProvider()
     let storage: StorageProviding = StorageService()
     let album: AlbumDB
+    @MainActor @Published var isOwner: Bool = false
     @MainActor @Published var songs: [Song] = []
     @MainActor @Published var selectedSongs: Set<Song.ID> = []
     @MainActor @Published var isPresentingDeleteConfirm: Bool = false
@@ -30,6 +32,16 @@ class AlbumViewModel: ObservableObject {
             albumID: album.id,
             isReadOnly: true
         )
+        self.checkIfOwner()
+    }
+    
+    private func checkIfOwner() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let id = album.id else { return }
+            guard let artistID = await userProvider.currentUserID else { return }
+            self.isOwner = try await database.does(artist: artistID, own: id)
+        }
     }
     
     @MainActor

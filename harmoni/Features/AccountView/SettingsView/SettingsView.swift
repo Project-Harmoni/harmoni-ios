@@ -31,9 +31,11 @@ struct SettingsView: View {
                         Spacer()
                         Text("Sent").bold()
                     }
-                } else if !isAdmin, MFMailComposeViewController.canSendMail() {
+                } else if !isAdmin {
                     Button {
-                        isDisplayingAdminRequest.toggle()
+                        if MFMailComposeViewController.canSendMail() {
+                            isDisplayingAdminRequest.toggle()
+                        }
                     } label: {
                         Text("Request to be Admin")
                     }

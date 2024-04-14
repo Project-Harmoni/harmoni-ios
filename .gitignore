@@ -1,1 +1,4 @@
 ConfigDebug.xcconfig
+*.xcuserstate
+*.xcbkptlist
+*.DS_Store
