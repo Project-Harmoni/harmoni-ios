@@ -12,6 +12,8 @@ import Foundation
 protocol DBServiceProviding {
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
+    /// Check if user is new
+    func isNew(with id: UUID) async throws -> Bool
     /// Check if user is owner of album
     func does(artist: UUID, own album: Int8) async throws -> Bool
     /// Get user with id
@@ -86,6 +88,10 @@ struct DBService: DBServiceProviding {
         return user?.isAdmin ?? false
     }
     
+    func isNew(with id: UUID) async throws -> Bool {
+        let user = try await Supabase.shared.client.database.user(with: id)
+        return user?.isNew ?? false
+
     func does(artist: UUID, own album: Int8) async throws -> Bool {
         try await Supabase.shared.client.database.does(artist: artist, own: album)
     }
