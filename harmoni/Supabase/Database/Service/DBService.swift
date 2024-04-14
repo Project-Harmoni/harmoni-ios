@@ -7,6 +7,8 @@
 
 import Foundation
 
+// TODO: - Clean-up
+
 protocol DBServiceProviding {
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
@@ -125,20 +127,7 @@ struct DBService: DBServiceProviding {
     }
     
     func getLatestSongs() async throws -> [Song] {
-        let response = try await Supabase.shared.client.database
-            .songs
-            .select()
-            .order(SongDB.CodingKeys.createdAt.rawValue, ascending: false)
-            .limit(30)
-            .execute()
-        
-        let songs = try JSONDecoder().decode([SongDB].self, from: response.data)
-        var latest: [Song] = []
-        for song in songs {
-            guard let artistName = try await getArtistNameForSong(song) else { continue }
-            latest.append(.init(details: song, artistName: artistName))
-        }
-        return latest
+        return try await Supabase.shared.client.database.getLatestSongs()
     }
     
     func songsOnAlbum(with id: Int8) async throws -> [SongDB] {

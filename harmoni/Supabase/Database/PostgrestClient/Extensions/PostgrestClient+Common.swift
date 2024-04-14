@@ -1,90 +1,14 @@
 //
-//  PostgrestClient+Extension.swift
+//  PostgrestClient+Common.swift
 //  harmoni
 //
-//  Created by Kyle Stokes on 3/11/24.
+//  Created by Kyle Stokes on 4/13/24.
 //
 
 import Foundation
 import Supabase
 
-fileprivate enum DatabaseTables: String {
-    case users = "users"
-    case artists = "artists"
-    case groups = "groups"
-    case artistGroup = "artist_group"
-    case albums = "albums"
-    case songs = "songs"
-    case listeners = "listeners"
-    case tags = "tags"
-    case tagCategory = "tag_category"
-    case listenerSongStream = "listener_song_stream"
-    case listenerSongLikes = "listener_song_likes"
-    case songTag = "song_tag"
-    case songAlbum = "song_album"
-}
-
-// MARK: - Tables
-
-extension PostgrestClient {
-    private func getTable(with name: String) async -> PostgrestQueryBuilder {
-        await Supabase.shared.client.database.from(name)
-    }
-    
-    var users: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.users.rawValue) }
-    }
-    
-    var artists: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.artists.rawValue) }
-    }
-    
-    var groups: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.groups.rawValue) }
-    }
-    
-    var artistGroup: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.artistGroup.rawValue) }
-    }
-    
-    var albums: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.albums.rawValue) }
-    }
-    
-    var songs: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.songs.rawValue) }
-    }
-    
-    var listeners: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.listeners.rawValue) }
-    }
-    
-    var tags: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.tags.rawValue) }
-    }
-    
-    var tagCategories: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.tagCategory.rawValue) }
-    }
-    
-    var listenerSongStreams: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.listenerSongStream.rawValue) }
-    }
-    
-    var listenerSongLikes: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.listenerSongLikes.rawValue) }
-    }
-    
-    var songTags: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.songTag.rawValue) }
-    }
-    
-    var songAlbums: PostgrestQueryBuilder {
-        get async { await getTable(with: DatabaseTables.songAlbum.rawValue) }
-    }
-}
-
-// MARK: - Common Ops
+// TODO: - Clean-up
 
 extension PostgrestClient {
     func user(with id: UUID) async throws -> UserDB? {
@@ -150,6 +74,17 @@ extension PostgrestClient {
         return albums
     }
     
+    func albumIDForSong(_ song: SongDB) async throws -> Int8? {
+        guard let id = song.id else { return nil }
+        let albums: [Int8] = try await songAlbums
+            .select()
+            .eq(SongAlbumDB.CodingKeys.songID.rawValue, value: Int(id))
+            .execute()
+            .value
+        
+        return albums.first
+    }
+    
     func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
         let songID = SongAlbumDB.CodingKeys.songID.rawValue
         let albumID = SongAlbumDB.CodingKeys.albumID.rawValue
@@ -164,6 +99,22 @@ extension PostgrestClient {
             .value
         
         return songs
+    }
+    
+    func getLatestSongs() async throws -> [Song] {
+        let songs: [SongDB] = try await self.songs
+            .select()
+            .order(SongDB.CodingKeys.createdAt.rawValue, ascending: false)
+            .limit(30)
+            .execute()
+            .value
+        
+        var latest: [Song] = []
+        for song in songs {
+            guard let artistName = try await artistNameForSong(song) else { continue }
+            latest.append(.init(details: song, artistName: artistName))
+        }
+        return latest
     }
     
     func deleteSong(with id: Int8) async throws {
@@ -332,11 +283,8 @@ extension PostgrestClient {
         
         var songsWithTags: [Song] = []
         for song in taggedSongs {
-            let artistID = song.artistID
-            guard let artistUUID = UUID(uuidString: artistID) else { continue }
-            let artist = try await artist(with: artistUUID)
-            if let artistName = artist?.name {
-                songsWithTags.append(.init(details: song, artistName: artistName))
+            if let artist = try await artistNameForSong(song) {
+                songsWithTags.append(.init(details: song, artistName: artist))
             }
         }
         return songsWithTags
@@ -353,11 +301,8 @@ extension PostgrestClient {
         
         var songs: [Song] = []
         for song in songsFromSearch {
-            let artistID = song.artistID
-            guard let artistUUID = UUID(uuidString: artistID) else { continue }
-            let artist = try await artist(with: artistUUID)
-            if let artistName = artist?.name {
-                songs.append(.init(details: song, artistName: artistName))
+            if let artist = try await artistNameForSong(song) {
+                songs.append(.init(details: song, artistName: artist))
             }
         }
         
@@ -397,11 +342,8 @@ extension PostgrestClient {
                 .value
             
             for song in songsFromSearch {
-                let artistID = song.artistID
-                guard let artistUUID = UUID(uuidString: artistID) else { continue }
-                let artist = try await artist(with: artistUUID)
-                if let artistName = artist?.name {
-                    songs.append(.init(details: song, artistName: artistName))
+                if let artist = try await artistNameForSong(song) {
+                    songs.append(.init(details: song, artistName: artist))
                 }
             }
         }
@@ -451,33 +393,5 @@ extension PostgrestClient {
             albums: albums,
             artists: artists
         )
-    }
-}
-
-fileprivate extension PostgrestQueryBuilder {
-    func innerJoin(table: DatabaseTables, column: String) async throws -> PostgrestFilterBuilder {
-        self.select("*, \(table.rawValue)!inner(\(column))")
-    }
-    
-    func innerJoinEq(
-        table: DatabaseTables,
-        joinedColumn: String,
-        equalColumn: String,
-        equalValue: URLQueryRepresentable
-    ) async throws -> PostgrestFilterBuilder {
-        try await self
-            .innerJoin(table: table, column: joinedColumn)
-            .eq("\(table.rawValue).\(equalColumn)", value: equalValue)
-    }
-    
-    func innerJoinIn(
-        table: DatabaseTables,
-        joinedColumn: String,
-        inColumn: String,
-        inValue: [URLQueryRepresentable]
-    ) async throws -> PostgrestFilterBuilder {
-        try await self
-            .innerJoin(table: table, column: joinedColumn)
-            .in("\(table.rawValue).\(inColumn)", value: inValue)
     }
 }
