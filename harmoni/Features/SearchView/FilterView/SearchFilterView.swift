@@ -33,7 +33,7 @@ struct SearchFilterView: View {
                 .environmentObject(UploadStore())
             }
         }
-        .navigationTitle("Advanced Search")
+        .navigationTitle("Filters")
     }
 }
 

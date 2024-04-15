@@ -147,7 +147,7 @@ struct SearchView: View {
     
     @ViewBuilder
     private var advancedSearchSongsThatMatch: some View {
-        section(from: viewModel.advancedSearchSongsThatMatchQuery, with: "Advanced Search Songs")
+        section(from: viewModel.advancedSearchSongsThatMatchQuery, with: "Filtered Songs")
     }
     
     @ViewBuilder
@@ -224,12 +224,12 @@ struct SearchView: View {
     
     @ViewBuilder
     private var advancedSearchAlbumsThatMatch: some View {
-        section(from: viewModel.advancedSearchAlbumsThatMatchQuery, with: "Advanced Search Albums")
+        section(from: viewModel.advancedSearchAlbumsThatMatchQuery, with: "Filtered Albums")
     }
     
     @ViewBuilder
     private var advancedSearchArtistsThatMatch: some View {
-        section(from: viewModel.advancedSearchArtistsThatMatchQuery, with: "Advanced Search Artists")
+        section(from: viewModel.advancedSearchArtistsThatMatchQuery, with: "Filtered Artists")
     }
 }
 
