@@ -105,6 +105,7 @@ struct DBService: DBServiceProviding {
     func isNew(with id: UUID) async throws -> Bool {
         let user = try await Supabase.shared.client.database.user(with: id)
         return user?.isNew ?? false
+    }
 
     func does(artist: UUID, own album: Int8) async throws -> Bool {
         try await Supabase.shared.client.database.does(artist: artist, own: album)
