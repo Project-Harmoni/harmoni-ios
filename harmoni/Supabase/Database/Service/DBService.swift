@@ -46,6 +46,20 @@ protocol DBServiceProviding {
     func search(with query: SearchQuery) async throws -> SearchResults
     /// Advanced search by query (albums, artists, songs, tags)
     func advancedSearch(with query: SearchQuery) async throws -> SearchResults
+    /// Get library
+    func getLibrary(for user: String) async throws -> [LibraryItem]
+    // Is song in library?
+    func isSongInLibrary(_ song: SongDB) async throws -> Bool
+    // Is album in library?
+    func isAlbumInLibrary(_ album: AlbumDB) async throws -> Bool
+    /// Add song to library
+    func addSongToLibrary(for user: String, song: SongDB) async throws
+    /// Add album to library
+    func addAlbumToLibrary(for user: String, album: AlbumDB) async throws
+    /// Remove song from library
+    func removeSongFromLibrary(_ song: SongDB) async throws
+    // Remove album from library
+    func removeAlbumFromLibrary(_ album: AlbumDB) async throws
     
     /// Upsert (update or insert) user in DB
     func upsert(user: UserDB) async throws
@@ -161,6 +175,38 @@ struct DBService: DBServiceProviding {
     /// Return artists, songs, albums, tags that match.
     func advancedSearch(with query: SearchQuery) async throws -> SearchResults {
         return try await Supabase.shared.client.database.advancedSearch(with: query)
+    }
+}
+
+// MARK: - Library
+
+extension DBService {
+    func getLibrary(for user: String) async throws -> [LibraryItem] {
+        try await Supabase.shared.client.database.getLibrary(for: user)
+    }
+    
+    func isSongInLibrary(_ song: SongDB) async throws -> Bool {
+        try await Supabase.shared.client.database.isSongInLibrary(song)
+    }
+    
+    func isAlbumInLibrary(_ album: AlbumDB) async throws -> Bool {
+        try await Supabase.shared.client.database.isAlbumInLibrary(album)
+    }
+    
+    func addSongToLibrary(for user: String, song: SongDB) async throws {
+        try await Supabase.shared.client.database.addSongToLibrary(for: user, song: song)
+    }
+    
+    func addAlbumToLibrary(for user: String, album: AlbumDB) async throws {
+        try await Supabase.shared.client.database.addAlbumToLibrary(for: user, album: album)
+    }
+    
+    func removeSongFromLibrary(_ song: SongDB) async throws {
+        try await Supabase.shared.client.database.removeSongFromLibrary(song)
+    }
+    
+    func removeAlbumFromLibrary(_ album: AlbumDB) async throws {
+        try await Supabase.shared.client.database.removeAlbumFromLibrary(album)
     }
 }
 

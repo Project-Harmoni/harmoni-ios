@@ -76,9 +76,20 @@ extension PostgrestClient {
     
     func albumIDForSong(_ song: SongDB) async throws -> Int8? {
         guard let id = song.id else { return nil }
-        let albums: [Int8] = try await songAlbums
+        let albums: [SongAlbumDB] = try await songAlbums
             .select()
             .eq(SongAlbumDB.CodingKeys.songID.rawValue, value: Int(id))
+            .execute()
+            .value
+        
+        return albums.first?.albumID
+    }
+    
+    func albumForSong(_ song: SongDB) async throws -> AlbumDB? {
+        guard let albumID = try await albumIDForSong(song) else { return nil }
+        let albums: [AlbumDB] = try await albums
+            .select()
+            .eq(AlbumDB.CodingKeys.id.rawValue, value: Int(albumID))
             .execute()
             .value
         

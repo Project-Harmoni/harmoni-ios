@@ -1,36 +1,102 @@
 //
-//  AlbumView.swift
+//  LibraryAlbumView.swift
 //  harmoni
 //
-//  Created by Kyle Stokes on 3/29/24.
+//  Created by Kyle Stokes on 4/14/24.
 //
 
 import AlertToast
 import SwiftUI
 
-struct AlbumView: View {
+class LibraryAlbumViewModel: ObservableObject {
+    @MainActor @Published var isDisplayingCopyrightInfringementRequest: Bool = false
+    @MainActor @Published var isDisplayingBlacklistRequest: Bool = false
+    @MainActor @Published var isPresentingViewTags: Bool = false
+    @MainActor @Published var isPresentingRemoveConfirm: Bool = false
+    @MainActor @Published var isRemoving: Bool = false
+    @MainActor @Published var isRemoved: Bool = false
+    private let database: DBServiceProviding = DBService()
+    let item: LibraryItem
+    var allTagsViewModel: AllTagsViewModel?
+    
+    init(item: LibraryItem) {
+        self.item = item
+        self.allTagsViewModel = AllTagsViewModel(
+            albumID: albumID,
+            isReadOnly: true
+        )
+    }
+    
+    var albumID: Int8? {
+        guard let firstSong = item.songs.first else { return nil }
+        return firstSong.album?.id
+    }
+    
+    var albumCoverPath: String? {
+        guard let firstSong = item.songs.first else { return nil }
+        return firstSong.details.coverImagePath
+    }
+    
+    var albumTitle: String? {
+        guard let firstSong = item.songs.first else { return nil }
+        return firstSong.details.albumName
+    }
+    
+    var artistName: String? {
+        guard let firstSong = item.songs.first else { return nil }
+        return firstSong.artistName
+    }
+    
+    
+    var yearReleased: String? {
+        item.album?.yearReleased
+    }
+    
+    var totalTracks: Int {
+        item.songs.count
+    }
+    
+    var totalTracksLabel: String {
+        return plural(totalTracks, "song")
+    }
+
+    var totalTracksDurationLabel: String {
+        totalTracksLabel
+    }
+    
+    var recordLabel: String? {
+        item.album?.recordLabel
+    }
+    
+    @MainActor
+    func removeAlbum() async {
+        do {
+            guard let album = item.album else { return }
+            try await database.removeAlbumFromLibrary(album)
+        } catch {
+            dump(error)
+        }
+    }
+}
+
+struct LibraryAlbumView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.isAdmin) var isAdmin
     @Environment(\.currentUser) var currentUser
-    @StateObject var viewModel: AlbumViewModel
-    @State private var artistName: String?
-    @State private var isDisplayingCopyrightInfringementRequest: Bool = false
-    @State private var isDisplayingBlacklistRequest: Bool = false
+    @StateObject var viewModel: LibraryAlbumViewModel
     
     var body: some View {
         albumContainer
             .task {
-                await viewModel.getAlbum()
-                await viewModel.allTagsViewModel.getTags()
-                artistName = await viewModel.artistName
+                await viewModel.allTagsViewModel?.getTags()
             }
-            .sheet(isPresented: $isDisplayingCopyrightInfringementRequest) {
-                if let email = currentUser?.email, let id = viewModel.album.id {
+            .sheet(isPresented: $viewModel.isDisplayingCopyrightInfringementRequest) {
+                if let email = currentUser?.email, let id = viewModel.albumID {
                     SendMailView.copyrightRequest(for: "album " + String(id), from: email)
                 }
             }
-            .sheet(isPresented: $isDisplayingBlacklistRequest) {
-                if let email = currentUser?.email, let id = viewModel.album.id {
+            .sheet(isPresented: $viewModel.isDisplayingBlacklistRequest) {
+                if let email = currentUser?.email, let id = viewModel.albumID {
                     SendMailView.countryBlacklistRequest(for: "album " + String(id), from: email)
                 }
             }
@@ -38,18 +104,14 @@ struct AlbumView: View {
     
     @ViewBuilder
     private var albumContainer: some View {
-        if viewModel.isLoading {
-            ProgressView()
-        } else {
-            album
-                .navigationBarTitleDisplayMode(.inline)
-        }
+        album
+            .navigationBarTitleDisplayMode(.inline)
     }
     
     private var album: some View {
         List {
             Section {
-                ForEach(viewModel.songs) { song in
+                ForEach(viewModel.item.songs) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
                             song: song
@@ -79,40 +141,18 @@ struct AlbumView: View {
                 }
                 Menu {
                     Section {
-                        Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
-                            viewModel.libraryAction()
+                        Button(role: .destructive) {
+                            viewModel.isPresentingRemoveConfirm.toggle()
                         } label: {
                             HStack {
-                                Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")
+                                Text("Remove from Library")
                                 Spacer()
-                                Image(systemName: viewModel.isAddedToLibrary ? "trash" : "plus")
-                            }
-                        }
-                    }
-                    Section {
-                        if viewModel.isOwner {
-                            Button {
-                                viewModel.isPresentingEdit.toggle()
-                            } label: {
-                                HStack {
-                                    Text("Edit")
-                                    Spacer()
-                                    Image(systemName: "pencil")
-                                }
-                            }
-                            Button(role: .destructive) {
-                                viewModel.isPresentingDeleteConfirm.toggle()
-                            } label: {
-                                HStack {
-                                    Text("Delete")
-                                    Spacer()
-                                    Image(systemName: "trash")
-                                }
+                                Image(systemName: "trash")
                             }
                         }
                     }
                     Button {
-                        isDisplayingCopyrightInfringementRequest.toggle()
+                        viewModel.isDisplayingCopyrightInfringementRequest.toggle()
                     } label: {
                         HStack {
                             Text("Flag for Copyright")
@@ -122,7 +162,7 @@ struct AlbumView: View {
                     }
                     if isAdmin {
                         Button {
-                            isDisplayingBlacklistRequest.toggle()
+                            viewModel.isDisplayingBlacklistRequest.toggle()
                         } label: {
                             HStack {
                                 Text("Country Blacklist")
@@ -137,47 +177,37 @@ struct AlbumView: View {
                 .menuOrder(.fixed)
             }
         }
-        .sheet(isPresented: $viewModel.isPresentingEdit) {
-            NavigationStack {
-                UploadView(
-                    viewModel: UploadViewModel(
-                        album: viewModel.album,
-                        songs: viewModel.songs.map { $0.details },
-                        tags: viewModel.tags
-                    )
+        .sheet(isPresented: $viewModel.isPresentingViewTags) {
+            if let allTagsViewModel = viewModel.allTagsViewModel {
+                AllTagsViewSheet(
+                    viewModel: allTagsViewModel
                 )
-                .navigationBarTitleDisplayMode(.inline)
             }
         }
-        .sheet(isPresented: $viewModel.isPresentingViewTags) {
-            AllTagsViewSheet(
-                viewModel: viewModel.allTagsViewModel
-            )
-        }
-        .alert("Delete Album", isPresented: $viewModel.isPresentingDeleteConfirm) {
+        .alert("Remove from Library", isPresented: $viewModel.isPresentingRemoveConfirm) {
             Button("Cancel", role: .cancel, action: {})
-            Button("Delete", role: .destructive, action: {
+            Button("Remove", role: .destructive, action: {
                 Task.detached {
-                    await viewModel.deleteAlbum()
+                    await viewModel.removeAlbum()
                 }
             })
         } message: {
-            Text("Are you sure you want to delete this album?")
+            Text("Are you sure you want to remove this from your library?")
         }
         .toast(
-            isPresenting: $viewModel.isDeleted,
+            isPresenting: $viewModel.isRemoved,
             duration: 2,
             tapToDismiss: true,
             alert: {
-                AlertToast(type: .complete(.green), title: "Album deleted")
+                AlertToast(type: .complete(.green), title: "Removed")
             }, completion: {
                 dismiss()
             }
         )
-        .toast(isPresenting: $viewModel.isDeleting) {
+        .toast(isPresenting: $viewModel.isRemoving) {
             AlertToast(
                 type: .loading,
-                title: "Deleting"
+                title: "Removing"
             )
         }
         
@@ -200,7 +230,7 @@ struct AlbumView: View {
     
     private var coverArt: some View {
         CoverArtView(
-            imagePath: viewModel.album.coverImagePath,
+            imagePath: viewModel.albumCoverPath,
             placeholderName: "music.note",
             size: 225,
             cornerRadius: 6
@@ -209,12 +239,12 @@ struct AlbumView: View {
     
     @ViewBuilder
     private var albumInfo: some View {
-        if let albumTitle = viewModel.albumTitle, let artistName {
+        if let albumTitle = viewModel.albumTitle, let artistName = viewModel.artistName {
             VStack(alignment: .center) {
                 HStack {
                     Text(albumTitle)
                         .bold()
-                    if viewModel.album.isExplicit {
+                    if let album = viewModel.item.album, album.isExplicit {
                         Image(systemName: "e.square.fill")
                     }
                 }
@@ -228,9 +258,7 @@ struct AlbumView: View {
     @ViewBuilder
     private var albumFooterInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let totalTracksDurationLabel = viewModel.totalTracksDurationLabel {
-                Text(totalTracksDurationLabel)
-            }
+            Text(viewModel.totalTracksDurationLabel)
             if let recordLabel = viewModel.recordLabel {
                 Text(recordLabel)
             }
@@ -238,11 +266,5 @@ struct AlbumView: View {
                 Text(yearReleased)
             }
         }
-    }
-}
-
-#Preview {
-    NavigationStack {
-        AlbumView(viewModel: AlbumViewModel(album: AlbumDB(id: 0, name: "Test Album", artistID: "", coverImagePath: "", yearReleased: "2024", totalTracks: 10, recordLabel: "Record Label", duration: 50.46, createdAt: nil)))
     }
 }

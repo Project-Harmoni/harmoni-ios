@@ -13,6 +13,7 @@ class AlbumViewModel: ObservableObject {
     let storage: StorageProviding = StorageService()
     let album: AlbumDB
     @MainActor @Published var isOwner: Bool = false
+    @MainActor @Published var isAddedToLibrary: Bool = false
     @MainActor @Published var songs: [Song] = []
     @MainActor @Published var selectedSongs: Set<Song.ID> = []
     @MainActor @Published var isPresentingDeleteConfirm: Bool = false
@@ -33,6 +34,7 @@ class AlbumViewModel: ObservableObject {
             isReadOnly: true
         )
         self.checkIfOwner()
+        self.checkIfInLibrary()
     }
     
     private func checkIfOwner() {
@@ -41,6 +43,27 @@ class AlbumViewModel: ObservableObject {
             guard let id = album.id else { return }
             guard let artistID = await userProvider.currentUserID else { return }
             self.isOwner = try await database.does(artist: artistID, own: id)
+        }
+    }
+    
+    private func checkIfInLibrary() {
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
+            self.isAddedToLibrary = try await self.database.isAlbumInLibrary(self.album)
+        }
+    }
+    
+    func libraryAction() {
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
+            guard let currentUserID = await self.userProvider.currentUserID else { return }
+            self.isAddedToLibrary
+            ? try await self.database.removeAlbumFromLibrary(self.album)
+            : try await self.database.addAlbumToLibrary(
+                for: currentUserID.uuidString,
+                album: self.album
+            )
+        
         }
     }
     

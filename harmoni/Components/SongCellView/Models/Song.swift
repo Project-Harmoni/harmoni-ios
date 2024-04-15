@@ -11,5 +11,5 @@ struct Song: Identifiable {
     let id = UUID()
     var details: SongDB
     var artistName: String
-    var albumID: Int8? = nil
+    var album: AlbumDB?
 }

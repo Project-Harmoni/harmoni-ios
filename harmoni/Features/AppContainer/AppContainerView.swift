@@ -28,7 +28,7 @@ struct AppContainerView: View {
                     }
                 
                 NavigationStack {
-                    Text("Library")
+                    LibraryView()
                         .navigationTitle("Library")
                 }
                 .tabItem {

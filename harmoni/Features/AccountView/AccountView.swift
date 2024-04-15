@@ -60,7 +60,6 @@ struct AccountView: View {
                 if !isEditing { menu }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Account")
         .alert("Uh Oh!", isPresented: $viewModel.isError) {
             Button("OK", role: .none, action: {})
