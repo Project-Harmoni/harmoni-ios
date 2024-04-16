@@ -329,8 +329,8 @@
 				B518F55E2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift */,
 				B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */,
 				B518F5612BA66E70002CDCB7 /* ArtistEnvironmentKey.swift */,
-				B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */,
 				6FC995132BCB1A8100075AE0 /* IsNewUserEnvironmentKey.swift */,
+				B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

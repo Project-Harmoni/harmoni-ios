@@ -13,6 +13,19 @@ struct LibraryItem: Identifiable {
     var songs: [Song]
     var album: AlbumDB?
     var artistName: String?
+    var addedOn: String?
+    
+    var date: Date? {
+        guard let addedOn else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZZZ"
+        return formatter.date(from: addedOn)
+    }
+}
+
+private struct LibraryMedia {
+    var song: Song
+    var addedOn: String?
 }
 
 extension PostgrestClient {
@@ -34,7 +47,7 @@ extension PostgrestClient {
         var librarySongs: [Song] = []
         for song in songs {
             if let artistName = try await artistNameForSong(song),
-            let album = try await albumForSong(song) {
+               let album = try await albumForSong(song) {
                 librarySongs.append(
                     .init(
                         details: song,
@@ -45,12 +58,27 @@ extension PostgrestClient {
             }
         }
         
-        let songsByAlbum = Dictionary(grouping: librarySongs, by: { $0.album?.id })
+        var library: [LibraryMedia] = []
+        for song in librarySongs {
+            if let id = song.details.id {
+                let listenerLibrary: [ListenerSongLibraryDB] = try await listenerSongLibrary
+                    .select()
+                    .eq(ListenerSongLibraryDB.CodingKeys.songID.rawValue, value: Int(id))
+                    .execute()
+                    .value
+                
+                guard let libraryDB = listenerLibrary.first else { continue }
+                library.append(.init(song: song, addedOn: libraryDB.addedOn))
+            }
+        }
+        
+        let songsByAlbum = Dictionary(grouping: library, by: { $0.song.album?.id })
         return songsByAlbum.values.map {
             LibraryItem(
-                songs: $0,
-                album: $0.first?.album,
-                artistName: $0.first?.artistName
+                songs: $0.map { $0.song },
+                album: $0.first?.song.album,
+                artistName: $0.first?.song.artistName,
+                addedOn: $0.first?.addedOn
             )
         }
     }

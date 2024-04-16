@@ -17,3 +17,14 @@ extension EnvironmentValues {
         set { self[AdminEnvironmentKey.self] = newValue }
     }
 }
+
+private struct ContainerEnvironmentKey: EnvironmentKey {
+    static let defaultValue = AppContainerViewModel()
+}
+
+extension EnvironmentValues {
+    var container: AppContainerViewModel {
+        get { self[ContainerEnvironmentKey.self] }
+        set { self[ContainerEnvironmentKey.self] = newValue }
+    }
+}

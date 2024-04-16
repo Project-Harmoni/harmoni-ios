@@ -187,8 +187,11 @@ struct LibraryAlbumView: View {
         .alert("Remove from Library", isPresented: $viewModel.isPresentingRemoveConfirm) {
             Button("Cancel", role: .cancel, action: {})
             Button("Remove", role: .destructive, action: {
-                Task.detached {
+                Task.detached { @MainActor in
+                    viewModel.isRemoving.toggle()
                     await viewModel.removeAlbum()
+                    viewModel.isRemoving.toggle()
+                    viewModel.isRemoved.toggle()
                 }
             })
         } message: {

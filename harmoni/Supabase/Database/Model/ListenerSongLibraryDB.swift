@@ -11,10 +11,12 @@ struct ListenerSongLibraryDB: Codable {
     var id: Int8?
     var listenerID: String?
     var songID: Int8?
+    var addedOn: String?
     
     enum CodingKeys: String, CodingKey {
         case id
         case listenerID = "listener_id"
         case songID = "song_id"
+        case addedOn = "added_on"
     }
 }

@@ -22,6 +22,8 @@ class AlbumViewModel: ObservableObject {
     @MainActor @Published var isLoading: Bool = true
     @MainActor @Published var isDeleting: Bool = false
     @MainActor @Published var isDeleted: Bool = false
+    @MainActor @Published var isLibraryActionTapped: Bool = false
+    @MainActor @Published var isLibraryActionCompleted: Bool = false
     @MainActor @Published var isError: Bool = false
     var allTagsViewModel: AllTagsViewModel
     var onDelete: (() -> Void)?
@@ -57,13 +59,15 @@ class AlbumViewModel: ObservableObject {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
             guard let currentUserID = await self.userProvider.currentUserID else { return }
+            self.isLibraryActionTapped.toggle()
             self.isAddedToLibrary
             ? try await self.database.removeAlbumFromLibrary(self.album)
             : try await self.database.addAlbumToLibrary(
                 for: currentUserID.uuidString,
                 album: self.album
             )
-        
+            self.isLibraryActionTapped.toggle()
+            self.isLibraryActionCompleted.toggle()
         }
     }
     

@@ -25,6 +25,14 @@ import SwiftUI
             }
         }
     }
+    
+    var sortedMedia: [LibraryItem] {
+        media
+            .sorted {
+                guard let firstDate = $0.date, let secondDate = $1.date else { return true }
+                return firstDate > secondDate
+            }
+    }
 }
 
 struct LibraryMediaCellView: View {
@@ -79,7 +87,7 @@ struct LibraryView: View {
                     .font(.title3)
                     .bold()
                 LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(viewModel.media) { item in
+                    ForEach(viewModel.sortedMedia) { item in
                         if let song = item.songs.first {
                             NavigationLink {
                                 LibraryAlbumView(viewModel: .init(item: item))

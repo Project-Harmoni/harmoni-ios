@@ -7,10 +7,11 @@
 
 import Foundation
 
-class SongCellViewModel: ObservableObject {
+@MainActor class SongCellViewModel: ObservableObject {
     private let database: DBServiceProviding = DBService()
     private let userProvider: UserProviding = UserProvider()
-    @MainActor @Published var isAddedToLibrary: Bool = false
+    @Published var isAddedToLibrary: Bool = false
+    
     var song: Song
     var isDetailed: Bool = true
     
@@ -30,9 +31,8 @@ class SongCellViewModel: ObservableObject {
         }
     }
     
-    func libraryAction() {
-        Task.detached { @MainActor [weak self] in
-            guard let self else { return }
+    func libraryAction() async {
+        do {
             guard let currentUserID = await self.userProvider.currentUserID else { return }
             self.isAddedToLibrary
             ? try await self.database.removeSongFromLibrary(self.song.details)
@@ -40,6 +40,8 @@ class SongCellViewModel: ObservableObject {
                 for: currentUserID.uuidString,
                 song: self.song.details
             )
+        } catch {
+            dump(error)
         }
     }
 }

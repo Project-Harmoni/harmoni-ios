@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SongCellView: View {
     @EnvironmentObject private var nowPlayingManager: NowPlayingManager
+    @Environment(\.container) var container
     @Environment(\.isAdmin) var isAdmin
     @Environment(\.currentUser) var currentUser
     @ObservedObject var viewModel: SongCellViewModel
@@ -69,7 +70,17 @@ struct SongCellView: View {
         Menu {
             Section {
                 Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
-                    viewModel.libraryAction()
+                    Task.detached { @MainActor in
+                        container.isPresentingLoadingToast(
+                            title: viewModel.isAddedToLibrary ? "Removing" : "Adding"
+                        )
+                        await viewModel.libraryAction()
+                        container.isPresentingSuccessToast(
+                            title: viewModel.isAddedToLibrary ? "Removed from Library" : "Added to Library"
+                        ) {
+                            viewModel.isAddedToLibrary.toggle()
+                        }
+                    }
                 } label: {
                     HStack {
                         Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")

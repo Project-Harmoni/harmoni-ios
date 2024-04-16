@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/9/24.
 //
 
+import AlertToast
 import SwiftUI
 import Supabase
 
@@ -48,11 +49,28 @@ struct AppContainerView: View {
                 }
             }
         }
+        .toast(
+            isPresenting: $viewModel.isPresentingSuccessToast,
+            duration: 2,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(type: .complete(.green), title: viewModel.successToastTitle)
+            }, completion: {
+                viewModel.successToastCompletion?()
+            }
+        )
+        .toast(isPresenting: $viewModel.isPresentingLoadingToast) {
+            AlertToast(
+                type: .loading,
+                title: viewModel.loadingToastTitle
+            )
+        }
         .environment(\.isAdmin, viewModel.isAdmin)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.isNew, viewModel.isNew)
         .environment(\.isAdult, viewModel.isAdult)
         .environment(\.currentUser, viewModel.currentUser)
+        .environment(\.container, viewModel)
     }
     
     @ViewBuilder

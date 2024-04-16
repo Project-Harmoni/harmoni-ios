@@ -180,6 +180,29 @@ struct AlbumView: View {
                 title: "Deleting"
             )
         }
+        .toast(
+            isPresenting: $viewModel.isLibraryActionCompleted,
+            duration: 2,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(
+                    type: .complete(.green),
+                    title: viewModel.isAddedToLibrary
+                    ? "Removed from Library"
+                    : "Added to Library"
+                )
+            }, completion: {
+                viewModel.isAddedToLibrary.toggle()
+            }
+        )
+        .toast(isPresenting: $viewModel.isLibraryActionTapped) {
+            AlertToast(
+                type: .loading,
+                title: viewModel.isAddedToLibrary
+                ? "Removing"
+                : "Adding"
+            )
+        }
         
     }
     
