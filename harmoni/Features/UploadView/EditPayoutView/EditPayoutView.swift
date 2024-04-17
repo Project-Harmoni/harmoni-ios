@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditPayoutView: View {
     @EnvironmentObject private var uploadStore: UploadStore
+    @Environment(\.platformConstants) private var platformConstants
     @Environment(\.editMode) private var editMode
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var viewModel: EditPayoutViewModel
@@ -32,7 +33,7 @@ struct EditPayoutView: View {
                 }
                 Button("Cancel", role: .cancel) { }
             } message: {
-                Text("Enter the number of streams it takes for a payout to occur.")
+                Text("Enter the number of streams it takes for a payout to occur. \(platformConstants.minimumPaymentThreshold) is the minimum.")
             }
             .alert("Edit Artist Percentage", isPresented: $viewModel.isShowingEditPercentageAlert) {
                 TextField("Artist percentage of payout", text: $viewModel.artistPercentage)
@@ -57,6 +58,9 @@ struct EditPayoutView: View {
                     .padding()
                     .background(.ultraThinMaterial)
                 }
+            }
+            .onAppear() {
+                viewModel.platformConstants = platformConstants
             }
     }
     

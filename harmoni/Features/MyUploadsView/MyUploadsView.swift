@@ -41,7 +41,7 @@ struct MyUploadsView: View {
                 duration: 2,
                 tapToDismiss: true,
                 alert: {
-                    AlertToast(type: .complete(.green), title: "Albums deleted")
+                    AlertToast(type: .complete(.green), title: "Deleted")
                 }, completion: {
                     Task {
                         await viewModel.reload()

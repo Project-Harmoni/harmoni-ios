@@ -21,6 +21,7 @@ enum DatabaseTables: String {
     case listenerSongStream = "listener_song_stream"
     case listenerSongLikes = "listener_song_likes"
     case listenerSongLibrary = "listener_song_library"
+    case platformConstants = "platform_constants"
     case songTag = "song_tag"
     case songAlbum = "song_album"
 }
@@ -78,6 +79,10 @@ extension PostgrestClient {
     
     var listenerSongLibrary: PostgrestQueryBuilder {
         get async { await getTable(with: DatabaseTables.listenerSongLibrary.rawValue) }
+    }
+    
+    var platformConstants: PostgrestQueryBuilder {
+        get async { await getTable(with: DatabaseTables.platformConstants.rawValue) }
     }
     
     var songTags: PostgrestQueryBuilder {

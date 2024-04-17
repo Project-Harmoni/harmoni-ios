@@ -15,6 +15,7 @@ class EditPayoutViewModel: ObservableObject {
     @Published var isShowingEditStreamAlert: Bool = false
     @Published var artistPercentage: String = ""
     @Published var isShowingEditPercentageAlert: Bool = false
+    var platformConstants: PlatformConstants = PlatformConstants()
     
     init(tracks: [Track]) {
         self.tracks = tracks
@@ -24,8 +25,9 @@ class EditPayoutViewModel: ObservableObject {
         for track in selectedTracks {
             if let index = tracks.firstIndex(where: { $0.id == track }) {
                 var threshold = Int(streamThreshold) ?? 1000
-                threshold = threshold < 0 ? 0 : threshold
+                threshold = threshold < minimium ? minimium : threshold
                 tracks[index].streamThreshold = threshold
+                tracks[index].numberOfStreams = threshold
             }
         }
         streamThreshold = ""
@@ -73,5 +75,9 @@ class EditPayoutViewModel: ObservableObject {
                 tracks[index].payoutType = .jackpot
             }
         }
+    }
+    
+    private var minimium: Int {
+        platformConstants.minimumPaymentThreshold
     }
 }

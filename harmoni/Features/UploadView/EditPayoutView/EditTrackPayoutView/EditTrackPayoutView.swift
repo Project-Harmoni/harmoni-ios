@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct EditTrackPayoutView: View {
+    @Environment(\.platformConstants) private var platformConstants
     @Environment(\.colorScheme) var colorScheme
     @Binding var track: Track
     @State var isReadOnly: Bool = false
     @State private var isShowingEditStreamAlert: Bool = false
+    @State private var numberOfStreams: Int = 1000
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -28,12 +30,27 @@ struct EditTrackPayoutView: View {
         .padding(.vertical, 8)
         .listRowBackground(Color(.secondarySystemGroupedBackground))
         .alert("Edit Streams", isPresented: $isShowingEditStreamAlert) {
-            TextField("Number of streams", text: $track.streamThreshold.toString)
+            TextField("Number of streams", text: $numberOfStreams.toString)
                 .keyboardType(.numberPad)
-            Button("Save", role: .none) {}
-            Button("Cancel", role: .cancel) { }
+            Button("Save", role: .none) {
+                if numberOfStreams < minimum {
+                    numberOfStreams = minimum
+                }
+                track.streamThreshold = numberOfStreams
+                track.numberOfStreams = numberOfStreams
+            }
+            Button("Cancel", role: .cancel) {
+                track.numberOfStreams = track.streamThreshold
+            }
         } message: {
-            Text("Enter the number of streams it takes for a payout to occur.")
+            Text("Enter the number of streams it takes for a payout to occur. \(minimum) is the minimum.")
+        }
+        .onAppear() {
+            track.numberOfStreams = track.streamThreshold
+            numberOfStreams = track.streamThreshold
+        }
+        .onChange(of: track.numberOfStreams) {
+            numberOfStreams = track.numberOfStreams
         }
     }
     
@@ -64,7 +81,7 @@ struct EditTrackPayoutView: View {
         if isReadOnly {
             streamPerPayoutReadonly
         } else {
-            streamThreshold
+            streamThresholdView
         }
     }
     
@@ -103,7 +120,7 @@ struct EditTrackPayoutView: View {
         }
     }
     
-    private var streamThreshold: some View {
+    private var streamThresholdView: some View {
         HStack {
             Spacer()
             Button {
@@ -176,6 +193,10 @@ struct EditTrackPayoutView: View {
                 }
             }
         }
+    }
+    
+    private var minimum: Int {
+        platformConstants.minimumPaymentThreshold
     }
     
     private var artistBarWidth: CGFloat {

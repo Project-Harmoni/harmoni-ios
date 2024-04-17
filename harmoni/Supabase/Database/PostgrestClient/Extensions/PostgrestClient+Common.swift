@@ -11,6 +11,14 @@ import Supabase
 // TODO: - Clean-up
 
 extension PostgrestClient {
+    func getPlatformConstants() async throws -> [PlatformConstantsDB]? {
+        let constants: [PlatformConstantsDB] = try await platformConstants
+            .select()
+            .execute()
+            .value
+        return constants
+    }
+    
     func user(with id: UUID) async throws -> UserDB? {
         let users: [UserDB] = try await users
             .select()

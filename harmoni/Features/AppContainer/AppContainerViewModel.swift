@@ -20,6 +20,8 @@ class AppContainerViewModel: ObservableObject {
     @Published var isNew: Bool = false
     @Published var isAdult: Bool = false
     @Published var currentUser: User?
+    @Published var platformConstants: PlatformConstants = PlatformConstants()
+    private var database: DBServiceProviding = DBService()
     private var userProvider: UserProviding = UserProvider()
     private var cancellables: Set<AnyCancellable> = []
     
@@ -38,6 +40,15 @@ class AppContainerViewModel: ObservableObject {
                  self?.checkPermissions()
              }
              .store(in: &cancellables)
+        
+        getPlatformConstants()
+    }
+    
+    private func getPlatformConstants() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.platformConstants = try await self.database.getPlatformConstants() ?? PlatformConstants()
+        }
     }
     
     private func checkPermissions() {

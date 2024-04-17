@@ -10,6 +10,8 @@ import Foundation
 // TODO: - Clean-up
 
 protocol DBServiceProviding {
+    /// Get platform constants
+    func getPlatformConstants() async throws -> PlatformConstants?
     /// Check if user is admin
     func isAdmin(with id: UUID) async throws -> Bool
     /// Check if user is new
@@ -97,6 +99,20 @@ protocol DBServiceProviding {
 }
 
 struct DBService: DBServiceProviding {
+    func getPlatformConstants() async throws -> PlatformConstants? {
+        guard let constants = try await Supabase.shared.client.database.getPlatformConstants() else { return nil }
+        var platformConstants = PlatformConstants()
+        for constant in constants {
+            switch constant.type {
+            case .minimumPaymentThreshold:
+                platformConstants.minimumPaymentThreshold = Int(constant.value) ?? 0
+            default:
+                continue
+            }
+        }
+        return platformConstants
+    }
+    
     func isAdmin(with id: UUID) async throws -> Bool {
         let user = try await Supabase.shared.client.database.user(with: id)
         return user?.isAdmin ?? false

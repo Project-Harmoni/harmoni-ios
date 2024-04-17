@@ -40,6 +40,9 @@
 		B51AEFDE2BC3676D001F0F53 /* ArtistCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFDD2BC3676D001F0F53 /* ArtistCellView.swift */; };
 		B51AEFE12BC36AB0001F0F53 /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFE02BC36AB0001F0F53 /* ArtistView.swift */; };
 		B51AEFE32BC36E23001F0F53 /* ArtistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51AEFE22BC36E23001F0F53 /* ArtistViewModel.swift */; };
+		B550569C2BCE2E6700711E19 /* PlatformConstantsDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569B2BCE2E6700711E19 /* PlatformConstantsDB.swift */; };
+		B550569E2BCE32F100711E19 /* ContainerEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */; };
+		B55056A02BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */; };
 		B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */; };
 		B5594A972BC8EF8B002D9902 /* SendMailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A962BC8EF8B002D9902 /* SendMailView.swift */; };
 		B5594A9C2BCA3940002D9902 /* SongCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */; };
@@ -162,6 +165,9 @@
 		B51AEFDD2BC3676D001F0F53 /* ArtistCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistCellView.swift; sourceTree = "<group>"; };
 		B51AEFE02BC36AB0001F0F53 /* ArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistView.swift; sourceTree = "<group>"; };
 		B51AEFE22BC36E23001F0F53 /* ArtistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistViewModel.swift; sourceTree = "<group>"; };
+		B550569B2BCE2E6700711E19 /* PlatformConstantsDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformConstantsDB.swift; sourceTree = "<group>"; };
+		B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerEnvironmentKey.swift; sourceTree = "<group>"; };
+		B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformConstantsEnvironmentKey.swift; sourceTree = "<group>"; };
 		B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultEnvironmentKey.swift; sourceTree = "<group>"; };
 		B5594A962BC8EF8B002D9902 /* SendMailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMailView.swift; sourceTree = "<group>"; };
 		B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCellViewModel.swift; sourceTree = "<group>"; };
@@ -329,8 +335,10 @@
 				B518F55E2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift */,
 				B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */,
 				B518F5612BA66E70002CDCB7 /* ArtistEnvironmentKey.swift */,
-				6FC995132BCB1A8100075AE0 /* IsNewUserEnvironmentKey.swift */,
+				B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */,
 				B5B05FF92BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift */,
+				6FC995132BCB1A8100075AE0 /* IsNewUserEnvironmentKey.swift */,
+				B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -847,6 +855,7 @@
 				B518F5552BA65097002CDCB7 /* ArtistDB.swift */,
 				B518F55C2BA66319002CDCB7 /* ListenerDB.swift */,
 				B5F9A3672BCCA32B00C83456 /* ListenerSongLibraryDB.swift */,
+				B550569B2BCE2E6700711E19 /* PlatformConstantsDB.swift */,
 				B5B0600C2BB391D000AD6F40 /* SongAlbumDB.swift */,
 				B5B0600E2BB3922100AD6F40 /* SongTagDB.swift */,
 				B5B060382BBA23FD00AD6F40 /* SongDB */,
@@ -1017,6 +1026,7 @@
 				B51AEFDB2BC3670D001F0F53 /* Collection+Extension.swift in Sources */,
 				B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */,
 				B58FC7BF2B9E80E5006F5BDF /* SignUpView.swift in Sources */,
+				B55056A02BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift in Sources */,
 				B518F5652BA68D92002CDCB7 /* Track.swift in Sources */,
 				B59426A92BBB6F0E00A072F9 /* NowPlayingBar.swift in Sources */,
 				B58FC7C12B9E81B5006F5BDF /* SignUpViewModel.swift in Sources */,
@@ -1028,6 +1038,7 @@
 				B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */,
 				B51AEFD12BC25432001F0F53 /* SearchViewModel.swift in Sources */,
 				B5B060332BB9D02A00AD6F40 /* AllTagsViewSheet.swift in Sources */,
+				B550569E2BCE32F100711E19 /* ContainerEnvironmentKey.swift in Sources */,
 				B5B060222BB799E300AD6F40 /* AlbumView.swift in Sources */,
 				B58FF3FC2BC4A82F006BDBD1 /* SearchFilterView.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
@@ -1051,6 +1062,7 @@
 				B5F9A3622BCC870A00C83456 /* LibraryView.swift in Sources */,
 				B58FC7942B9D5629006F5BDF /* AppContainerViewModel.swift in Sources */,
 				B5594A9E2BCA3952002D9902 /* Song.swift in Sources */,
+				B550569C2BCE2E6700711E19 /* PlatformConstantsDB.swift in Sources */,
 				B5EC14012B9FEAEB00F1CCA8 /* UserDB.swift in Sources */,
 				B518F53E2BA2B584002CDCB7 /* Date+Extension.swift in Sources */,
 				B5ADE8E52B9D1707009988E5 /* harmoniApp.swift in Sources */,

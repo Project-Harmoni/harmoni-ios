@@ -65,12 +65,13 @@ struct AppContainerView: View {
                 title: viewModel.loadingToastTitle
             )
         }
+        .environment(\.container, viewModel)
+        .environment(\.currentUser, viewModel.currentUser)
         .environment(\.isAdmin, viewModel.isAdmin)
+        .environment(\.isAdult, viewModel.isAdult)
         .environment(\.isArtist, viewModel.isArtist)
         .environment(\.isNew, viewModel.isNew)
-        .environment(\.isAdult, viewModel.isAdult)
-        .environment(\.currentUser, viewModel.currentUser)
-        .environment(\.container, viewModel)
+        .environment(\.platformConstants, viewModel.platformConstants)
     }
     
     @ViewBuilder
