@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AlbumDB: Codable, Identifiable {
+struct AlbumDB: Codable, Identifiable, Equatable {
     var id: Int8?
     var name: String?
     var artistID: String

@@ -23,44 +23,38 @@ struct ArtistView: View {
         .task {
             await viewModel.getAlbums()
         }
+        .navigationTitle(viewModel.artist.name ?? "")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var artist: some View {
         List {
             Section {
-                VStack(alignment: .leading) {
-                    Text("Albums").bold()
-                    ForEach(viewModel.albums) { album in
-                        AlbumCellView(viewModel: AlbumViewModel(album: album))
-                    }
+                ForEach(viewModel.albums) { album in
+                    AlbumCellView(viewModel: AlbumViewModel(album: album))
                 }
             } header: {
                 header
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .textCase(.none)
-                    .padding(.bottom)
             }
         }
     }
     
     private var header: some View {
-        HStack {
-            Spacer()
-            VStack {
+        VStack(alignment: .leading) {
+            HStack {
+                Spacer()
                 profilePicture
-                if let name = viewModel.artist.name {
-                    Text(name)
-                        .bold()
-                }
+                Spacer()
             }
             Spacer()
+                .frame(height: 28)
+            Text("Albums").bold()
         }
     }
     
     private var profilePicture: some View {
         Circle()
-            .frame(height: 225)
+            .frame(height: 150)
             .foregroundStyle(.gray)
             .overlay {
                 profileImage
