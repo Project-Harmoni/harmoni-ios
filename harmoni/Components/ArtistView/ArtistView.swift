@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 4/7/24.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct ArtistView: View {
@@ -68,22 +69,17 @@ struct ArtistView: View {
     
     @ViewBuilder
     private var profileImage: some View {
-        if let imageURL = viewModel.artist.imageURL {
-            AsyncImage(url: URL(string: imageURL)) { image in
-                switch image {
-                case .empty:
-                    profileImagePlaceholder
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(Circle())
-                case .failure(_):
-                    profileImagePlaceholder
-                @unknown default:
+        if let path = viewModel.artist.imageURL, let url = URL(string: path) {
+            KFImage(url)
+                .placeholder {
                     profileImagePlaceholder
                 }
-            }
+                .cancelOnDisappear(true)
+                .resizable()
+                .scaledToFill()
+                .clipShape(Circle())
+        } else {
+            profileImagePlaceholder
         }
     }
     

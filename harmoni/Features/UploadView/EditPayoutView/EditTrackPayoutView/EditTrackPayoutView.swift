@@ -33,6 +33,7 @@ struct EditTrackPayoutView: View {
             TextField("Number of streams", text: $numberOfStreams.toString)
                 .keyboardType(.numberPad)
             Button("Save", role: .none) {
+                // TODO: - Clean-up
                 if numberOfStreams < minimum {
                     numberOfStreams = minimum
                 }

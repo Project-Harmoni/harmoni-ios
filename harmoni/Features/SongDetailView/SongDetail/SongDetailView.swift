@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/16/24.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct SongDetailView: View {
@@ -31,19 +32,13 @@ struct SongDetailView: View {
         .presentationDragIndicator(.visible)
         .background(
             ZStack {
-                if let coverImagePath = viewModel.song?.coverImagePath {
-                    AsyncImage(url: URL(string: coverImagePath)) { image in
-                        switch image {
-                        case .empty:
-                            EmptyView()
-                        case .success(let image):
-                            image.resizable()
-                        case .failure(_):
-                            EmptyView()
-                        @unknown default:
+                if let path = viewModel.song?.coverImagePath, let url = URL(string: path) {
+                    KFImage(url)
+                        .placeholder {
                             EmptyView()
                         }
-                    }
+                        .cancelOnDisappear(true)
+                        .resizable()
                 } else {
                     EmptyView()
                 }

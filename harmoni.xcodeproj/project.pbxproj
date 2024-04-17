@@ -43,6 +43,7 @@
 		B550569C2BCE2E6700711E19 /* PlatformConstantsDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569B2BCE2E6700711E19 /* PlatformConstantsDB.swift */; };
 		B550569E2BCE32F100711E19 /* ContainerEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */; };
 		B55056A02BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */; };
+		B55056A32BCF735A00711E19 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B55056A22BCF735A00711E19 /* Kingfisher */; };
 		B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */; };
 		B5594A972BC8EF8B002D9902 /* SendMailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A962BC8EF8B002D9902 /* SendMailView.swift */; };
 		B5594A9C2BCA3940002D9902 /* SongCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */; };
@@ -261,6 +262,7 @@
 				B5ADE8F82B9D1841009988E5 /* PostgREST in Frameworks */,
 				B5ADE8F62B9D1841009988E5 /* Functions in Frameworks */,
 				B5ADE8FE2B9D1841009988E5 /* Supabase in Frameworks */,
+				B55056A32BCF735A00711E19 /* Kingfisher in Frameworks */,
 				B5ADE8F42B9D1841009988E5 /* Auth in Frameworks */,
 				B5ADE8FC2B9D1841009988E5 /* Storage in Frameworks */,
 				B5B060182BB5210B00AD6F40 /* AlertToast in Frameworks */,
@@ -949,6 +951,7 @@
 				B5ADE8FD2B9D1841009988E5 /* Supabase */,
 				B518F56A2BA91E35002CDCB7 /* WrappingStack */,
 				B5B060172BB5210B00AD6F40 /* AlertToast */,
+				B55056A22BCF735A00711E19 /* Kingfisher */,
 			);
 			productName = harmoni;
 			productReference = B5ADE8E12B9D1707009988E5 /* harmoni.app */;
@@ -982,6 +985,7 @@
 				B5ADE8F22B9D1840009988E5 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				B518F5692BA91E35002CDCB7 /* XCRemoteSwiftPackageReference "swiftui-wrapping-stack" */,
 				B5B060162BB5210B00AD6F40 /* XCRemoteSwiftPackageReference "AlertToast" */,
+				B55056A12BCF735900711E19 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = B5ADE8E22B9D1707009988E5 /* Products */;
 			projectDirPath = "";
@@ -1349,6 +1353,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		B55056A12BCF735900711E19 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.11.0;
+			};
+		};
 		B5ADE8F22B9D1840009988E5 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/supabase-community/supabase-swift.git";
@@ -1372,6 +1384,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B518F5692BA91E35002CDCB7 /* XCRemoteSwiftPackageReference "swiftui-wrapping-stack" */;
 			productName = WrappingStack;
+		};
+		B55056A22BCF735A00711E19 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B55056A12BCF735900711E19 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		B5ADE8F32B9D1841009988E5 /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;

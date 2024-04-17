@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/30/24.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct CoverArtView: View {
@@ -18,23 +19,16 @@ struct CoverArtView: View {
     
     @ViewBuilder
     private var coverArt: some View {
-        if let coverImagePath = imagePath {
-            AsyncImage(url: URL(string: coverImagePath)) { image in
-                switch image {
-                case .empty:
-                    coverArtPlaceholder
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(1, contentMode: .fill)
-                        .frame(width: size, height: size)
-                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                case .failure(_):
-                    coverArtPlaceholder
-                @unknown default:
+        if let imagePath, let url = URL(string: imagePath) {
+            KFImage(url)
+                .placeholder {
                     coverArtPlaceholder
                 }
-            }
+                .cancelOnDisappear(true)
+                .resizable()
+                .aspectRatio(1, contentMode: .fill)
+                .frame(width: size, height: size)
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         } else {
             coverArtPlaceholder
         }

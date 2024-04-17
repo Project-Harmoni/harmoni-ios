@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/9/24.
 //
 
+import Kingfisher
 import PhotosUI
 import Supabase
 import SwiftUI
@@ -163,20 +164,17 @@ private extension AccountView {
                 .scaledToFill()
                 .clipShape(Circle())
         } else {
-            AsyncImage(url: viewModel.profileImage) { image in
-                switch image {
-                case .empty:
-                    profileImagePlaceholder
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(Circle())
-                case .failure(_):
-                    profileImagePlaceholder
-                @unknown default:
-                    profileImagePlaceholder
-                }
+            if let url = viewModel.profileImage {
+                KFImage(url)
+                    .placeholder {
+                        profileImagePlaceholder
+                    }
+                    .cancelOnDisappear(true)
+                    .resizable()
+                    .scaledToFill()
+                    .clipShape(Circle())
+            } else {
+                profileImagePlaceholder
             }
         }
     }
