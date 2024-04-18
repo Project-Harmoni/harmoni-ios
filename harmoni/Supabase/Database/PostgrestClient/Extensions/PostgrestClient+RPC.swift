@@ -23,6 +23,8 @@ extension PostgrestClient {
             DBFunctions.addSongTag.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
     
     func addManySongTags(_ param: AddManySongTags) async throws {
@@ -30,6 +32,8 @@ extension PostgrestClient {
             DBFunctions.addManySongTags.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
     
     func editTag(_ param: EditTag) async throws {
@@ -37,6 +41,8 @@ extension PostgrestClient {
             DBFunctions.editTag.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
     
     func bulkEditTags(_ param: BulkEditTag) async throws {
@@ -44,6 +50,8 @@ extension PostgrestClient {
             DBFunctions.bulkEditTag.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
     
     func deleteTag(_ param: DeleteTag) async throws {
@@ -51,6 +59,8 @@ extension PostgrestClient {
             DBFunctions.deleteTag.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
     
     func bulkDeleteTags(_ param: BulkDeleteTag) async throws {
@@ -58,5 +68,7 @@ extension PostgrestClient {
             DBFunctions.bulkDeleteTag.rawValue,
             params: param
         )
+        .execute()
+        .value
     }
 }

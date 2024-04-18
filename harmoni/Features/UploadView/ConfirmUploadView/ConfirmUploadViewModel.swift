@@ -74,7 +74,6 @@ class ConfirmUploadViewModel: ObservableObject {
     /// Upload tracks in storage and update database
     @MainActor
     private func uploadTracks(for userID: UUID, with coverPath: String) async throws {
-        guard !isEditing else { return }
         guard let store else { return self.isError.toggle() }
         for track in store.tracks {
             // upload track to storage
