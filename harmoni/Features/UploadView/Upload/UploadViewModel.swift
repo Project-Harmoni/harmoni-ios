@@ -94,7 +94,8 @@ class UploadViewModel: ObservableObject {
             moodViewModel: .init(tags: tags.moods, category: .moods),
             instrumentViewModel: .init(tags: tags.instruments, category: .instruments),
             miscViewModel: .init(tags: tags.misc, category: .miscellaneous),
-            albumID: album.id
+            albumID: album.id,
+            isEditing: true
         )
         albumTitle = album.name ?? ""
         yearReleased = album.yearReleased ?? ""

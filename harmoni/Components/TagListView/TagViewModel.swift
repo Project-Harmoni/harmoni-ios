@@ -14,13 +14,17 @@ class TagListViewModel: ObservableObject {
     @Published var tags: [Tag] = []
     var onChanged: (([Tag]) -> Void)?
     var isReadOnly: Bool
+    var isEditing: Bool
     var isSearching: Bool = false
     let category: TagCategory
+    private let database: DBServiceProviding = DBService()
+    private let rpc: RPCProviding = RPCProvider()
     
-    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false, isSearching: Bool = false) {
+    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false, isEditing: Bool = false, isSearching: Bool = false) {
         self.tags = tags
         self.category = category
         self.isReadOnly = isReadOnly
+        self.isEditing = isEditing
         self.isSearching = isSearching
     }
     
@@ -41,12 +45,45 @@ class TagListViewModel: ObservableObject {
         guard let index = tags.firstIndex(where: { $0 == selectedTag }) else { return }
         guard !editedTagName.isEmpty else { return }
         tags[index].name = editedTagName
+        
+        if isEditing {
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                do {
+                    guard let categoryID = try await self.database.getTagCategory(with: self.category) else { return }
+                    try await self.rpc.editTag(
+                        .init(
+                            id: selectedTag.serverID,
+                            name: editedTagName,
+                            categoryID: categoryID.id
+                        )
+                    )
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
     
     func removeTag() {
         guard let selectedTag else { return }
         guard let index = tags.firstIndex(where: { $0 == selectedTag }) else { return }
         tags.remove(at: index)
+        
+        if isEditing {
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                do {
+                    try await self.rpc.deleteTag(
+                        .init(
+                            id: selectedTag.serverID
+                        )
+                    )
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
     
     var createTagTitle: String {

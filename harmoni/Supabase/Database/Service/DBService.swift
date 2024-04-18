@@ -75,12 +75,6 @@ protocol DBServiceProviding {
     func upsert(album: AlbumDB) async throws -> AlbumDB?
     /// Upsert (update or insert) song/album association in DB
     func upsert(songAlbum: SongAlbumDB) async throws -> SongAlbumDB?
-    /// Upsert (update or insert) song/tag association in DB
-    func upsert(songTag: SongTagDB) async throws -> SongTagDB?
-    /// Upsert (update or insert) tag in DB
-    func upsert(tag: TagDB) async throws -> TagDB?
-    /// Upsert (update or insert) tag category in DB
-    func upsert(tagCategory: TagCategoryDB) async throws -> TagCategoryDB?
     
 
     /// Update artist in DB
@@ -89,9 +83,7 @@ protocol DBServiceProviding {
     func update(song: SongDB) async throws -> SongDB?
     /// Update album in DB
     func update(album: AlbumDB) async throws -> AlbumDB?
-    /// Update tag in DB
-    func update(tag: TagDB) async throws -> TagDB?
-    
+
     // Delete song in DB
     func deleteSong(with id: Int8?) async throws
     func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws
@@ -280,36 +272,6 @@ extension DBService {
         let songAlbums = try JSONDecoder().decode([SongAlbumDB].self, from: response.data)
         return songAlbums.first
     }
-    
-    func upsert(songTag: SongTagDB) async throws -> SongTagDB? {
-        let response = try await Supabase.shared.client.database
-            .songTags
-            .upsert(songTag)
-            .execute()
-        
-        let songTags = try JSONDecoder().decode([SongTagDB].self, from: response.data)
-        return songTags.first
-    }
-    
-    func upsert(tag: TagDB) async throws -> TagDB? {
-        let response = try await Supabase.shared.client.database
-            .tags
-            .upsert(tag)
-            .execute()
-        
-        let tags = try JSONDecoder().decode([TagDB].self, from: response.data)
-        return tags.first
-    }
-    
-    func upsert(tagCategory: TagCategoryDB) async throws -> TagCategoryDB? {
-        let response = try await Supabase.shared.client.database
-            .tagCategories
-            .upsert(tagCategory)
-            .execute()
-        
-        let tagCategories = try JSONDecoder().decode([TagCategoryDB].self, from: response.data)
-        return tagCategories.first
-    }
 }
 
 // MARK: - DB Service Update
@@ -348,19 +310,6 @@ extension DBService {
         
         let albums = try JSONDecoder().decode([AlbumDB].self, from: response.data)
         return albums.first
-    }
-    
-    func update(tag: TagDB) async throws -> TagDB? {
-        guard let id = tag.id else { return nil }
-        let response = try await Supabase.shared.client.database
-            .tags
-            .update(tag.updateable())
-            .eq(TagDB.CodingKeys.id.rawValue, value: Int(id))
-            .select()
-            .execute()
-        
-        let tags = try JSONDecoder().decode([TagDB].self, from: response.data)
-        return tags.first
     }
 }
 

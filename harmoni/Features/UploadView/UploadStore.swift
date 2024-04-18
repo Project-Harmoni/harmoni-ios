@@ -49,6 +49,15 @@ class UploadStore: ObservableObject {
         category: .miscellaneous,
         isReadOnly: true
     )
+    
+    var tagViewModels: [TagListViewModel] {
+        [
+            genreTagsViewModel,
+            moodTagsViewModel,
+            instrumentsTagsViewModel,
+            miscTagsViewModel
+        ]
+    }
 }
 
 extension UploadStore {

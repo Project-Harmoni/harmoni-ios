@@ -44,6 +44,14 @@
 		B550569E2BCE32F100711E19 /* ContainerEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */; };
 		B55056A02BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */; };
 		B55056A32BCF735A00711E19 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B55056A22BCF735A00711E19 /* Kingfisher */; };
+		B55056A62BD0B49D00711E19 /* PostgrestClient+RPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056A52BD0B49D00711E19 /* PostgrestClient+RPC.swift */; };
+		B55056A82BD0B58100711E19 /* AddManySongTags.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056A72BD0B58100711E19 /* AddManySongTags.swift */; };
+		B55056AA2BD0B5AA00711E19 /* AddSongTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056A92BD0B5AA00711E19 /* AddSongTag.swift */; };
+		B55056AC2BD0B61600711E19 /* EditTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056AB2BD0B61600711E19 /* EditTag.swift */; };
+		B55056AE2BD0B6A800711E19 /* BulkEditTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056AD2BD0B6A800711E19 /* BulkEditTag.swift */; };
+		B55056B02BD0B70E00711E19 /* DeleteTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056AF2BD0B70E00711E19 /* DeleteTag.swift */; };
+		B55056B22BD0B73800711E19 /* BulkDeleteTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056B12BD0B73800711E19 /* BulkDeleteTag.swift */; };
+		B55056B52BD0B97700711E19 /* RPCProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056B42BD0B97700711E19 /* RPCProviding.swift */; };
 		B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */; };
 		B5594A972BC8EF8B002D9902 /* SendMailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A962BC8EF8B002D9902 /* SendMailView.swift */; };
 		B5594A9C2BCA3940002D9902 /* SongCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */; };
@@ -169,6 +177,14 @@
 		B550569B2BCE2E6700711E19 /* PlatformConstantsDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformConstantsDB.swift; sourceTree = "<group>"; };
 		B550569D2BCE32F100711E19 /* ContainerEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerEnvironmentKey.swift; sourceTree = "<group>"; };
 		B550569F2BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformConstantsEnvironmentKey.swift; sourceTree = "<group>"; };
+		B55056A52BD0B49D00711E19 /* PostgrestClient+RPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostgrestClient+RPC.swift"; sourceTree = "<group>"; };
+		B55056A72BD0B58100711E19 /* AddManySongTags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddManySongTags.swift; sourceTree = "<group>"; };
+		B55056A92BD0B5AA00711E19 /* AddSongTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSongTag.swift; sourceTree = "<group>"; };
+		B55056AB2BD0B61600711E19 /* EditTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTag.swift; sourceTree = "<group>"; };
+		B55056AD2BD0B6A800711E19 /* BulkEditTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkEditTag.swift; sourceTree = "<group>"; };
+		B55056AF2BD0B70E00711E19 /* DeleteTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTag.swift; sourceTree = "<group>"; };
+		B55056B12BD0B73800711E19 /* BulkDeleteTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkDeleteTag.swift; sourceTree = "<group>"; };
+		B55056B42BD0B97700711E19 /* RPCProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCProviding.swift; sourceTree = "<group>"; };
 		B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultEnvironmentKey.swift; sourceTree = "<group>"; };
 		B5594A962BC8EF8B002D9902 /* SendMailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMailView.swift; sourceTree = "<group>"; };
 		B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCellViewModel.swift; sourceTree = "<group>"; };
@@ -427,6 +443,28 @@
 				B51AEFE22BC36E23001F0F53 /* ArtistViewModel.swift */,
 			);
 			path = ArtistView;
+			sourceTree = "<group>";
+		};
+		B55056A42BD0B3FD00711E19 /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				B55056B32BD0B96900711E19 /* Models */,
+				B55056B42BD0B97700711E19 /* RPCProviding.swift */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
+		B55056B32BD0B96900711E19 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B55056A72BD0B58100711E19 /* AddManySongTags.swift */,
+				B55056A92BD0B5AA00711E19 /* AddSongTag.swift */,
+				B55056AB2BD0B61600711E19 /* EditTag.swift */,
+				B55056AD2BD0B6A800711E19 /* BulkEditTag.swift */,
+				B55056AF2BD0B70E00711E19 /* DeleteTag.swift */,
+				B55056B12BD0B73800711E19 /* BulkDeleteTag.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B5594A952BC8EF7A002D9902 /* SendMailView */ = {
@@ -842,6 +880,7 @@
 		B5EC13FE2B9FE83E00F1CCA8 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				B55056A42BD0B3FD00711E19 /* Functions */,
 				B5EC14022B9FF6EE00F1CCA8 /* Service */,
 				B5EC13FF2B9FEA8C00F1CCA8 /* Model */,
 				B5F9A3562BCB805F00C83456 /* PostgrestClient */,
@@ -898,6 +937,7 @@
 				B5EC13FC2B9FE7CC00F1CCA8 /* PostgrestClient+Tables.swift */,
 				B5F9A3592BCB80C800C83456 /* PostgrestClient+Common.swift */,
 				B5F9A35E2BCB817600C83456 /* PostgrestClient+Library.swift */,
+				B55056A52BD0B49D00711E19 /* PostgrestClient+RPC.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1020,16 +1060,19 @@
 				B518F5462BA53BFD002CDCB7 /* SupabaseStorageClient+Extension.swift in Sources */,
 				B5F9A3682BCCA32B00C83456 /* ListenerSongLibraryDB.swift in Sources */,
 				B58FC79A2B9D56D5006F5BDF /* Supabase.swift in Sources */,
+				B55056A82BD0B58100711E19 /* AddManySongTags.swift in Sources */,
 				B5B05FF42BAE48F700AD6F40 /* TrackPayoutType.swift in Sources */,
 				B5B060072BB2801400AD6F40 /* Int+Extension.swift in Sources */,
 				B518F5542BA63E84002CDCB7 /* SongDetailViewModel.swift in Sources */,
 				B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */,
 				B5F9A35F2BCB817600C83456 /* PostgrestClient+Library.swift in Sources */,
+				B55056B22BD0B73800711E19 /* BulkDeleteTag.swift in Sources */,
 				B518F5622BA66E70002CDCB7 /* ArtistEnvironmentKey.swift in Sources */,
 				B5B05FF22BABCFF100AD6F40 /* EditTrackPayoutView.swift in Sources */,
 				B51AEFDB2BC3670D001F0F53 /* Collection+Extension.swift in Sources */,
 				B5B0601B2BB526EF00AD6F40 /* MyUploadsView.swift in Sources */,
 				B58FC7BF2B9E80E5006F5BDF /* SignUpView.swift in Sources */,
+				B55056A62BD0B49D00711E19 /* PostgrestClient+RPC.swift in Sources */,
 				B55056A02BCE332D00711E19 /* PlatformConstantsEnvironmentKey.swift in Sources */,
 				B518F5652BA68D92002CDCB7 /* Track.swift in Sources */,
 				B59426A92BBB6F0E00A072F9 /* NowPlayingBar.swift in Sources */,
@@ -1037,6 +1080,7 @@
 				B51AEFD62BC356B9001F0F53 /* SearchQuery.swift in Sources */,
 				B5EC14092B9FFC0100F1CCA8 /* AuthFlowError.swift in Sources */,
 				B58CDC1B2BA2A6B300E51964 /* CompleteRegistrationView.swift in Sources */,
+				B55056B02BD0B70E00711E19 /* DeleteTag.swift in Sources */,
 				B518F54D2BA63CD4002CDCB7 /* VolumeSliderView.swift in Sources */,
 				B5B0600D2BB391D000AD6F40 /* SongAlbumDB.swift in Sources */,
 				B5B05FF82BAE578500AD6F40 /* Binding+Extension.swift in Sources */,
@@ -1045,6 +1089,7 @@
 				B550569E2BCE32F100711E19 /* ContainerEnvironmentKey.swift in Sources */,
 				B5B060222BB799E300AD6F40 /* AlbumView.swift in Sources */,
 				B58FF3FC2BC4A82F006BDBD1 /* SearchFilterView.swift in Sources */,
+				B55056AE2BD0B6A800711E19 /* BulkEditTag.swift in Sources */,
 				B58FC7C62B9E930A006F5BDF /* SignUpRole.swift in Sources */,
 				B51AEFD42BC34F8B001F0F53 /* SearchResults.swift in Sources */,
 				B5E96DE22BA28F91000B429A /* ChooseRoleView.swift in Sources */,
@@ -1074,6 +1119,7 @@
 				B58FC7B82B9E7955006F5BDF /* SignInWithAppleView.swift in Sources */,
 				B58CDC1F2BA2A8AD00E51964 /* ChooseRoleViewModel.swift in Sources */,
 				B51AEFCA2BC20D45001F0F53 /* SearchView.swift in Sources */,
+				B55056AC2BD0B61600711E19 /* EditTag.swift in Sources */,
 				B518F55D2BA66319002CDCB7 /* ListenerDB.swift in Sources */,
 				B5B060402BBA255B00AD6F40 /* TagUpdateDB.swift in Sources */,
 				B5E96DE42BA291C2000B429A /* User+Extension.swift in Sources */,
@@ -1084,6 +1130,7 @@
 				B5B0603A2BBA240D00AD6F40 /* SongUpdateDB.swift in Sources */,
 				B518F55B2BA66068002CDCB7 /* UserProvider.swift in Sources */,
 				B5F9A35A2BCB80C800C83456 /* PostgrestClient+Common.swift in Sources */,
+				B55056B52BD0B97700711E19 /* RPCProviding.swift in Sources */,
 				B51AEFDE2BC3676D001F0F53 /* ArtistCellView.swift in Sources */,
 				B5B05FFA2BAF594D00AD6F40 /* CurrentUserEnvironmentKey.swift in Sources */,
 				B58FC7BC2B9E7AE7006F5BDF /* String+Extension.swift in Sources */,
@@ -1095,6 +1142,7 @@
 				B5B0600B2BB3900800AD6F40 /* AlbumDB.swift in Sources */,
 				B5B05FEB2BABCF2E00AD6F40 /* TagCategory.swift in Sources */,
 				B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */,
+				B55056AA2BD0B5AA00711E19 /* AddSongTag.swift in Sources */,
 				B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */,
 				B58FC7C42B9E92F9006F5BDF /* SignUpPath.swift in Sources */,
 				B5B060132BB392A100AD6F40 /* TagCategoryDB.swift in Sources */,

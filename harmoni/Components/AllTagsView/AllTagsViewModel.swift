@@ -24,7 +24,8 @@ class AllTagsViewModel: ObservableObject {
         instrumentViewModel: TagListViewModel = .init(category: .instruments),
         miscViewModel: TagListViewModel = .init(category: .miscellaneous),
         albumID: Int8? = nil,
-        isReadOnly: Bool = false
+        isReadOnly: Bool = false,
+        isEditing: Bool = false
     ) {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
@@ -33,10 +34,10 @@ class AllTagsViewModel: ObservableObject {
         self.instrumentsTagsViewModel = instrumentViewModel
         self.miscTagsViewModel = miscViewModel
         
-        self.genreTagsViewModel.isReadOnly = isReadOnly
-        self.moodTagsViewModel.isReadOnly = isReadOnly
-        self.instrumentsTagsViewModel.isReadOnly = isReadOnly
-        self.miscTagsViewModel.isReadOnly = isReadOnly
+        for tagViewModel in tagViewModels {
+            tagViewModel.isReadOnly = isReadOnly
+            tagViewModel.isEditing = isEditing
+        }
     }
     
     var allTagsEmpty: Bool {
@@ -44,6 +45,15 @@ class AllTagsViewModel: ObservableObject {
         moodTagsViewModel.tags.isEmpty &&
         instrumentsTagsViewModel.tags.isEmpty &&
         miscTagsViewModel.tags.isEmpty
+    }
+    
+    var tagViewModels: [TagListViewModel] {
+        [
+            genreTagsViewModel,
+            moodTagsViewModel,
+            instrumentsTagsViewModel,
+            miscTagsViewModel
+        ]
     }
     
     @MainActor
