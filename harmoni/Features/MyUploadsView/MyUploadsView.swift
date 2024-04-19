@@ -95,6 +95,7 @@ struct MyUploadsView: View {
                 )
             }
         }
+        .listRowBackground(Color(.secondarySystemGroupedBackground))
     }
     
     @ViewBuilder
@@ -133,9 +134,6 @@ struct MyUploadsView: View {
             }
             .disabled(viewModel.isDeleting)
             .bold()
-            .onAppear() {
-                viewModel.isSelectingAll = true
-            }
         }
     }
     

@@ -52,6 +52,9 @@
 		B55056B02BD0B70E00711E19 /* DeleteTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056AF2BD0B70E00711E19 /* DeleteTag.swift */; };
 		B55056B22BD0B73800711E19 /* BulkDeleteTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056B12BD0B73800711E19 /* BulkDeleteTag.swift */; };
 		B55056B52BD0B97700711E19 /* RPCProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056B42BD0B97700711E19 /* RPCProviding.swift */; };
+		B55056BB2BD223B900711E19 /* TagExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056BA2BD223B900711E19 /* TagExplorerView.swift */; };
+		B55056BD2BD223D800711E19 /* TagExplorerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056BC2BD223D800711E19 /* TagExplorerViewModel.swift */; };
+		B55056BF2BD223EF00711E19 /* TagExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55056BE2BD223EF00711E19 /* TagExplorer.swift */; };
 		B5594A942BC8E5BC002D9902 /* AdultEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */; };
 		B5594A972BC8EF8B002D9902 /* SendMailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A962BC8EF8B002D9902 /* SendMailView.swift */; };
 		B5594A9C2BCA3940002D9902 /* SongCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */; };
@@ -185,6 +188,9 @@
 		B55056AF2BD0B70E00711E19 /* DeleteTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTag.swift; sourceTree = "<group>"; };
 		B55056B12BD0B73800711E19 /* BulkDeleteTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkDeleteTag.swift; sourceTree = "<group>"; };
 		B55056B42BD0B97700711E19 /* RPCProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCProviding.swift; sourceTree = "<group>"; };
+		B55056BA2BD223B900711E19 /* TagExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagExplorerView.swift; sourceTree = "<group>"; };
+		B55056BC2BD223D800711E19 /* TagExplorerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagExplorerViewModel.swift; sourceTree = "<group>"; };
+		B55056BE2BD223EF00711E19 /* TagExplorer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagExplorer.swift; sourceTree = "<group>"; };
 		B5594A932BC8E5BC002D9902 /* AdultEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdultEnvironmentKey.swift; sourceTree = "<group>"; };
 		B5594A962BC8EF8B002D9902 /* SendMailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMailView.swift; sourceTree = "<group>"; };
 		B5594A9B2BCA3940002D9902 /* SongCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCellViewModel.swift; sourceTree = "<group>"; };
@@ -467,6 +473,24 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		B55056B92BD222BF00711E19 /* TagExplorerView */ = {
+			isa = PBXGroup;
+			children = (
+				B55056C02BD223F300711E19 /* Models */,
+				B55056BA2BD223B900711E19 /* TagExplorerView.swift */,
+				B55056BC2BD223D800711E19 /* TagExplorerViewModel.swift */,
+			);
+			path = TagExplorerView;
+			sourceTree = "<group>";
+		};
+		B55056C02BD223F300711E19 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B55056BE2BD223EF00711E19 /* TagExplorer.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		B5594A952BC8EF7A002D9902 /* SendMailView */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,6 +592,7 @@
 				B5B060192BB526D100AD6F40 /* MyUploadsView */,
 				B51AEFC82BC206EA001F0F53 /* SearchView */,
 				B518F5472BA63BF3002CDCB7 /* SongDetailView */,
+				B55056B92BD222BF00711E19 /* TagExplorerView */,
 				B518F53F2BA53696002CDCB7 /* UploadView */,
 			);
 			path = Features;
@@ -1141,6 +1166,7 @@
 				B5F9A3662BCC99D300C83456 /* LibraryAlbumView.swift in Sources */,
 				B5B0600B2BB3900800AD6F40 /* AlbumDB.swift in Sources */,
 				B5B05FEB2BABCF2E00AD6F40 /* TagCategory.swift in Sources */,
+				B55056BB2BD223B900711E19 /* TagExplorerView.swift in Sources */,
 				B5B060052BB2638900AD6F40 /* UploadStore.swift in Sources */,
 				B55056AA2BD0B5AA00711E19 /* AddSongTag.swift in Sources */,
 				B5B060152BB3C49D00AD6F40 /* ConfirmUploadViewModel.swift in Sources */,
@@ -1151,6 +1177,7 @@
 				B51AEFCF2BC24335001F0F53 /* View+Extension.swift in Sources */,
 				B58FC7A62B9D694C006F5BDF /* AccountView.swift in Sources */,
 				B518F5562BA65097002CDCB7 /* ArtistDB.swift in Sources */,
+				B55056BD2BD223D800711E19 /* TagExplorerViewModel.swift in Sources */,
 				B5EC14062B9FF97F00F1CCA8 /* AuthResponse+Extension.swift in Sources */,
 				B5B060372BB9D0F900AD6F40 /* AlbumViewModel.swift in Sources */,
 				B58FC7B62B9E7856006F5BDF /* SignInViewModel.swift in Sources */,
@@ -1161,6 +1188,7 @@
 				B5B05FFD2BAFA7DB00AD6F40 /* SettingsView.swift in Sources */,
 				B518F55F2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift in Sources */,
 				B5EC14042B9FF6FE00F1CCA8 /* DBService.swift in Sources */,
+				B55056BF2BD223EF00711E19 /* TagExplorer.swift in Sources */,
 				B58FC7A32B9D583A006F5BDF /* SignInView.swift in Sources */,
 				B58FC7AB2B9E4C10006F5BDF /* AuthView.swift in Sources */,
 				B58FC79F2B9D5796006F5BDF /* AuthError.swift in Sources */,

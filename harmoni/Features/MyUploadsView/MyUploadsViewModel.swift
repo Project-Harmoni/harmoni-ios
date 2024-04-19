@@ -16,7 +16,7 @@ class MyUploadsViewModel: ObservableObject {
     @MainActor @Published var isDeleted: Bool = false
     @MainActor @Published var isError: Bool = false
     @MainActor @Published var isLoading: Bool = false
-    @MainActor @Published var isSelectingAll: Bool = false
+    @MainActor @Published var isSelectingAll: Bool = true
     let database: DBServiceProviding = DBService()
     let storage: StorageProviding = StorageService()
     var currentUser: User?

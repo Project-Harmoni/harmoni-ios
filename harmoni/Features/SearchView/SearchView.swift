@@ -42,7 +42,9 @@ struct SearchView: View {
                 await viewModel.getLatestSongs()
             }
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    tagExplorer
+                    
                     NavigationLink {
                         SearchFilterView(viewModel: viewModel.filterViewModel)
                     } label: {
@@ -230,6 +232,15 @@ struct SearchView: View {
     @ViewBuilder
     private var advancedSearchArtistsThatMatch: some View {
         section(from: viewModel.advancedSearchArtistsThatMatchQuery, with: "Filtered Artists")
+    }
+    
+    private var tagExplorer: some View {
+        NavigationLink {
+            TagExplorerView()
+        } label: {
+            Image(systemName: "tag")
+        }
+
     }
 }
 
