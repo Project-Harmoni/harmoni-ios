@@ -7,6 +7,7 @@
 
 import Kingfisher
 import PhotosUI
+import StoreKit
 import Supabase
 import SwiftUI
 
@@ -41,6 +42,12 @@ struct AccountView: View {
             
             Section("Wallet") {
                 wallet
+                Button {
+                    viewModel.isDisplayingTokenPurchase.toggle()
+                } label: {
+                    Text("Buy Tokens")
+                }
+
             }
             
             Section {
@@ -67,9 +74,42 @@ struct AccountView: View {
         } message: {
             Text("Hm, that didn't work. Please try again.")
         }
-        .sheet(isPresented: $viewModel.isDisplayingWelcomeView, content: {
+        .sheet(isPresented: $viewModel.isDisplayingWelcomeView) {
             WelcomeView()
-        })
+        }
+        .sheet(isPresented: $viewModel.isDisplayingTokenPurchase) {
+            VStack(alignment: .leading) {
+                Text("Buy")
+                    .font(.title2)
+                    .bold()
+                    .padding()
+                    .padding(.bottom, -16)
+                ForEach(["com.harmoni.test.1000.tokens"], id: \.self) { id in
+                    ProductView(id: id) {
+                        Image(systemName: "music.quarternote.3")
+                    }
+                    .productViewStyle(.compact)
+                    .padding(.horizontal)
+                }
+            }
+            .padding(.vertical)
+            .presentationBackground(.thinMaterial)
+            .presentationCornerRadius(24)
+            .presentationDragIndicator(.visible)
+            .presentationDetents([.fraction(0.2)])
+        }
+        .onInAppPurchaseStart { product in
+            print("User has started buying \(product.id)")
+        }
+        .onInAppPurchaseCompletion { product, result in
+            if case .success(.success(let transaction)) = result {
+                print("Purchased successfully: \(transaction.signedDate)")
+                viewModel.isDisplayingTokenPurchase.toggle()
+            } else {
+                print("Something else happened")
+                viewModel.isDisplayingTokenPurchase.toggle()
+            }
+        }
         .navigationDestination(for: AccountViewPath.self) { destination in
             switch destination {
             case .uploader: UploadView()

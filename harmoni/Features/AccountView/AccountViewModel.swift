@@ -14,6 +14,7 @@ class AccountViewModel: ObservableObject {
     /// Registered users have provided birthday and role selection
     @MainActor @Published var isRegistrationComplete: Bool = false
     @MainActor @Published var isDisplayingWelcomeView: Bool = false
+    @MainActor @Published var isDisplayingTokenPurchase: Bool = false
     @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var isError: Bool = false

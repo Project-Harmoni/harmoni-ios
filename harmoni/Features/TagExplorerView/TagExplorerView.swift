@@ -75,7 +75,7 @@ struct TagExplorerView: View {
     }
     
     private var gradient: Color {
-        colorScheme == .dark ? .gray : .white
+        colorScheme == .dark ? Color(uiColor: .secondarySystemBackground) : .white
     }
 }
 
