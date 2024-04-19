@@ -7,57 +7,6 @@
 
 import SwiftUI
 
-@MainActor class LibraryViewModel: ObservableObject {
-    @Published var media: [LibraryItem] = []
-    @Published var isError: Bool = false
-    let database: DBServiceProviding = DBService()
-    let userProvider: UserProviding = UserProvider()
-    
-    func getLibrary() {
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                guard let currentUserID = await userProvider.currentUserID else { return }
-                media = try await database.getLibrary(for: currentUserID.uuidString)
-            } catch {
-                dump(error)
-                isError.toggle()
-            }
-        }
-    }
-    
-    var sortedMedia: [LibraryItem] {
-        media
-            .sorted {
-                guard let firstDate = $0.date, let secondDate = $1.date else { return true }
-                return firstDate > secondDate
-            }
-    }
-}
-
-struct LibraryMediaCellView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    let song: Song
-    let size: CGSize
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            CoverArtView(
-                imagePath: song.details.coverImagePath,
-                placeholderName: "music.note",
-                size: size.width / 2.35,
-                cornerRadius: 8
-            )
-            if let albumName = song.details.albumName {
-                Text(albumName)
-                    .foregroundStyle(colorScheme == .dark ? .white : .black)
-            }
-            Text(song.artistName)
-                .foregroundStyle(.gray)
-        }
-    }
-}
-
 struct LibraryView: View {
     @StateObject var viewModel = LibraryViewModel()
     @State private var size: CGSize = .zero
