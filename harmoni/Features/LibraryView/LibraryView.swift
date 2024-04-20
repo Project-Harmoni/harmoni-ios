@@ -18,18 +18,19 @@ struct LibraryView: View {
     ]
     
     var body: some View {
-        Group {
-            if viewModel.media.isEmpty {
-                Text("Your library is empty")
-            } else {
-                library
-            }
-        }
-        .onAppear() {
-            viewModel.getLibrary()
-        }
+        libraryContainer
     }
     
+    @ViewBuilder
+    private var libraryContainer: some View {
+        if viewModel.isLoading {
+            ProgressView("Loading")
+        } else if viewModel.media.isEmpty {
+            Text("Your library is empty")
+        } else {
+            library
+        }
+    }
     private var library: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -58,20 +59,25 @@ struct LibraryView: View {
     
     private var librarySections: some View {
         VStack(alignment: .leading) {
-            Divider()
-            NavigationLink {
-                FavoritesView()
-            } label: {
-                HStack {
-                    Text("Favorites")
-                    Spacer()
-                    Image(systemName: "chevron.right")
+            ForEach(LibrarySection.allCases) { section in
+                Divider()
+                NavigationLink {
+                    switch section {
+                    case .artists: LibraryArtistsView()
+                    case .favorites: FavoritesView()
+                    }
+                } label: {
+                    HStack {
+                        Text(section.rawValue)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                    }
+                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .font(.title3)
                 }
-                .foregroundStyle(colorScheme == .dark ? .white : .black)
-                .font(.title3)
+                .padding(.vertical, 4)
+                Divider()
             }
-            .padding(.vertical, 4)
-            Divider()
         }
         .padding(.bottom, 24)
     }

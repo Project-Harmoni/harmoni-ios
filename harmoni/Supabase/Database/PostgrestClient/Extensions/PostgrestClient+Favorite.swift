@@ -1,5 +1,5 @@
 //
-//  PostgrestClient+Like.swift
+//  PostgrestClient+Favorite.swift
 //  harmoni
 //
 //  Created by Kyle Stokes on 4/19/24.

@@ -83,6 +83,31 @@ extension PostgrestClient {
         }
     }
     
+    /// Get artists added to user's library
+    func getLibraryArtists(for user: String) async throws -> [ArtistDB] {
+        let songID = ListenerSongLibraryDB.CodingKeys.songID.rawValue
+        let listenerID = ListenerSongLibraryDB.CodingKeys.listenerID.rawValue
+        let songs: [SongDB] = try await songs
+            .innerJoinEq(
+                table: .listenerSongLibrary,
+                joinedColumn: songID,
+                equalColumn: listenerID,
+                equalValue: user
+            )
+            .execute()
+            .value
+        
+        var artists: Set<ArtistDB> = []
+        for song in songs {
+            if let artistID = UUID(uuidString: song.artistID), 
+               let artist = try await artist(with: artistID) {
+                artists.insert(artist)
+            }
+        }
+        
+        return Array(artists)
+    }
+    
     // Is song in library?
     func isSongInLibrary(_ song: SongDB) async throws -> Bool {
         guard let id = song.id else { return false }

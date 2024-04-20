@@ -51,6 +51,8 @@ protocol DBServiceProviding {
     
     /// Get library
     func getLibrary(for user: String) async throws -> [LibraryItem]
+    /// Get artists added to user's library
+    func getLibraryArtists(for user: String) async throws -> [ArtistDB]
     // Is song in library?
     func isSongInLibrary(_ song: SongDB) async throws -> Bool
     // Is album in library?
@@ -204,6 +206,11 @@ struct DBService: DBServiceProviding {
 extension DBService {
     func getLibrary(for user: String) async throws -> [LibraryItem] {
         try await Supabase.shared.client.database.getLibrary(for: user)
+    }
+    
+    /// Get artists added to user's library
+    func getLibraryArtists(for user: String) async throws -> [ArtistDB] {
+        try await Supabase.shared.client.database.getLibraryArtists(for: user)
     }
     
     func isSongInLibrary(_ song: SongDB) async throws -> Bool {
