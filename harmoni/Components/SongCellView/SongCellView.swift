@@ -73,17 +73,17 @@ struct SongCellView: View {
                     Task.detached { @MainActor in
                         await viewModel.likeAction()
                         container.isPresentingImageToast(
-                            systemName: viewModel.isLiked ? "hand.thumbsup" : "hand.thumbsup.fill",
-                            title: viewModel.isLiked ? "Unliked" : "Liked"
+                            systemName: viewModel.isLiked ? "heart" : "heart.fill",
+                            title: viewModel.isLiked ? "Unfavorited" : "Favorited"
                         ) {
                             viewModel.isLiked.toggle()
                         }
                     }
                 } label: {
                     HStack {
-                        Text(viewModel.isLiked ? "Unlike" : "Like")
+                        Text(viewModel.isLiked ? "Unfavorite" : "Favorite")
                         Spacer()
-                        Image(systemName: viewModel.isLiked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                        Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
                     }
                 }
                 Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {

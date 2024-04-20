@@ -96,7 +96,7 @@ struct SongDetailView: View {
                     await viewModel.likeAction()
                 }
             } label: {
-                Image(systemName: viewModel.isLiked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
                     .foregroundStyle(.white)
             }
         }

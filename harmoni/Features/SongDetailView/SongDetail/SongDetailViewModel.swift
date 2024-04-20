@@ -38,8 +38,8 @@ import Foundation
             : try await self.database.likeSong(for: currentUserID.uuidString, song: songID)
             
             self.isPresentingImageToast.toggle()
-            self.imageToastSystemName = self.isLiked ? "hand.thumbsup" : "hand.thumbsup.fill"
-            self.imageToastTitle = self.isLiked ? "Unliked" : "Liked"
+            self.imageToastSystemName = self.isLiked ? "heart" : "heart.fill"
+            self.imageToastTitle = self.isLiked ? "Unfavorited" : "Favorited"
             self.isLiked.toggle()
         } catch {
             dump(error)

@@ -20,7 +20,8 @@ struct FavoritesView: View {
         if viewModel.isLoading {
             ProgressView("Loading")
         } else if viewModel.favoriteSongs.isEmpty {
-            Text("**What's your favorite music?**\nCome back after liking a song.")
+            Text("**What's your favorite music?**\nCome back after favoriting a song.")
+                .multilineTextAlignment(.center)
         } else {
             List {
                 ForEach(viewModel.favoriteSongs) { song in
