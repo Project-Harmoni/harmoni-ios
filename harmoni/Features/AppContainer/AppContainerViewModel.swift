@@ -12,6 +12,10 @@ import Supabase
 class AppContainerViewModel: ObservableObject {
     @Published var isPresentingLoadingToast: Bool = false
     @Published var isPresentingSuccessToast: Bool = false
+    @Published var isPresentingImageToast: Bool = false
+    @Published var imageToastSystemName: String = ""
+    @Published var imageToastTitle: String = ""
+    @Published var imageToastCompletion: (() -> Void)? = nil
     @Published var loadingToastTitle: String = ""
     @Published var successToastTitle: String = ""
     @Published var successToastCompletion: (() -> Void)? = nil
@@ -71,6 +75,18 @@ class AppContainerViewModel: ObservableObject {
         successToastTitle = title
         isPresentingSuccessToast.toggle()
         successToastCompletion = completion
+    }
+    
+    func isPresentingImageToast(
+        systemName: String,
+        title: String,
+        with completion: (() -> Void)? = nil
+    ) {
+        isPresentingLoadingToast = false
+        imageToastSystemName = systemName
+        imageToastTitle = title
+        isPresentingImageToast.toggle()
+        imageToastCompletion = completion
     }
     
     lazy var nowPlayingBar: NowPlayingBar = {

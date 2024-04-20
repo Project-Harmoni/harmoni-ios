@@ -59,6 +59,19 @@ struct AppContainerView: View {
                 viewModel.successToastCompletion?()
             }
         )
+        .toast(
+            isPresenting: $viewModel.isPresentingImageToast,
+            duration: 1,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(
+                    type: .systemImage(viewModel.imageToastSystemName, .primary),
+                    title: viewModel.imageToastTitle
+                )
+            }, completion: {
+                viewModel.imageToastCompletion?()
+            }
+        )
         .toast(isPresenting: $viewModel.isPresentingLoadingToast) {
             AlertToast(
                 type: .loading,

@@ -69,6 +69,23 @@ struct SongCellView: View {
     private var menu: some View {
         Menu {
             Section {
+                Button {
+                    Task.detached { @MainActor in
+                        await viewModel.likeAction()
+                        container.isPresentingImageToast(
+                            systemName: viewModel.isLiked ? "hand.thumbsup" : "hand.thumbsup.fill",
+                            title: viewModel.isLiked ? "Unliked" : "Liked"
+                        ) {
+                            viewModel.isLiked.toggle()
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Text(viewModel.isLiked ? "Unlike" : "Like")
+                        Spacer()
+                        Image(systemName: viewModel.isLiked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                    }
+                }
                 Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
                     Task.detached { @MainActor in
                         container.isPresentingLoadingToast(

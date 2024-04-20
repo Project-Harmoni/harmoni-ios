@@ -48,6 +48,7 @@ protocol DBServiceProviding {
     func search(with query: SearchQuery) async throws -> SearchResults
     /// Advanced search by query (albums, artists, songs, tags)
     func advancedSearch(with query: SearchQuery) async throws -> SearchResults
+    
     /// Get library
     func getLibrary(for user: String) async throws -> [LibraryItem]
     // Is song in library?
@@ -62,6 +63,17 @@ protocol DBServiceProviding {
     func removeSongFromLibrary(_ song: SongDB) async throws
     // Remove album from library
     func removeAlbumFromLibrary(_ album: AlbumDB) async throws
+    
+    // Like song
+    func likeSong(for user: String, song: Int8) async throws
+    // Unlike song
+    func unlikeSong(for user: String, song: Int8) async throws
+    // Get likes for song
+    func likeCountFor(song: Int8) async throws -> String
+    // Get liked songs for user
+    func likedSongsFor(user: String) async throws -> [Song]
+    // Is song liked by user?
+    func isSongLiked(_ song: SongDB) async throws -> Bool
     
     /// Upsert (update or insert) user in DB
     func upsert(user: UserDB) async throws
@@ -216,6 +228,30 @@ extension DBService {
     
     func removeAlbumFromLibrary(_ album: AlbumDB) async throws {
         try await Supabase.shared.client.database.removeAlbumFromLibrary(album)
+    }
+}
+
+ // MARK: - Like/Unlike Songs
+
+extension DBService {
+    func likeSong(for user: String, song: Int8) async throws {
+        try await Supabase.shared.client.database.likeSong(for: user, song: song)
+    }
+    
+    func unlikeSong(for user: String, song: Int8) async throws {
+        try await Supabase.shared.client.database.unlikeSong(for: user, song: song)
+    }
+    
+    func likeCountFor(song: Int8) async throws -> String {
+        try await Supabase.shared.client.database.likeCountFor(song: song)
+    }
+    
+    func likedSongsFor(user: String) async throws -> [Song] {
+        try await Supabase.shared.client.database.likedSongsFor(user: user)
+    }
+    
+    func isSongLiked(_ song: SongDB) async throws -> Bool {
+        try await Supabase.shared.client.database.isSongLiked(song)
     }
 }
 

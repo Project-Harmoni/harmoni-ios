@@ -11,6 +11,7 @@ import Foundation
     private let database: DBServiceProviding = DBService()
     private let userProvider: UserProviding = UserProvider()
     @Published var isAddedToLibrary: Bool = false
+    @Published var isLiked: Bool = false
     
     var song: Song
     var isDetailed: Bool = true
@@ -21,13 +22,14 @@ import Foundation
     ) {
         self.song = song
         self.isDetailed = isDetailed
-        self.checkIfInLibrary()
+        self.checkState()
     }
     
-    private func checkIfInLibrary() {
+    private func checkState() {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
             self.isAddedToLibrary = try await self.database.isSongInLibrary(self.song.details)
+            self.isLiked = try await self.database.isSongLiked(self.song.details)
         }
     }
     
@@ -40,6 +42,18 @@ import Foundation
                 for: currentUserID.uuidString,
                 song: self.song.details
             )
+        } catch {
+            dump(error)
+        }
+    }
+    
+    func likeAction() async {
+        do {
+            guard let currentUserID = await self.userProvider.currentUserID else { return }
+            guard let songID = self.song.details.id else { return }
+            self.isLiked
+            ? try await self.database.unlikeSong(for: currentUserID.uuidString, song: songID)
+            : try await self.database.likeSong(for: currentUserID.uuidString, song: songID)
         } catch {
             dump(error)
         }

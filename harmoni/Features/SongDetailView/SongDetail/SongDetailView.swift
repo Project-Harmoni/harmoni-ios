@@ -5,12 +5,14 @@
 //  Created by Kyle Stokes on 3/16/24.
 //
 
+import AlertToast
 import Kingfisher
 import SwiftUI
 
 struct SongDetailView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
-    @ObservedObject var viewModel: SongDetailViewModel
+    @Environment(\.container) var container
+    @StateObject var viewModel: SongDetailViewModel
     @StateObject var audioManager = AudioManager.shared
     @State private var trackBarSize: CGSize = .zero
     @State private var size: CGSize = .zero
@@ -48,6 +50,17 @@ struct SongDetailView: View {
                     .background(.regularMaterial)
             }
         )
+        .toast(
+            isPresenting: $viewModel.isPresentingImageToast,
+            duration: 1,
+            tapToDismiss: true,
+            alert: {
+                AlertToast(
+                    type: .systemImage(viewModel.imageToastSystemName, .primary),
+                    title: viewModel.imageToastTitle
+                )
+            }
+        )
         .readSize {
             size = $0
         }
@@ -78,6 +91,14 @@ struct SongDetailView: View {
             }
             .bold()
             Spacer()
+            Button {
+                Task.detached { @MainActor in
+                    await viewModel.likeAction()
+                }
+            } label: {
+                Image(systemName: viewModel.isLiked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                    .foregroundStyle(.white)
+            }
         }
         .padding(.bottom)
     }

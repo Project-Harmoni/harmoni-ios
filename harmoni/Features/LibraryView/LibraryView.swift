@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LibraryView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject var viewModel = LibraryViewModel()
     @State private var size: CGSize = .zero
     
@@ -32,6 +33,7 @@ struct LibraryView: View {
     private var library: some View {
         ScrollView {
             VStack(alignment: .leading) {
+                librarySections
                 Text("Recently Added")
                     .font(.title3)
                     .bold()
@@ -52,6 +54,26 @@ struct LibraryView: View {
         .readSize {
             size = $0
         }
+    }
+    
+    private var librarySections: some View {
+        VStack(alignment: .leading) {
+            Divider()
+            NavigationLink {
+                FavoritesView()
+            } label: {
+                HStack {
+                    Text("Favorites")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .foregroundStyle(colorScheme == .dark ? .white : .black)
+                .font(.title3)
+            }
+            .padding(.vertical, 4)
+            Divider()
+        }
+        .padding(.bottom, 24)
     }
 }
 
