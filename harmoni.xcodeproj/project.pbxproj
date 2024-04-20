@@ -145,6 +145,7 @@
 		B5F126832BBB361000341C09 /* ConfigDebug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */; };
 		B5F678922BD4743200004CAB /* LibraryArtistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F678912BD4743200004CAB /* LibraryArtistsView.swift */; };
 		B5F678942BD4770000004CAB /* LibraryArtistsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F678932BD4770000004CAB /* LibraryArtistsViewModel.swift */; };
+		B5F678962BD4805F00004CAB /* LibraryAlbumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F678952BD4805F00004CAB /* LibraryAlbumViewModel.swift */; };
 		B5F9A3582BCB808D00C83456 /* PostgrestQueryBulider+Join.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F9A3572BCB808D00C83456 /* PostgrestQueryBulider+Join.swift */; };
 		B5F9A35A2BCB80C800C83456 /* PostgrestClient+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F9A3592BCB80C800C83456 /* PostgrestClient+Common.swift */; };
 		B5F9A35F2BCB817600C83456 /* PostgrestClient+Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F9A35E2BCB817600C83456 /* PostgrestClient+Library.swift */; };
@@ -286,6 +287,7 @@
 		B5F126822BBB361000341C09 /* ConfigDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = ConfigDebug.xcconfig; sourceTree = "<group>"; };
 		B5F678912BD4743200004CAB /* LibraryArtistsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryArtistsView.swift; sourceTree = "<group>"; };
 		B5F678932BD4770000004CAB /* LibraryArtistsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryArtistsViewModel.swift; sourceTree = "<group>"; };
+		B5F678952BD4805F00004CAB /* LibraryAlbumViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryAlbumViewModel.swift; sourceTree = "<group>"; };
 		B5F9A3572BCB808D00C83456 /* PostgrestQueryBulider+Join.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostgrestQueryBulider+Join.swift"; sourceTree = "<group>"; };
 		B5F9A3592BCB80C800C83456 /* PostgrestClient+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostgrestClient+Common.swift"; sourceTree = "<group>"; };
 		B5F9A35E2BCB817600C83456 /* PostgrestClient+Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostgrestClient+Library.swift"; sourceTree = "<group>"; };
@@ -1039,6 +1041,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F9A3652BCC99D300C83456 /* LibraryAlbumView.swift */,
+				B5F678952BD4805F00004CAB /* LibraryAlbumViewModel.swift */,
 			);
 			path = LibraryAlbumView;
 			sourceTree = "<group>";
@@ -1247,6 +1250,7 @@
 				B51AEFD92BC36575001F0F53 /* AlbumCellView.swift in Sources */,
 				B5B05FFD2BAFA7DB00AD6F40 /* SettingsView.swift in Sources */,
 				B518F55F2BA66E3E002CDCB7 /* AdminEnvironmentKey.swift in Sources */,
+				B5F678962BD4805F00004CAB /* LibraryAlbumViewModel.swift in Sources */,
 				B5EC14042B9FF6FE00F1CCA8 /* DBService.swift in Sources */,
 				B55056BF2BD223EF00711E19 /* TagExplorer.swift in Sources */,
 				B58FC7A32B9D583A006F5BDF /* SignInView.swift in Sources */,

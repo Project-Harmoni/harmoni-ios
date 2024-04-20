@@ -76,8 +76,8 @@ struct LibraryView: View {
                     .font(.title3)
                 }
                 .padding(.vertical, 4)
-                Divider()
             }
+            Divider()
         }
         .padding(.bottom, 24)
     }
