@@ -21,7 +21,7 @@ import Foundation
         self.checkState()
     }
     
-    private func checkState() {
+    func checkState() {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
             guard let song else { return }

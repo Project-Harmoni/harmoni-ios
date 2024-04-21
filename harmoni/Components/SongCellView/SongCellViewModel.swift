@@ -14,13 +14,16 @@ import Foundation
     @Published var isLiked: Bool = false
     
     var song: Song
+    var queue: [Song] = []
     var isDetailed: Bool = true
     
     init(
         song: Song,
+        queue: [Song] = [],
         isDetailed: Bool = false
     ) {
         self.song = song
+        self.queue = queue
         self.isDetailed = isDetailed
         self.checkState()
     }

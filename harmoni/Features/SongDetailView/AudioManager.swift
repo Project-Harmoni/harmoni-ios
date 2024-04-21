@@ -96,6 +96,11 @@ class AudioManager: ObservableObject {
         self.elapsedTimeDouble = 0
     }
     
+    func resetElapsedTime() {
+        elapsedTime = "-:--"
+        timeLeft = "-:--"
+    }
+    
     func startAudio(url: URL) {
         self.url = url
         self.setupPlayer()

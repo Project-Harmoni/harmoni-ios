@@ -5,7 +5,16 @@
 //  Created by Kyle Stokes on 4/1/24.
 //
 
+import Kingfisher
 import SwiftUI
+
+enum NowPlayingManagerState {
+    case empty
+    case single(song: SongDB)
+    case startFrom(song: SongDB, in: [SongDB])
+    case playAll(songs: [SongDB])
+    case shuffle(songs: [SongDB])
+}
 
 class NowPlayingManager: ObservableObject {
     @Published var isPlaying: Bool = false
@@ -21,7 +30,37 @@ class NowPlayingManager: ObservableObject {
             AudioManager.shared.startAudio(url: url)
         }
     }
+    private var queue: [SongDB] = []
+    private var currentSongIndex: Int = -1 {
+        didSet {
+            if queue.indices.contains(currentSongIndex) {
+                song = queue[currentSongIndex]
+            } else {
+                isPlaying = false
+            }
+        }
+    }
     private let database: DBServiceProviding = DBService()
+    var state: NowPlayingManagerState = .empty {
+        didSet {
+            switch state {
+            case .empty:
+                song = nil
+            case .single(let song):
+                self.song = song
+            case .startFrom(let song, let songs):
+                self.setQueue(with: songs, current: song)
+            case .playAll(let songs):
+                self.setQueue(with: songs)
+            case .shuffle(let songs):
+                self.setQueue(with: songs.shuffled())
+            }
+        }
+    }
+    
+    init() {
+        AudioManager.shared.onSongFinished = onSongFinished
+    }
     
     private func getArtistName() {
         Task { @MainActor [weak self] in
@@ -36,6 +75,46 @@ class NowPlayingManager: ObservableObject {
             }
         }
     }
+    
+    private func setQueue(with songs: [SongDB], current: SongDB? = nil) {
+        resetPlayer()
+        queue = songs
+        if let current, let currentIndex = queue.firstIndex(where: { $0.id == current.id }) {
+            currentSongIndex = currentIndex
+        } else {
+            currentSongIndex = 0
+        }
+    }
+    
+    private func onSongFinished() {
+        if isNextAvailable {
+            playNext()
+        } else {
+            isPlaying = false
+        }
+    }
+    
+    private func resetPlayer() {
+        AudioManager.shared.resetElapsedTime()
+    }
+    
+    func playNext() {
+        resetPlayer()
+        currentSongIndex += 1
+    }
+    
+    func playPrevious() {
+        resetPlayer()
+        currentSongIndex -= 1
+    }
+    
+    var isNextAvailable: Bool {
+        queue.indices.contains(currentSongIndex + 1)
+    }
+    
+    var isPreviousAvailable: Bool {
+        queue.indices.contains(currentSongIndex - 1)
+    }
 }
 
 class NowPlayingViewModel: ObservableObject {
@@ -49,6 +128,12 @@ struct NowPlayingBar: View {
     var body: some View {
         if let name = nowPlayingManager.song?.name {
             HStack {
+                CoverArtView(
+                    imagePath: nowPlayingManager.coverImagePath,
+                    placeholderName: "music.note",
+                    size: 36,
+                    cornerRadius: 8
+                )
                 HStack {
                     Text(name)
                     if nowPlayingManager.song?.isExplicit ?? false {

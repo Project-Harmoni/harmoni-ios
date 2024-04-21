@@ -26,7 +26,11 @@ struct FavoritesView: View {
             List {
                 ForEach(viewModel.favoriteSongs) { song in
                     SongCellView(
-                        viewModel: .init(song: song, isDetailed: true)
+                        viewModel: .init(
+                            song: song,
+                            queue: viewModel.favoriteSongs,
+                            isDetailed: true
+                        )
                     )
                 }
             }

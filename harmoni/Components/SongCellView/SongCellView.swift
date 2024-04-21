@@ -60,7 +60,14 @@ struct SongCellView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                nowPlayingManager.song = viewModel.song.details
+                if viewModel.queue.isEmpty {
+                    nowPlayingManager.state = .single(song: viewModel.song.details)
+                } else {
+                    nowPlayingManager.state = .startFrom(
+                        song: viewModel.song.details,
+                        in: viewModel.queue.map { $0.details }
+                    )
+                }
             }
             menu
         }
@@ -140,5 +147,4 @@ struct SongCellView: View {
             song: .init(details: .mock, artistName: "Test Artist")
         )
     )
-    .environmentObject(NowPlayingManager())
 }

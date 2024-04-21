@@ -23,7 +23,7 @@ struct SongDetailView: View {
             songInfo
             trackBar
             Spacer()
-            playPauseButton
+            actionButtons
             Spacer()
             volumeSlider
             Spacer()
@@ -63,6 +63,10 @@ struct SongDetailView: View {
         )
         .readSize {
             size = $0
+        }
+        .onChange(of: nowPlayingManager.song) { _, nowPlayingSong in
+            viewModel.song = nowPlayingSong
+            viewModel.checkState()
         }
     }
     
@@ -139,6 +143,31 @@ struct SongDetailView: View {
             .font(.caption)
             .foregroundStyle(.gray)
         }
+    }
+    
+    private var actionButtons: some View {
+        HStack {
+            Button {
+                nowPlayingManager.playPrevious()
+            } label: {
+                Image(systemName: "backward.fill")
+                    .tint(.primary)
+            }
+            .disabled(!nowPlayingManager.isPreviousAvailable)
+            .font(.system(size: 24))
+            Spacer()
+            playPauseButton
+            Spacer()
+            Button {
+                nowPlayingManager.playNext()
+            } label: {
+                Image(systemName: "forward.fill")
+                    .tint(.primary)
+            }
+            .disabled(!nowPlayingManager.isNextAvailable)
+            .font(.system(size: 24))
+        }
+        .padding(.horizontal, 36)
     }
     
     private var playPauseButton: some View {

@@ -11,10 +11,12 @@ import SwiftUI
 // TODO: - Clean-up. Merge with `AlbumView`?
 
 struct LibraryAlbumView: View {
+    @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @Environment(\.dismiss) var dismiss
     @Environment(\.isAdmin) var isAdmin
     @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: LibraryAlbumViewModel
+    @State private var size: CGSize = .zero
     
     var body: some View {
         albumContainer
@@ -36,6 +38,9 @@ struct LibraryAlbumView: View {
     @ViewBuilder
     private var albumContainer: some View {
         album
+            .readSize {
+                size = $0
+            }
             .navigationBarTitleDisplayMode(.inline)
     }
     
@@ -45,7 +50,8 @@ struct LibraryAlbumView: View {
                 ForEach(viewModel.item.songs) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
-                            song: song
+                            song: song,
+                            queue: viewModel.item.songs
                         )
                     )
                     .listRowBackground(Color(.secondarySystemGroupedBackground))
@@ -159,6 +165,7 @@ struct LibraryAlbumView: View {
         VStack {
             coverArt
             albumInfo
+            buttons
         }
     }
     
@@ -189,6 +196,39 @@ struct LibraryAlbumView: View {
         }
     }
     
+    private var buttons: some View {
+        HStack(spacing: 16) {
+            Button {
+                nowPlayingManager.state = .playAll(
+                    songs: viewModel.item.songs.map { $0.details }
+                )
+            } label: {
+                HStack {
+                    Image(systemName: "play.fill")
+                    Text("Play")
+                }
+                .frame(width: size.width / 2.8)
+                .frame(height: 30)
+            }
+            .buttonStyle(.bordered)
+            Button {
+                nowPlayingManager.state = .shuffle(
+                    songs: viewModel.item.songs.map { $0.details }
+                )
+            } label: {
+                HStack {
+                    Image(systemName: "shuffle")
+                    Text("Shuffle")
+                }
+                .frame(width: size.width / 2.8)
+                .frame(height: 30)
+            }
+            .buttonStyle(.bordered)
+        }
+        .foregroundStyle(.blue)
+        .padding(.top, 8)
+    }
+    
     @ViewBuilder
     private var albumFooterInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -201,4 +241,9 @@ struct LibraryAlbumView: View {
             }
         }
     }
+}
+
+#Preview {
+    LibraryAlbumView(viewModel: .init(item: .init(songs: [])))
+        .environmentObject(NowPlayingManager())
 }

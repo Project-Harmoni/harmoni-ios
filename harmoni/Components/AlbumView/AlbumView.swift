@@ -9,10 +9,12 @@ import AlertToast
 import SwiftUI
 
 struct AlbumView: View {
+    @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @Environment(\.dismiss) var dismiss
     @Environment(\.isAdmin) var isAdmin
     @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: AlbumViewModel
+    @State private var size: CGSize = .zero
     @State private var artistName: String?
     @State private var isDisplayingCopyrightInfringementRequest: Bool = false
     @State private var isDisplayingBlacklistRequest: Bool = false
@@ -34,6 +36,9 @@ struct AlbumView: View {
                     SendMailView.countryBlacklistRequest(for: "album " + String(id), from: email)
                 }
             }
+            .readSize {
+                size = $0
+            }
     }
     
     @ViewBuilder
@@ -52,7 +57,8 @@ struct AlbumView: View {
                 ForEach(viewModel.songs) { song in
                     SongCellView(
                         viewModel: SongCellViewModel(
-                            song: song
+                            song: song,
+                            queue: viewModel.songs
                         )
                     )
                     .listRowBackground(Color(.secondarySystemGroupedBackground))
@@ -218,6 +224,7 @@ struct AlbumView: View {
         VStack {
             coverArt
             albumInfo
+            buttons
         }
     }
     
@@ -248,6 +255,39 @@ struct AlbumView: View {
         }
     }
     
+    private var buttons: some View {
+        HStack(spacing: 16) {
+            Button {
+                nowPlayingManager.state = .playAll(
+                    songs: viewModel.songs.map { $0.details }
+                )
+            } label: {
+                HStack {
+                    Image(systemName: "play.fill")
+                    Text("Play")
+                }
+                .frame(width: size.width / 2.8)
+                .frame(height: 30)
+            }
+            .buttonStyle(.bordered)
+            Button {
+                nowPlayingManager.state = .shuffle(
+                    songs: viewModel.songs.map { $0.details }
+                )
+            } label: {
+                HStack {
+                    Image(systemName: "shuffle")
+                    Text("Shuffle")
+                }
+                .frame(width: size.width / 2.8)
+                .frame(height: 30)
+            }
+            .buttonStyle(.bordered)
+        }
+        .foregroundStyle(.blue)
+        .padding(.top, 8)
+    }
+    
     @ViewBuilder
     private var albumFooterInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -267,5 +307,6 @@ struct AlbumView: View {
 #Preview {
     NavigationStack {
         AlbumView(viewModel: AlbumViewModel(album: AlbumDB(id: 0, name: "Test Album", artistID: "", coverImagePath: "", yearReleased: "2024", totalTracks: 10, recordLabel: "Record Label", duration: 50.46, createdAt: nil)))
+            .environmentObject(NowPlayingManager())
     }
 }
