@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol EdgeProvider {
+protocol EdgeProviding {
     func createWallet(request: CreateWalletRequest) async throws -> CreateWalletResponse?
     func deleteUser(request: DeleteUserRequest) async throws -> DeleteUserResponse?
     func initiateSongPayout(request: InitiateSongPayoutRequest) async throws -> InitiateSongPayoutResponse?
@@ -15,7 +15,7 @@ protocol EdgeProvider {
     func purchaseTokens(request: PurchaseTokensRequest) async throws -> PurchaseTokensResponse?
 }
 
-struct EdgeService: EdgeProvider {
+struct EdgeService: EdgeProviding {
     func createWallet(request: CreateWalletRequest) async throws -> CreateWalletResponse? {
         try await Supabase.shared.client.functions.createWallet(request: request)
     }

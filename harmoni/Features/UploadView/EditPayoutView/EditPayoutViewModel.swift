@@ -26,8 +26,10 @@ class EditPayoutViewModel: ObservableObject {
             if let index = tracks.firstIndex(where: { $0.id == track }) {
                 var threshold = Int(streamThreshold) ?? 1000
                 threshold = threshold < minimium ? minimium : threshold
+                let currentStreamThreshold = tracks[index].streamThreshold
                 tracks[index].streamThreshold = threshold
-                tracks[index].numberOfStreams = threshold
+                tracks[index].numberOfStreamsAlert = threshold
+                tracks[index].isPayoutRequired = threshold < currentStreamThreshold
             }
         }
         streamThreshold = ""

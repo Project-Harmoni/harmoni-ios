@@ -18,7 +18,9 @@ struct Track: Identifiable, Hashable, Equatable {
     var artistPercentage: CGFloat = 80
     var streamThreshold: Int = 1000
     /// Number of streams to modify in alert textfield
-    var numberOfStreams: Int = 1000
+    var numberOfStreamsAlert: Int = 1000
+    /// If new lower threshold set, check if payout required
+    var isPayoutRequired: Bool = false
     var isFreeToStream: Bool = false
     var payoutType: TrackPayoutType = .proportional
 }

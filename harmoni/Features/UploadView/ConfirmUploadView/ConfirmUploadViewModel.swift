@@ -7,12 +7,17 @@
 
 import UIKit
 
+enum UploadError: Error {
+    case failedToInitiatePayout
+}
+
 class ConfirmUploadViewModel: ObservableObject {
     @MainActor @Published var isShowingCompletedToast: Bool = false
     @MainActor @Published var isSaving: Bool = false
     @MainActor @Published var isError: Bool = false
     private let database: DBServiceProviding
     private let rpc: RPCProviding
+    private let edge: EdgeProviding
     private let storage: StorageProviding
     private let userProvider: UserProviding
     private var uploadedSongs: [SongDB] = []
@@ -23,11 +28,13 @@ class ConfirmUploadViewModel: ObservableObject {
     init(
         database: DBServiceProviding = DBService(),
         rpc: RPCProviding = RPCProvider(),
+        edge: EdgeProviding = EdgeService(),
         storage: StorageProviding = StorageService(),
         userProvider: UserProviding = UserProvider()
     ) {
         self.database = database
         self.rpc = rpc
+        self.edge = edge
         self.storage = storage
         self.userProvider = userProvider
     }
@@ -60,6 +67,9 @@ class ConfirmUploadViewModel: ObservableObject {
                 
                 // After tracks, album, and tags are uploaded, update association tables in database
                 try await self.updateAssociationTables()
+                
+                // Check if payout needs to occur based on stream thresholds
+                self.checkIfPayoutRequired()
                 
                 self.isSaving.toggle()
                 self.isShowingCompletedToast.toggle()
@@ -99,9 +109,13 @@ class ConfirmUploadViewModel: ObservableObject {
     
     private func upload(track: Track) async throws -> String? {
         let url = track.url
-        guard url.startAccessingSecurityScopedResource() else { return nil }
+        #if !targetEnvironment(simulator)
+                guard url.startAccessingSecurityScopedResource() else { return nil }
+        #endif
         let trackData = try Data(contentsOf: track.url)
+        #if !targetEnvironment(simulator)
         url.stopAccessingSecurityScopedResource()
+        #endif
         try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track) else { return nil }
         // upload track to storage
@@ -211,6 +225,24 @@ class ConfirmUploadViewModel: ObservableObject {
     private func updateAssociationTables() async throws {
         // Update song/album table in database
         try await self.updateSongAlbumAssociations()
+    }
+    
+    /// Check if payout needs to occur based on stream thresholds
+    private func checkIfPayoutRequired() {
+        Task { [weak self] in
+            guard let self else { return }
+            guard let store else { return }
+            for track in store.tracks {
+                do {
+                    if track.isPayoutRequired, let songID = track.serverID {
+                        let response = try await self.edge.initiateSongPayout(request: .init(songID: String(songID)))
+                        if response?.error != nil { throw UploadError.failedToInitiatePayout }
+                    }
+                } catch {
+                    dump(error)
+                }
+            }
+        }
     }
 }
 

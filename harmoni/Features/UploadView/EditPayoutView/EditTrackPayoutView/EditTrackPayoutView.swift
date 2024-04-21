@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// TODO: - Clean-up with view model
+
 struct EditTrackPayoutView: View {
     @Environment(\.platformConstants) private var platformConstants
     @Environment(\.colorScheme) var colorScheme
@@ -33,25 +35,20 @@ struct EditTrackPayoutView: View {
             TextField("Number of streams", text: $numberOfStreams.toString)
                 .keyboardType(.numberPad)
             Button("Save", role: .none) {
-                // TODO: - Clean-up
-                if numberOfStreams < minimum {
-                    numberOfStreams = minimum
-                }
-                track.streamThreshold = numberOfStreams
-                track.numberOfStreams = numberOfStreams
+                saveNumberOfStreams()
             }
             Button("Cancel", role: .cancel) {
-                track.numberOfStreams = track.streamThreshold
+                track.numberOfStreamsAlert = track.streamThreshold
             }
         } message: {
             Text("Enter the number of streams it takes for a payout to occur. \(minimum) is the minimum.")
         }
         .onAppear() {
-            track.numberOfStreams = track.streamThreshold
+            track.numberOfStreamsAlert = track.streamThreshold
             numberOfStreams = track.streamThreshold
         }
-        .onChange(of: track.numberOfStreams) {
-            numberOfStreams = track.numberOfStreams
+        .onChange(of: track.numberOfStreamsAlert) {
+            numberOfStreams = track.numberOfStreamsAlert
         }
     }
     
@@ -228,6 +225,16 @@ struct EditTrackPayoutView: View {
         } else {
             125
         }
+    }
+    
+    private func saveNumberOfStreams() {
+        if numberOfStreams < minimum {
+            numberOfStreams = minimum
+        }
+        let currentStreamThreshold = track.streamThreshold
+        track.streamThreshold = numberOfStreams
+        track.numberOfStreamsAlert = numberOfStreams
+        track.isPayoutRequired = numberOfStreams < currentStreamThreshold
     }
 }
 
