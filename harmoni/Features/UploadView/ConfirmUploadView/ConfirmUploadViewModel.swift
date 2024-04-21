@@ -98,7 +98,10 @@ class ConfirmUploadViewModel: ObservableObject {
     }
     
     private func upload(track: Track) async throws -> String? {
+        let url = track.url
+        guard url.startAccessingSecurityScopedResource() else { return nil }
         let trackData = try Data(contentsOf: track.url)
+        url.stopAccessingSecurityScopedResource()
         try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track) else { return nil }
         // upload track to storage
