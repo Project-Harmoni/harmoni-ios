@@ -346,7 +346,7 @@ private extension AccountView {
         HStack {
             Text("Token Balance")
             Spacer()
-            Text("\(viewModel.tokens)")
+            Text(String(format: "%.2f", viewModel.tokens))
         }
     }
 }

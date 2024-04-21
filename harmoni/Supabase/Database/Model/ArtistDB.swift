@@ -16,7 +16,7 @@ struct ArtistDB: Codable, Identifiable, Hashable {
     var socialLinkURL: String?
     var biography: String?
     var genre: String?
-    var tokens: Int = 0
+    var tokens: Float = 0
     var createdAt: Date?
     
     enum CodingKeys: String, CodingKey {

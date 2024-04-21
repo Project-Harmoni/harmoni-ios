@@ -25,7 +25,7 @@ class AccountViewModel: ObservableObject {
     @Published var profileImageItem: PhotosPickerItem?
     @Published var profileImage: URL?
     @Published var justChangedProfileImage: Image?
-    @Published var tokens: Int = 0
+    @Published var tokens: Float = 0
     
     // Editable fields
     @Published var name: String = ""

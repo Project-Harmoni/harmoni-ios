@@ -12,7 +12,7 @@ struct ListenerDB: Codable {
     var name: String?
     var email: String?
     var imageURL: String?
-    var tokens: Int = 0
+    var tokens: Float = 0
     var createdAt: Date?
     
     enum CodingKeys: String, CodingKey {
