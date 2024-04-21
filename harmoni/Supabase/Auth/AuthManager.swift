@@ -13,7 +13,7 @@ class AuthManager: ObservableObject {
     static var shared = AuthManager()
     @Published var isSignedIn: Bool = false
     /// Registered users must supply birthday and role
-    @Published var isRegistrationComplete: Bool?
+    @MainActor @Published var isRegistrationComplete: Bool?
     private let database: DBServiceProviding = DBService()
     
     private init() {
@@ -44,7 +44,7 @@ class AuthManager: ObservableObject {
     }
     
     /// Check if registered user has birthday and role chosen
-    func checkRegistration() async {
+    @MainActor func checkRegistration() async {
         do {
             guard let currentUser = await currentUser else { return }
             let isRegistrationFinished = try await database.checkRegistrationFinished(

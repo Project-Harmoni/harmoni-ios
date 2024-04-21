@@ -10,11 +10,11 @@ import PhotosUI
 import SwiftUI
 import Supabase
 
-class AccountViewModel: ObservableObject {
+@MainActor class AccountViewModel: ObservableObject {
     /// Registered users have provided birthday and role selection
-    @MainActor @Published var isRegistrationComplete: Bool = false
-    @MainActor @Published var isDisplayingWelcomeView: Bool = false
-    @MainActor @Published var isDisplayingTokenPurchase: Bool = false
+    @Published var isRegistrationComplete: Bool = false
+    @Published var isDisplayingWelcomeView: Bool = false
+    @Published var isDisplayingTokenPurchase: Bool = false
     @Published var isSignedIn: Bool = false
     @Published var isEditing: Bool = false
     @Published var isError: Bool = false
@@ -72,14 +72,12 @@ class AccountViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    @MainActor
     private func handleSignIn(_ isSignedIn: Bool) async {
         self.user = await AuthManager.shared.currentUser
         self.isSignedIn = isSignedIn
         self.isDisplayingWelcomeView = await self.userProvider.isNew
     }
     
-    @MainActor
     private func toggleError(_ toggle: Bool) {
         isError = toggle
     }
@@ -104,24 +102,22 @@ class AccountViewModel: ObservableObject {
         }
     }
     
-    func logout() {
-        Task { @MainActor [weak self] in
-            await AuthManager.shared.logout()
-            self?.profileImage = nil
-            self?.profileImageItem = nil
-            self?.justChangedProfileImage = nil
-            self?.name = ""
-            self?.bio = ""
-            self?.website = ""
-            self?.tokens = 0
-        }
+    func logout() async {
+        await AuthManager.shared.logout()
+        UserDefaults.standard.set(false, forKey: "isAdminRequested")
+        profileImage = nil
+        profileImageItem = nil
+        justChangedProfileImage = nil
+        name = ""
+        bio = ""
+        website = ""
+        tokens = 0
     }
 }
 
 // MARK: Upsert database
 
 private extension AccountViewModel {
-    @MainActor
     func upsertArtist() async throws {
         if name.isEmpty, bio.isEmpty, website.isEmpty { return }
         guard var artist else { return }
@@ -132,7 +128,6 @@ private extension AccountViewModel {
         try await self.database.upsert(artist: artist)
     }
     
-    @MainActor
     func upsertListener() async throws {
         if name.isEmpty { return }
         guard var listener else { return }
@@ -158,7 +153,6 @@ private extension AccountViewModel {
 
 extension AccountViewModel {
     /// Get all data associated with current user
-    @MainActor
     func handleAccountData() async {
         guard let id = user?.id else { return }
         do {
@@ -211,15 +205,15 @@ private extension AccountViewModel {
                 .aspectFitToHeight()
                 .jpegData(compressionQuality: 0.2)
             else {
-                return await toggleError(true)
+                return toggleError(true)
             }
             guard let profileImageName else {
-                return await toggleError(true)
+                return toggleError(true)
             }
             
             try await self.uploadProfileImage(jpegData, name: profileImageName)
         } else {
-            return await toggleError(true)
+            return toggleError(true)
         }
     }
     
@@ -229,7 +223,7 @@ private extension AccountViewModel {
             let imageLocation = try await storage.uploadImage(data, name: name)
             // get image name and file extension
             guard let resultPath = URL(string: imageLocation)?.lastPathComponent else {
-                return await toggleError(true)
+                return toggleError(true)
             }
             // get public image url from storage
             let imageURL = try storage.getImageURL(for: resultPath)
@@ -242,7 +236,7 @@ private extension AccountViewModel {
             }
         } catch {
             dump(error)
-            return await toggleError(true)
+            return toggleError(true)
         }
     }
     

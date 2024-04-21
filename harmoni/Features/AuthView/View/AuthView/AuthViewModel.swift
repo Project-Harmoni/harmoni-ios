@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class AuthViewModel: ObservableObject {
+@MainActor class AuthViewModel: ObservableObject {
     @Published var showSignUp: Bool = false
     @Published var showLogIn: Bool = false
     /// Registered users must supply birthday and role

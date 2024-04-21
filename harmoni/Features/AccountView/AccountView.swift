@@ -52,7 +52,11 @@ struct AccountView: View {
             
             Section {
                 NavigationLink("Settings") {
-                    SettingsView()
+                    SettingsView(
+                        viewModel: .init(
+                            logoutAction: viewModel.logout
+                        )
+                    )
                 }
             }
         }
@@ -253,8 +257,9 @@ private extension AccountView {
     private var menu: some View {
         Menu {
             Button {
-                UserDefaults.standard.set(false, forKey: "isAdminRequested")
-                viewModel.logout()
+                Task {
+                    await viewModel.logout()
+                }
             } label: {
                 Text("Sign Out")
             }

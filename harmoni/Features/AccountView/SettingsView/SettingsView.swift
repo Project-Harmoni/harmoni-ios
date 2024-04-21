@@ -10,11 +10,11 @@ import MessageUI
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.dismiss) var dismiss
     @Environment(\.isAdmin) private var isAdmin
+    @Environment(\.container) private var container
     @Environment(\.currentUser) private var currentUser
-    @AppStorage("isAdminRequested") var isAdminRequested: Bool = false
-    @State private var isDisplayingAdminRequest: Bool = false
-    @State private var isDisplayingRequestSent: Bool = false
+    @StateObject var viewModel: SettingsViewModel
     
     var body: some View {
         List {
@@ -25,7 +25,7 @@ struct SettingsView: View {
                         Spacer()
                         Text("Admin").bold()
                     }
-                } else if isAdminRequested {
+                } else if viewModel.isAdminRequested {
                     HStack {
                         Text("Admin Request Status:")
                         Spacer()
@@ -34,35 +34,67 @@ struct SettingsView: View {
                 } else if !isAdmin {
                     Button {
                         if MFMailComposeViewController.canSendMail() {
-                            isDisplayingAdminRequest.toggle()
+                            viewModel.isDisplayingAdminRequest.toggle()
                         }
                     } label: {
                         Text("Request to be Admin")
                     }
                 }
             }
+            
+            Section {
+                Button(role: .destructive) {
+                    viewModel.isDisplayingDeleteAccountAlert.toggle()
+                } label: {
+                    Text("Delete Account")
+                }
+            }
         }
-        .sheet(isPresented: $isDisplayingAdminRequest) {
+        .sheet(isPresented: $viewModel.isDisplayingAdminRequest) {
             if let email = currentUser?.email {
                 SendMailView.adminRequest(for: email) {
-                    isAdminRequested = true
-                    isDisplayingRequestSent.toggle()
+                    viewModel.isAdminRequested = true
+                    viewModel.isDisplayingRequestSent.toggle()
                 }
             }
         }
         .toast(
-            isPresenting: $isDisplayingRequestSent,
+            isPresenting: $viewModel.isDisplayingRequestSent,
             duration: 2,
             tapToDismiss: true,
             alert: {
                 AlertToast(type: .complete(.green), title: "Request Sent")
             }
         )
+        .alert(
+            "Delete Account",
+            isPresented: $viewModel.isDisplayingDeleteAccountAlert,
+            actions: {
+                Button("Delete", role: .destructive, action: { deleteAccount() })
+                Button("Cancel", role: .cancel, action: {})
+            },
+            message: {
+                Text("Are you sure you want to delete your account? This will be irreversible.")
+            }
+        )
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-#Preview {
-    SettingsView()
+    
+    private func deleteAccount() {
+        Task.detached { @MainActor in
+            do {
+                dismiss()
+                await viewModel.logoutAction?()
+                container.isPresentingLoadingToast(title: "Deleting Account")
+                try await viewModel.deleteAccount()
+                container.isPresentingLoadingToast.toggle()
+                container.isPresentingAlert(title: "Account Deleted", message: "Thank you for listening with us!")
+            } catch {
+                dump(error)
+                container.isPresentingLoadingToast.toggle()
+                container.isPresentingAlert(title: "Unable to Delete Account", message: "Please try again.")
+            }
+        }
+    }
 }

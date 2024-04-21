@@ -10,9 +10,12 @@ import Foundation
 import Supabase
 
 class AppContainerViewModel: ObservableObject {
+    @Published var isPresentingAlert: Bool = false
     @Published var isPresentingLoadingToast: Bool = false
     @Published var isPresentingSuccessToast: Bool = false
     @Published var isPresentingImageToast: Bool = false
+    @Published var alertTitle: String = ""
+    @Published var alertMessage: String = ""
     @Published var imageToastSystemName: String = ""
     @Published var imageToastTitle: String = ""
     @Published var imageToastCompletion: (() -> Void)? = nil
@@ -87,6 +90,15 @@ class AppContainerViewModel: ObservableObject {
         imageToastTitle = title
         isPresentingImageToast.toggle()
         imageToastCompletion = completion
+    }
+    
+    func isPresentingAlert(
+        title: String,
+        message: String
+    ) {
+        isPresentingAlert.toggle()
+        alertTitle = title
+        alertMessage = message
     }
     
     lazy var nowPlayingBar: NowPlayingBar = {

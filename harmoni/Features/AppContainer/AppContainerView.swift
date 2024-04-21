@@ -78,6 +78,15 @@ struct AppContainerView: View {
                 title: viewModel.loadingToastTitle
             )
         }
+        .alert(
+            viewModel.alertTitle,
+            isPresented: $viewModel.isPresentingAlert,
+            actions: {
+                Button("OK", role: .none, action: {})
+            }, message: {
+                Text(viewModel.alertMessage)
+            }
+        )
         .environment(\.container, viewModel)
         .environment(\.currentUser, viewModel.currentUser)
         .environment(\.isAdmin, viewModel.isAdmin)
