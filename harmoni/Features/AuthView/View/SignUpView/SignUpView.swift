@@ -176,7 +176,7 @@ private extension SignUpView {
             viewModel: ChooseRoleViewModel(
                 birthday: $viewModel.birthday,
                 onSignUp: {
-                    viewModel.signUp {
+                    viewModel.signUp(with: $0) {
                         isShowingVerifyAlert.toggle()
                     }
                 },

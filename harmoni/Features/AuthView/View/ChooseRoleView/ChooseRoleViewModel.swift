@@ -15,14 +15,14 @@ class ChooseRoleViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var isCompleting: Bool = false
     var onDismissTapped: (() -> Void)?
-    var onSignUp: (() -> Void)?
+    var onSignUp: ((SignUpRole) -> Void)?
     var onCompletion: (() -> Void)
     private let database: DBServiceProviding = DBService()
     
     init(
         birthday: Binding<Date>,
         onDismissTapped: (() -> Void)? = nil,
-        onSignUp: (() -> Void)? = nil,
+        onSignUp: ((SignUpRole) -> Void)? = nil,
         onCompletion: @escaping (() -> Void)
     ) {
         self.birthday = birthday.wrappedValue
@@ -53,8 +53,9 @@ class ChooseRoleViewModel: ObservableObject {
     
     func signUp() {
         Task { @MainActor [weak self] in
-            self?.isCompleting = true
-            self?.onSignUp?()
+            guard let self else { return }
+            self.isCompleting = true
+            self.onSignUp?(self.role)
         }
     }
     

@@ -110,7 +110,7 @@ struct AuthView: View {
             case .registration: CompleteRegistrationView()
             }
         }
-        .presentationDetents([.fraction(0.5)])
+        .presentationDetents([.fraction(0.5), .large])
         .presentationCornerRadius(24)
         .presentationBackground(.thinMaterial)
         .preferredColorScheme(.dark)

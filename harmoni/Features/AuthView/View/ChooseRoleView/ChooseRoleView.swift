@@ -10,7 +10,7 @@ import SwiftUI
 struct ChooseRoleView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @ObservedObject var viewModel: ChooseRoleViewModel
+    @StateObject var viewModel: ChooseRoleViewModel
     
     var body: some View {
         VStack(spacing: 0) {

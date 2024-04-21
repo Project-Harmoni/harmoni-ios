@@ -19,7 +19,8 @@ class SignUpViewModel: ObservableObject {
     @Published var isSigningUp: Bool = false
     private let database: DBServiceProviding = DBService()
     
-    func signUp(on completion: @escaping (() -> Void)) {
+    func signUp(with role: SignUpRole, on completion: @escaping (() -> Void)) {
+        self.role = role
         if email.isValidEmail {
             Task { @MainActor [weak self] in
                 guard let self else { return }
