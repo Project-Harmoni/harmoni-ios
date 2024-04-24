@@ -35,6 +35,7 @@ import Supabase
     private var cancellables: Set<AnyCancellable> = []
     private let database: DBServiceProviding = DBService()
     private let storage: StorageProviding = StorageService()
+    private let edge: EdgeProviding = EdgeService()
     private let userProvider: UserProviding = UserProvider()
     
     init() {
@@ -246,3 +247,28 @@ private extension AccountViewModel {
         return "\(uuid)_profile_image".toJPG
     }
 }
+
+// MARK: - Purchase Tokens
+
+extension AccountViewModel {
+    func purchaseTokens() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            guard let user = self.user else { return }
+            let purchase = try await self.edge.purchaseTokens(
+                request: .init(
+                    userID: user.id.uuidString,
+                    tokenQuantity: 1000.toString
+                )
+            )
+            
+            if purchase?.error == nil {
+                await self.handleAccountData()
+                self.isDisplayingTokenPurchase.toggle()
+            } else {
+                self.isError.toggle()
+            }
+        }
+    }
+}
+

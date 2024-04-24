@@ -106,15 +106,10 @@ struct AccountView: View {
             .presentationDragIndicator(.visible)
             .presentationDetents([.fraction(0.2)])
         }
-        .onInAppPurchaseStart { product in
-            print("User has started buying \(product.id)")
-        }
         .onInAppPurchaseCompletion { product, result in
             if case .success(.success(let transaction)) = result {
-                print("Purchased successfully: \(transaction.signedDate)")
-                viewModel.isDisplayingTokenPurchase.toggle()
+                viewModel.purchaseTokens()
             } else {
-                print("Something else happened")
                 viewModel.isDisplayingTokenPurchase.toggle()
             }
         }
