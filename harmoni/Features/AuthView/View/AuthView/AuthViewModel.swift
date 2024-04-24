@@ -18,7 +18,7 @@ import Foundation
     init() {
         AuthManager.shared.$isRegistrationComplete
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
+            .sink { @MainActor [weak self] in
                 guard let isRegistrationComplete = $0 else { return }
                 self?.showLogIn = false
                 self?.showSignUp = false

@@ -11,6 +11,7 @@ import SwiftUI
 
 struct AuthView: View {
     @StateObject var viewModel = AuthViewModel()
+    var registrationCompleted: (() -> Void)? = nil
     
     private enum AuthType {
         case signIn, signUp, registration
@@ -107,10 +108,10 @@ struct AuthView: View {
             switch type {
             case .signIn: SignInView()
             case .signUp: SignUpView()
-            case .registration: CompleteRegistrationView()
+            case .registration: CompleteRegistrationView() { registrationCompleted?() }
             }
         }
-        .presentationDetents([.fraction(0.5), .large])
+        .presentationDetents([.fraction(0.5)])
         .presentationCornerRadius(24)
         .presentationBackground(.thinMaterial)
         .preferredColorScheme(.dark)

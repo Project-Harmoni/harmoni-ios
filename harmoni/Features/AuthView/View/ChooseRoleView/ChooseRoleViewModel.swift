@@ -18,6 +18,7 @@ class ChooseRoleViewModel: ObservableObject {
     var onSignUp: ((SignUpRole) -> Void)?
     var onCompletion: (() -> Void)
     private let database: DBServiceProviding = DBService()
+    private let edge: EdgeProviding = EdgeService()
     
     init(
         birthday: Binding<Date>,
@@ -40,9 +41,10 @@ class ChooseRoleViewModel: ObservableObject {
                     return handleError(message: "Unable to authorize. Please try again.")
                 }
                 try await self.updateDatabase(with: user)
+                try await self.createWallet(for: user)
                 errorMessage = nil
-                self.isCompleting = false
                 await AuthManager.shared.checkRegistration()
+                self.isCompleting = false
                 onCompletion()
             } catch {
                 dump(error)
@@ -84,5 +86,10 @@ class ChooseRoleViewModel: ObservableObject {
             let artist = ArtistDB(from: userDB)
             try await database.upsert(artist: artist)
         }
+    }
+    
+    /// Create crypto wallet for user
+    private func createWallet(for user: User) async throws {
+        _ = try await edge.createWallet(request: .init(userID: user.id.uuidString))
     }
 }

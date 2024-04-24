@@ -18,6 +18,7 @@ class SignUpViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var isSigningUp: Bool = false
     private let database: DBServiceProviding = DBService()
+    private let edge: EdgeProviding = EdgeService()
     
     func signUp(with role: SignUpRole, on completion: @escaping (() -> Void)) {
         self.role = role
@@ -31,6 +32,7 @@ class SignUpViewModel: ObservableObject {
                         password: self.password
                     )
                     try await self.updateDatabase(with: authResponse)
+                    try await self.createWallet(from: authResponse)
                     errorMessage = nil
                     self.isSigningUp = false
                     completion()
@@ -84,5 +86,11 @@ private extension SignUpViewModel {
             let artist = ArtistDB(from: userDB)
             try await database.upsert(artist: artist)
         }
+    }
+    
+    /// Create crypto wallet for user
+    func createWallet(from response: AuthResponse) async throws {
+        let userDB = getUser(from: response)
+        _ = try await edge.createWallet(request: .init(userID: userDB.id.uuidString))
     }
 }

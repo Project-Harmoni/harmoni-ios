@@ -10,6 +10,7 @@ import SwiftUI
 struct CompleteRegistrationView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = CompleteRegistrationViewModel()
+    var registrationCompleted: (() -> Void)? = nil
     
     var body: some View {
         NavigationStack(path: $viewModel.path) {
@@ -37,6 +38,7 @@ struct CompleteRegistrationView: View {
             viewModel: ChooseRoleViewModel(
                 birthday: $viewModel.birthday
             ) {
+                registrationCompleted?()
                 dismiss()
             } 
         )

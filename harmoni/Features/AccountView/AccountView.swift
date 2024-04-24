@@ -22,7 +22,11 @@ struct AccountView: View {
             if isAuthorized {
                 accountView
             } else {
-                AuthView()
+                AuthView() {
+                    Task {
+                        await viewModel.handleAccountData()
+                    }
+                }
             }
         }
         .environmentObject(router)
