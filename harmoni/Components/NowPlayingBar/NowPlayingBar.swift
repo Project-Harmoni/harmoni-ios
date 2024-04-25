@@ -18,18 +18,12 @@ enum NowPlayingManagerState {
 }
 
 class NowPlayingManager: ObservableObject {
+    @Environment(\.container) var container
     @Published var isPlaying: Bool = false
     @Published var artistName: String?
     @Published var coverImagePath: String?
     @Published var song: SongDB? {
-        didSet {
-            guard let path = song?.filePath else { return }
-            guard let url = URL(string: path) else { return }
-            getArtistName()
-            coverImagePath = song?.coverImagePath
-            isPlaying = true
-            AudioManager.shared.startAudio(url: url)
-        }
+        didSet { play(song) }
     }
     
     private var queue: [SongDB] = []
@@ -121,6 +115,49 @@ class NowPlayingManager: ObservableObject {
     
     private func resetPlayer() {
         AudioManager.shared.resetElapsedTime()
+    }
+    
+    /// Play song if token balance is >= 1.
+    private func play(_ song: SongDB?) {
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
+            guard let songID = song?.id else { return }
+            guard let userID = currentUserID?.uuidString else { return }
+            do {
+                self.getArtistName()
+                self.coverImagePath = song?.coverImagePath
+                self.isPlaying = true
+                
+                // Will check token balance and if payout required
+                let response = try await self.edge.playSong(
+                    request: .init(
+                        songID: String(songID),
+                        userID: userID
+                    )
+                )
+                // Insufficient balance, show error alert
+                if let error = response?.error, error.contains("balance") {
+                    self.container.isPresentingAlert(
+                        title: "Insufficient Balance",
+                        message: "You need at least 1 token to play a song."
+                    )
+                } else {
+                    // Sufficient balance, start audio
+                    self.startAudio(for: song)
+                }
+            } catch {
+                self.container.isPresentingAlert(
+                    title: "Unable to Play Song",
+                    message: "Please try again."
+                )
+            }
+        }
+    }
+    
+    private func startAudio(for song: SongDB?) {
+        guard let path = song?.filePath else { return }
+        guard let url = URL(string: path) else { return }
+        AudioManager.shared.startAudio(url: url)
     }
     
     func playNext() {

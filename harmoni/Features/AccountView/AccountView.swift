@@ -30,6 +30,9 @@ struct AccountView: View {
             }
         }
         .environmentObject(router)
+        .task {
+            await viewModel.handleAccountData()
+        }
     }
     
     @ViewBuilder

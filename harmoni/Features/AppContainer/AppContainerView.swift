@@ -92,6 +92,7 @@ struct AppContainerView: View {
                 Text(viewModel.alertMessage)
             }
         )
+        .environmentObject(nowPlayingManager)
         .environment(\.container, viewModel)
         .environment(\.currentUser, viewModel.currentUser)
         .environment(\.isAdmin, viewModel.isAdmin)
