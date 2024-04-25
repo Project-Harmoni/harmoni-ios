@@ -122,11 +122,12 @@ class NowPlayingManager: ObservableObject {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
             guard let songID = song?.id else { return }
-            guard let userID = currentUserID?.uuidString else { return }
+            guard let userID = currentUserID?.uuidString else {
+                // Preview song for anon users
+                return self.playPreview(for: song)
+            }
             do {
-                self.getArtistName()
-                self.coverImagePath = song?.coverImagePath
-                self.isPlaying = true
+                self.getReadyToStream(song)
                 
                 // Will check token balance and if payout required
                 let response = try await self.edge.playSong(
@@ -152,6 +153,17 @@ class NowPlayingManager: ObservableObject {
                 )
             }
         }
+    }
+    
+    private func playPreview(for song: SongDB?) {
+        getReadyToStream(song)
+        startAudio(for: song)
+    }
+    
+    private func getReadyToStream(_ song: SongDB?) {
+        getArtistName()
+        coverImagePath = song?.coverImagePath
+        isPlaying = true
     }
     
     private func startAudio(for song: SongDB?) {
