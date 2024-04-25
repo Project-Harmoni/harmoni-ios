@@ -350,7 +350,7 @@ private extension AccountView {
         HStack {
             Text("Token Balance")
             Spacer()
-            Text(String(format: "%.2f", viewModel.tokens))
+            Text(tokenBalance)
         }
     }
 }
@@ -366,6 +366,14 @@ private extension AccountView {
         } else {
             return ""
         }
+    }
+    
+    var tokenBalance: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: viewModel.tokens)) ?? "0"
     }
     
     var emailLabel: String {
