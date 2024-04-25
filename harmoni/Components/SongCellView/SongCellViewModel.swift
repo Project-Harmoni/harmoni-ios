@@ -31,7 +31,11 @@ import Foundation
     private func checkState() {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
-            self.isAddedToLibrary = try await self.database.isSongInLibrary(self.song.details)
+            guard let userID = await userProvider.currentUserID else { return }
+            self.isAddedToLibrary = try await self.database.isSongInLibrary(
+                self.song.details,
+                userID.uuidString
+            )
             self.isLiked = try await self.database.isSongLiked(self.song.details)
         }
     }

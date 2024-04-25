@@ -75,41 +75,43 @@ struct SongCellView: View {
     
     private var menu: some View {
         Menu {
-            Section {
-                Button {
-                    Task.detached { @MainActor in
-                        await viewModel.likeAction()
-                        container.isPresentingImageToast(
-                            systemName: viewModel.isLiked ? "heart" : "heart.fill",
-                            title: viewModel.isLiked ? "Unfavorited" : "Favorited"
-                        ) {
-                            viewModel.isLiked.toggle()
+            if let _ = currentUser {
+                Section {
+                    Button {
+                        Task.detached { @MainActor in
+                            await viewModel.likeAction()
+                            container.isPresentingImageToast(
+                                systemName: viewModel.isLiked ? "heart" : "heart.fill",
+                                title: viewModel.isLiked ? "Unfavorited" : "Favorited"
+                            ) {
+                                viewModel.isLiked.toggle()
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(viewModel.isLiked ? "Unfavorite" : "Favorite")
+                            Spacer()
+                            Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
                         }
                     }
-                } label: {
-                    HStack {
-                        Text(viewModel.isLiked ? "Unfavorite" : "Favorite")
-                        Spacer()
-                        Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                    }
-                }
-                Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
-                    Task.detached { @MainActor in
-                        container.isPresentingLoadingToast(
-                            title: viewModel.isAddedToLibrary ? "Removing" : "Adding"
-                        )
-                        await viewModel.libraryAction()
-                        container.isPresentingSuccessToast(
-                            title: viewModel.isAddedToLibrary ? "Removed from Library" : "Added to Library"
-                        ) {
-                            viewModel.isAddedToLibrary.toggle()
+                    Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
+                        Task.detached { @MainActor in
+                            container.isPresentingLoadingToast(
+                                title: viewModel.isAddedToLibrary ? "Removing" : "Adding"
+                            )
+                            await viewModel.libraryAction()
+                            container.isPresentingSuccessToast(
+                                title: viewModel.isAddedToLibrary ? "Removed from Library" : "Added to Library"
+                            ) {
+                                viewModel.isAddedToLibrary.toggle()
+                            }
                         }
-                    }
-                } label: {
-                    HStack {
-                        Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")
-                        Spacer()
-                        Image(systemName: viewModel.isAddedToLibrary ? "trash" : "plus")
+                    } label: {
+                        HStack {
+                            Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")
+                            Spacer()
+                            Image(systemName: viewModel.isAddedToLibrary ? "trash" : "plus")
+                        }
                     }
                 }
             }

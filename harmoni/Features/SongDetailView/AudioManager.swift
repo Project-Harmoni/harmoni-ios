@@ -13,6 +13,8 @@ import Foundation
 class AudioManager: ObservableObject {
     static let shared = AudioManager()
     
+    // TODO: - Configure preview time by artist?
+    private let previewTime: Double = 10
     private var player: AVPlayer?
     private var url: URL?
     private var session = AVAudioSession.sharedInstance()
@@ -25,6 +27,8 @@ class AudioManager: ObservableObject {
     @Published var timeLeft: String = ""
     @Published var isTrackFinished: Bool = false
     var onSongFinished: (() -> Void)?
+    /// Do something when preview time (10s) has elapsed, if needed
+    var onPreviewFinished: (() -> Void)?
     
     private init() {
         elapsedTime = calculatedElapsedTime
@@ -63,11 +67,9 @@ class AudioManager: ObservableObject {
                 guard let playbackDuration else { return }
                 self.elapsed += 1
                 
+                if elapsed >= previewTime { onPreviewFinished?() }
                 if elapsed >= playbackDuration {
-                    self.cancellable?.cancel()
-                    self.clearElapsedTime()
-                    self.setCalculatedTime()
-                    self.onSongFinished?()
+                    self.stop()
                 } else {
                     self.setCalculatedTime()
                     self.elapsedTimeDouble = elapsed / playbackDuration
@@ -135,6 +137,14 @@ class AudioManager: ObservableObject {
             player.pause()
             cancellable?.cancel()
         }
+    }
+    
+    func stop() {
+        cancellable?.cancel()
+        clearElapsedTime()
+        setCalculatedTime()
+        onSongFinished?()
+        pause()
     }
     
     private var playbackDuration: Double? {

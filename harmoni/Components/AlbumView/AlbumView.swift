@@ -84,14 +84,16 @@ struct AlbumView: View {
                     Image(systemName: "tag")
                 }
                 Menu {
-                    Section {
-                        Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
-                            viewModel.libraryAction()
-                        } label: {
-                            HStack {
-                                Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")
-                                Spacer()
-                                Image(systemName: viewModel.isAddedToLibrary ? "trash" : "plus")
+                    if let _ = currentUser {
+                        Section {
+                            Button(role: viewModel.isAddedToLibrary ? .destructive : .none) {
+                                viewModel.libraryAction()
+                            } label: {
+                                HStack {
+                                    Text(viewModel.isAddedToLibrary ? "Remove from Library" : "Add to Library")
+                                    Spacer()
+                                    Image(systemName: viewModel.isAddedToLibrary ? "trash" : "plus")
+                                }
                             }
                         }
                     }

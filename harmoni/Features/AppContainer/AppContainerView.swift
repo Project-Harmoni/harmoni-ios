@@ -20,21 +20,25 @@ struct AppContainerView: View {
     }
     
     var body: some View {
-        TabView {
+        TabView(selection: $viewModel.selectedTab) {
             Group {
                 AccountView()
                     .tabItem {
                         Image(systemName: "person.crop.circle")
                         Text("Account")
                     }
+                    .tag(0)
                 
-                NavigationStack {
-                    LibraryView()
-                        .navigationTitle("Library")
-                }
-                .tabItem {
-                    Image(systemName: "music.note")
-                    Text("Library")
+                if let _ = viewModel.currentUser {
+                    NavigationStack {
+                        LibraryView()
+                            .navigationTitle("Library")
+                    }
+                    .tabItem {
+                        Image(systemName: "music.note")
+                        Text("Library")
+                    }
+                    .tag(1)
                 }
                 
                 SearchView()
@@ -42,6 +46,7 @@ struct AppContainerView: View {
                         Image(systemName: "magnifyingglass")
                         Text("Search")
                     }
+                    .tag(2)
             }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {

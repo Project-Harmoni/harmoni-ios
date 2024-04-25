@@ -54,9 +54,9 @@ protocol DBServiceProviding {
     /// Get artists added to user's library
     func getLibraryArtists(for user: String) async throws -> [ArtistDB]
     // Is song in library?
-    func isSongInLibrary(_ song: SongDB) async throws -> Bool
+    func isSongInLibrary(_ song: SongDB, _ user: String) async throws -> Bool
     // Is album in library?
-    func isAlbumInLibrary(_ album: AlbumDB) async throws -> Bool
+    func isAlbumInLibrary(_ album: AlbumDB, _ user: String) async throws -> Bool
     /// Add song to library
     func addSongToLibrary(for user: String, song: SongDB) async throws
     /// Add album to library
@@ -213,12 +213,12 @@ extension DBService {
         try await Supabase.shared.client.database.getLibraryArtists(for: user)
     }
     
-    func isSongInLibrary(_ song: SongDB) async throws -> Bool {
-        try await Supabase.shared.client.database.isSongInLibrary(song)
+    func isSongInLibrary(_ song: SongDB, _ user: String) async throws -> Bool {
+        try await Supabase.shared.client.database.isSongInLibrary(song, user)
     }
     
-    func isAlbumInLibrary(_ album: AlbumDB) async throws -> Bool {
-        try await Supabase.shared.client.database.isAlbumInLibrary(album)
+    func isAlbumInLibrary(_ album: AlbumDB, _ user: String) async throws -> Bool {
+        try await Supabase.shared.client.database.isAlbumInLibrary(album, user)
     }
     
     func addSongToLibrary(for user: String, song: SongDB) async throws {

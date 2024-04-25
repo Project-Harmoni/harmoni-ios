@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 4/1/24.
 //
 
+import Combine
 import Kingfisher
 import SwiftUI
 
@@ -30,6 +31,7 @@ class NowPlayingManager: ObservableObject {
             AudioManager.shared.startAudio(url: url)
         }
     }
+    
     private var queue: [SongDB] = []
     private var currentSongIndex: Int = -1 {
         didSet {
@@ -40,7 +42,13 @@ class NowPlayingManager: ObservableObject {
             }
         }
     }
+    
+    private let userProvider: UserProviding = UserProvider()
     private let database: DBServiceProviding = DBService()
+    private let edge: EdgeProviding = EdgeService()
+    private var currentUserID: UUID?
+    private var cancellables: Set<AnyCancellable> = []
+    
     var state: NowPlayingManagerState = .empty {
         didSet {
             switch state {
@@ -60,6 +68,17 @@ class NowPlayingManager: ObservableObject {
     
     init() {
         AudioManager.shared.onSongFinished = onSongFinished
+        AudioManager.shared.onPreviewFinished = onPreviewFinished
+        
+        AuthManager.shared.$isSignedIn
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    self.currentUserID = await self.userProvider.currentUserID
+                }
+            }
+            .store(in: &cancellables)
     }
     
     private func getArtistName() {
@@ -92,6 +111,12 @@ class NowPlayingManager: ObservableObject {
         } else {
             isPlaying = false
         }
+    }
+    
+    /// Stop audio after preview if user not signed in
+    private func onPreviewFinished() {
+        guard currentUserID == nil else { return }
+        AudioManager.shared.stop()
     }
     
     private func resetPlayer() {

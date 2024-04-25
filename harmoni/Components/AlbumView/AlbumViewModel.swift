@@ -51,7 +51,11 @@ class AlbumViewModel: ObservableObject {
     private func checkIfInLibrary() {
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
-            self.isAddedToLibrary = try await self.database.isAlbumInLibrary(self.album)
+            guard let userID = await userProvider.currentUserID else { return }
+            self.isAddedToLibrary = try await self.database.isAlbumInLibrary(
+                self.album,
+                userID.uuidString
+            )
         }
     }
     

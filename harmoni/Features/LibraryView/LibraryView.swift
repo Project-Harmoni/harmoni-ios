@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LibraryView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.container) private var container
     @StateObject var viewModel = LibraryViewModel()
     @State private var size: CGSize = .zero
     
@@ -19,38 +20,72 @@ struct LibraryView: View {
     
     var body: some View {
         libraryContainer
+            .onAppear() {
+                viewModel.getLibrary()
+            }
     }
     
     @ViewBuilder
     private var libraryContainer: some View {
-        if viewModel.isLoading {
-            ProgressView("Loading")
-        } else if viewModel.media.isEmpty {
-            Text("Your library is empty")
-        } else {
-            library
-        }
+        library
     }
     private var library: some View {
-        ScrollView {
             VStack(alignment: .leading) {
                 librarySections
-                Text("Recently Added")
-                    .font(.title3)
-                    .bold()
-                LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(viewModel.sortedMedia) { item in
-                        if let song = item.songs.first {
-                            NavigationLink {
-                                LibraryAlbumView(viewModel: .init(item: item))
-                            } label: {
-                                LibraryMediaCellView(song: song, size: size)
+                if viewModel.media.isEmpty {
+                    Spacer()
+                    VStack(spacing: 26) {
+                        Image(systemName: "music.note")
+                            .resizable()
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .foregroundStyle(.gray.secondary)
+                            .frame(height: 98)
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 16) {
+                                Text("Add Music to Your Library")
+                                    .font(.title3)
+                                    .foregroundStyle(.gray)
+                                Button {
+                                    container.selectedTab = 2
+                                } label: {
+                                    HStack {
+                                        Spacer()
+                                        Text("Browse Music")
+                                            .bold()
+                                        Spacer()
+                                    }
+                                    .frame(height: 42)
+                                    .background(.regularMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                                    .padding(.horizontal, 45)
+                                }
+
+                            }
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                } else {
+                    Text("Recently Added")
+                        .font(.title3)
+                        .bold()
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 12) {
+                            ForEach(viewModel.sortedMedia) { item in
+                                if let song = item.songs.first {
+                                    NavigationLink {
+                                        LibraryAlbumView(viewModel: .init(item: item))
+                                    } label: {
+                                        LibraryMediaCellView(song: song, size: size)
+                                    }
+                                }
                             }
                         }
                     }
                 }
+                Spacer()
             }
-        }
         .padding()
         .readSize {
             size = $0

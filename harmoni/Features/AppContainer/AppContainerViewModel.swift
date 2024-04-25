@@ -10,6 +10,7 @@ import Foundation
 import Supabase
 
 class AppContainerViewModel: ObservableObject {
+    @Published var selectedTab: Int = 0
     @Published var isPresentingAlert: Bool = false
     @Published var isPresentingLoadingToast: Bool = false
     @Published var isPresentingSuccessToast: Bool = false

@@ -20,11 +20,9 @@ enum LibrarySection: String, CaseIterable, Identifiable {
     let database: DBServiceProviding = DBService()
     let userProvider: UserProviding = UserProvider()
     
-    init() {
-        getLibrary()
-    }
+    init() {}
     
-    private func getLibrary() {
+    func getLibrary() {
         Task { [weak self] in
             guard let self else { return }
             do {

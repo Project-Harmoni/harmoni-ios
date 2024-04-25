@@ -41,7 +41,7 @@ import Supabase
     init() {
         AuthManager.shared.$isSignedIn
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isSignedIn in
+            .sink { @MainActor [weak self] isSignedIn in
                 Task { [weak self] in
                     await self?.handleSignIn(isSignedIn)
                     await self?.handleAccountData()
@@ -51,9 +51,9 @@ import Supabase
         
         AuthManager.shared.$isRegistrationComplete
             .receive(on: DispatchQueue.main)
-            .sink { isComplete in
+            .sink { @MainActor [weak self] isComplete in
                 guard let isComplete else { return }
-                Task { @MainActor [weak self] in
+                Task { [weak self] in
                     guard let self else { return }
                     self.isRegistrationComplete = isComplete
                     self.isDisplayingWelcomeView = await self.userProvider.isNew
@@ -63,9 +63,9 @@ import Supabase
         
         $profileImageItem
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] item in
+            .sink { @MainActor [weak self] item in
                 guard let item else { return }
-                Task.detached { [weak self] in
+                Task.detached { @MainActor [weak self] in
                     /// handle chosen profile image
                    try await self?.handle(picked: item)
                 }

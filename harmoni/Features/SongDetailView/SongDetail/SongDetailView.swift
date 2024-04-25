@@ -12,6 +12,7 @@ import SwiftUI
 struct SongDetailView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @Environment(\.container) var container
+    @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: SongDetailViewModel
     @StateObject var audioManager = AudioManager.shared
     @State private var trackBarSize: CGSize = .zero
@@ -95,13 +96,15 @@ struct SongDetailView: View {
             }
             .bold()
             Spacer()
-            Button {
-                Task.detached { @MainActor in
-                    await viewModel.likeAction()
+            if let _ = currentUser {
+                Button {
+                    Task.detached { @MainActor in
+                        await viewModel.likeAction()
+                    }
+                } label: {
+                    Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
+                        .foregroundStyle(.white)
                 }
-            } label: {
-                Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                    .foregroundStyle(.white)
             }
         }
         .padding(.bottom)

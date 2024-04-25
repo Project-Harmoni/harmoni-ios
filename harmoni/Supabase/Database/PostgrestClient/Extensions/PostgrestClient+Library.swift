@@ -109,22 +109,23 @@ extension PostgrestClient {
     }
     
     // Is song in library?
-    func isSongInLibrary(_ song: SongDB) async throws -> Bool {
+    func isSongInLibrary(_ song: SongDB, _ user: String) async throws -> Bool {
         guard let id = song.id else { return false }
         let library: [ListenerSongLibraryDB] = try await listenerSongLibrary
             .select()
             .eq(ListenerSongLibraryDB.CodingKeys.songID.rawValue, value: Int(id))
+            .eq(ListenerSongLibraryDB.CodingKeys.listenerID.rawValue, value: user)
             .execute()
             .value
         return library.isNotEmpty
     }
     
     // Is album in library?
-    func isAlbumInLibrary(_ album: AlbumDB) async throws -> Bool {
+    func isAlbumInLibrary(_ album: AlbumDB, _ user: String) async throws -> Bool {
         guard let id = album.id else { return false }
         let songs = try await songsOnAlbum(with: id)
         for song in songs {
-            if try await isSongInLibrary(song) == false {
+            if try await isSongInLibrary(song, user) == false {
                return false
             }
         }
