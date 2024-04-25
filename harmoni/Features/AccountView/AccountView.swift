@@ -107,7 +107,7 @@ struct AccountView: View {
             .presentationDetents([.fraction(0.2)])
         }
         .onInAppPurchaseCompletion { product, result in
-            if case .success(.success(let transaction)) = result {
+            if case .success(.success(_)) = result {
                 viewModel.purchaseTokens()
             } else {
                 viewModel.isDisplayingTokenPurchase.toggle()
@@ -373,7 +373,7 @@ private extension AccountView {
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: viewModel.tokens)) ?? "0"
+        return formatter.string(from: NSNumber(value: viewModel.tokens)) ?? "0.00"
     }
     
     var emailLabel: String {

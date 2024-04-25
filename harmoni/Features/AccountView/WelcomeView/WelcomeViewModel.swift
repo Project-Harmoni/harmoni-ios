@@ -13,12 +13,10 @@ class WelcomeViewModel: ObservableObject {
     private let user: UserProviding = UserProvider()
     private let database: DBServiceProviding = DBService()
     
-    init() {
-        
-    }
+    init() {}
     
     func toggleIsNewOff(with completion: @escaping (()->Void)) {
-        Task.detached { [weak self] in
+        Task.detached { @MainActor [weak self] in
             do {
                 guard let self else { return }
                 guard let id = await self.user.currentUserID else { return }
