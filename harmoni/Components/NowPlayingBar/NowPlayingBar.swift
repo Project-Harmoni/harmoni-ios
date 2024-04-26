@@ -128,6 +128,7 @@ class NowPlayingManager: ObservableObject {
             }
             do {
                 self.getReadyToStream(song)
+                self.startAudio(for: song)
                 
                 // Will check token balance and if payout required
                 let response = try await self.edge.playSong(
@@ -136,15 +137,14 @@ class NowPlayingManager: ObservableObject {
                         userID: userID
                     )
                 )
+                
                 // Insufficient balance, show error alert
                 if let error = response?.error, error.contains("balance") {
                     self.container.isPresentingAlert(
                         title: "Insufficient Balance",
                         message: "You need at least 1 token to play a song."
                     )
-                } else {
-                    // Sufficient balance, start audio
-                    self.startAudio(for: song)
+                    AudioManager.shared.stop()
                 }
             } catch {
                 self.container.isPresentingAlert(
