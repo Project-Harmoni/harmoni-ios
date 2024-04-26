@@ -100,6 +100,7 @@ struct LibraryView: View {
                     switch section {
                     case .artists: LibraryArtistsView()
                     case .favorites: FavoritesView()
+                    case .recentlyPlayed: RecentlyPlayedView()
                     }
                 } label: {
                     HStack {

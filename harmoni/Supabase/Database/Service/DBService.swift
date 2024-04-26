@@ -77,6 +77,9 @@ protocol DBServiceProviding {
     // Is song liked by user?
     func isSongLiked(_ song: SongDB) async throws -> Bool
     
+    // Recently played
+    func getRecentlyPlayedFor(user: String) async throws -> [Song]
+    
     /// Upsert (update or insert) user in DB
     func upsert(user: UserDB) async throws
     /// Upsert (update or insert) listener in DB
@@ -259,6 +262,14 @@ extension DBService {
     
     func isSongLiked(_ song: SongDB) async throws -> Bool {
         try await Supabase.shared.client.database.isSongLiked(song)
+    }
+}
+
+// MARK: - Recently Played
+
+extension DBService {
+    func getRecentlyPlayedFor(user: String) async throws -> [Song] {
+        try await Supabase.shared.client.database.getRecentlyPlayedFor(user: user)
     }
 }
 

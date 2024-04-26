@@ -11,6 +11,7 @@ enum LibrarySection: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
     case artists = "Artists"
     case favorites = "Favorites"
+    case recentlyPlayed = "Recently Played"
 }
 
 @MainActor class LibraryViewModel: ObservableObject {
