@@ -32,6 +32,8 @@ import Supabase
     @Published var bio: String = ""
     @Published var website: String = ""
     
+    var nowPlayingManager: NowPlayingManager?
+    
     private var cancellables: Set<AnyCancellable> = []
     private let database: DBServiceProviding = DBService()
     private let storage: StorageProviding = StorageService()
@@ -113,6 +115,8 @@ import Supabase
         bio = ""
         website = ""
         tokens = 0
+        nowPlayingManager?.isPlaying = false
+        nowPlayingManager?.song = nil
     }
 }
 
@@ -244,7 +248,7 @@ private extension AccountViewModel {
     var profileImageName: String? {
         guard let user else { return nil }
         let uuid = user.id.uuidString
-        return "\(uuid)_profile_image".toJPG
+        return "\(uuid)/profile_image".toJPG
     }
 }
 

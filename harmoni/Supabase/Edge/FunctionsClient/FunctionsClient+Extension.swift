@@ -10,7 +10,7 @@ import Supabase
 
 enum EdgeFunctions: String {
     case createWallet = "cryptoWalletCreator"
-    case deleteUser = "deleteUser"
+    case deleteUser = "deleteAccount"
     case initiateSongPayout = "songPayout"
     case playSong = "playASong"
     case purchaseTokens = "purchaseTokens"

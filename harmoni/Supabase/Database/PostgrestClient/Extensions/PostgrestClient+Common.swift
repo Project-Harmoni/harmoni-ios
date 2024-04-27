@@ -136,6 +136,13 @@ extension PostgrestClient {
         return latest
     }
     
+    func deleteUser(with id: String) async throws {
+        _ = try await users
+            .delete()
+            .eq(UserDB.CodingKeys.id.rawValue, value: id)
+            .execute()
+    }
+    
     func deleteSong(with id: Int8) async throws {
         _ = try await songs
             .delete()

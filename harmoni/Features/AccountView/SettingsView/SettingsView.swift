@@ -85,9 +85,9 @@ struct SettingsView: View {
         Task.detached { @MainActor in
             do {
                 dismiss()
-                await viewModel.logoutAction?()
                 container.isPresentingLoadingToast(title: "Deleting Account")
                 try await viewModel.deleteAccount()
+                await viewModel.logoutAction?()
                 container.isPresentingLoadingToast.toggle()
                 container.isPresentingAlert(title: "Account Deleted", message: "Thank you for listening with us!")
             } catch {

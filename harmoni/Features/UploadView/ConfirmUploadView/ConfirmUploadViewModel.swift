@@ -119,13 +119,9 @@ class ConfirmUploadViewModel: ObservableObject {
         try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track) else { return nil }
         // upload track to storage
-        let uploadResult = try await self.uploadTrack(trackData, trackName)
-        // get track name and file extension
-        guard let resultPath = URL(string: uploadResult)?.lastPathComponent else {
-            return nil
-        }
+        let _ = try await self.uploadTrack(trackData, trackName)
         // get public file url from storage
-        let trackURL = try self.storage.getMusicURL(for: resultPath)
+        let trackURL = try self.storage.getMusicURL(for: trackName)
         return trackURL.absoluteString
     }
     
@@ -139,13 +135,9 @@ class ConfirmUploadViewModel: ObservableObject {
             }
             guard let albumCoverName = await self.albumCoverName else { return nil }
             // upload image to storage
-            let imageLocation = try await self.uploadCoverArt(data: jpegData, name: albumCoverName)
-            // get image name and file extension
-            guard let resultPath = URL(string: imageLocation)?.lastPathComponent else {
-                return nil
-            }
+            let _ = try await self.uploadCoverArt(data: jpegData, name: albumCoverName)
             // get public image url from storage
-            let imageURL = try self.storage.getImageURL(for: resultPath)
+            let imageURL = try self.storage.getImageURL(for: albumCoverName)
             return imageURL.absoluteString
         } else {
             return nil

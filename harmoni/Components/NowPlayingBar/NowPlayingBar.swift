@@ -18,7 +18,7 @@ enum NowPlayingManagerState {
 }
 
 class NowPlayingManager: ObservableObject {
-    @Environment(\.container) var container
+    private var container = AppContainerViewModel.shared
     @Published var isPlaying: Bool = false
     @Published var artistName: String?
     @Published var coverImagePath: String?
@@ -140,19 +140,20 @@ class NowPlayingManager: ObservableObject {
                 
                 // Insufficient balance, show error alert
                 if let error = response?.error, error.contains("balance") {
-                    self.container.isPresentingAlert(
-                        title: "Insufficient Balance",
-                        message: "You need at least 1 token to play a song."
-                    )
-                    AudioManager.shared.stop()
+                    self.handleError()
                 }
             } catch {
-                self.container.isPresentingAlert(
-                    title: "Unable to Play Song",
-                    message: "Please try again."
-                )
+                self.handleError()
             }
         }
+    }
+    
+    private func handleError() {
+        self.container.isPresentingAlert(
+            title: "Insufficient Balance",
+            message: "You need at least 1 token to play a song."
+        )
+        AudioManager.shared.stop()
     }
     
     private func playPreview(for song: SongDB?) {

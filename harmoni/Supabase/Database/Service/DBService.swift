@@ -101,7 +101,8 @@ protocol DBServiceProviding {
     /// Update album in DB
     func update(album: AlbumDB) async throws -> AlbumDB?
 
-    // Delete song in DB
+    // Delete
+    func deleteUser(with id: String) async throws
     func deleteSong(with id: Int8?) async throws
     func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws
     func deleteAlbums(with ids: [Int8?], in storage: StorageProviding) async throws
@@ -370,6 +371,10 @@ extension DBService {
 // MARK: - DB Service Delete
 
 extension DBService {
+    func deleteUser(with id: String) async throws {
+        _ = try await Supabase.shared.client.database.deleteUser(with: id)
+    }
+    
     func deleteSong(with id: Int8?) async throws {
         guard let id else { return }
         _ = try await Supabase.shared.client.database.deleteSong(with: id)

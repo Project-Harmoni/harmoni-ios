@@ -19,7 +19,9 @@ class SettingsViewModel: ObservableObject {
     var logoutAction: (() async -> Void)? = nil
     var currentUserID: String?
     let userProvider: UserProviding = UserProvider()
+    let database: DBServiceProviding = DBService()
     let edge: EdgeProviding = EdgeService()
+    let storage: StorageProviding = StorageService()
     
     init(logoutAction: @escaping () async -> Void) {
         self.logoutAction = logoutAction
@@ -32,7 +34,7 @@ class SettingsViewModel: ObservableObject {
     
     func deleteAccount() async throws {
         guard let currentUserID else { return }
-        let response = try await self.edge.deleteUser(request: .init(userID: currentUserID))
-        if response?.error != nil { throw SettingsError.unableToDeleteAccount }
+        try await self.database.deleteUser(with: currentUserID)
+        try await self.storage.deleteAccountFiles(for: currentUserID)
     }
 }

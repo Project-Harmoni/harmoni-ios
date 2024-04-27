@@ -13,7 +13,7 @@ import Supabase
 struct AppContainerView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @State private var user: User?
-    @StateObject var viewModel = AppContainerViewModel()
+    @StateObject var viewModel = AppContainerViewModel.shared
     
     init() {
       UITextField.appearance().clearButtonMode = .whileEditing

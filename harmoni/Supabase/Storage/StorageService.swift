@@ -15,6 +15,7 @@ protocol StorageProviding {
     func updateImage(_ data: Data, name: String) async throws -> String
     func deleteSong(name: String) async throws
     func deleteImage(name: String) async throws
+    func deleteAccountFiles(for user: String) async throws
     func getMusicURL(for song: String) throws -> URL
     func getImageURL(for image: String) throws -> URL
 }
@@ -74,6 +75,28 @@ struct StorageService: StorageProviding {
         _ = try await Supabase.shared.client.storage
             .images
             .remove(paths: [name])
+    }
+    
+    func deleteAccountFiles(for user: String) async throws {
+        let imagePaths = try await Supabase.shared.client.storage
+            .images
+            .list(path: user)
+        
+        let songPaths = try await Supabase.shared.client.storage
+            .music
+            .list(path: user)
+        
+        if imagePaths.isNotEmpty {
+            _ = try await Supabase.shared.client.storage
+                .images
+                .remove(paths: imagePaths.map { "\(user)/\($0.name)" })
+        }
+        
+        if songPaths.isNotEmpty {
+            _ = try await Supabase.shared.client.storage
+                .music
+                .remove(paths: songPaths.map { "\(user)/\($0.name)" })
+        }
     }
     
     func getMusicURL(for song: String) throws -> URL {

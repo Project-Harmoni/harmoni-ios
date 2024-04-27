@@ -63,13 +63,13 @@ class UploadStore: ObservableObject {
 extension UploadStore {
     func name(for track: Track) async -> String? {
         guard let artistID = await userProvider?.currentUserID else { return nil }
-        return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)_\(UUID())\(track.fileExtension)"
+        return "\(artistID.uuidString)/\(albumTitle)_\(yearReleased)_\(track.name)_\(track.ordinal)_\(UUID())\(track.fileExtension)"
     }
     
     var albumCoverName: String? {
         get async {
             guard let artistID = await userProvider?.currentUserID else { return nil }
-            return "\(artistID.uuidString)_\(albumTitle)_\(yearReleased)_\(UUID())".toJPG
+            return "\(artistID.uuidString)/\(albumTitle)_\(yearReleased)_\(UUID())".toJPG
         }
     }
     
