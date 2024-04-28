@@ -17,5 +17,11 @@ Artist-driven music streaming rewarding listeners
 * Add the `ConfigDebug.xcconfig` file (provided by Kyle) to `harmoni/Supporting Files` by right-clicking on 	"Supporting Files" and choosing ''Add Files to "harmoni"...'
 
   <img src="./img/addFiles.png" alt="Add Files" width="200"/>
+
+* Add `ConfigDebug.xcconfig` as a build configuration by going to harmoni -> Project -> harmoni -> Info -> Configurations -> Debug -> `<select ConfigDebug>`
+
+  <img src="./img/buildConfig.png" alt="Build Config" width="500"/>
+
 * Try running with `cmd` + `R` (or by tapping the Play button in Xcode)
+
 * Enjoy!

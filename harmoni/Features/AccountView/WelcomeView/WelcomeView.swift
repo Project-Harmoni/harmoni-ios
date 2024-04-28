@@ -53,11 +53,14 @@ struct WelcomeView: View {
         }
     }
     
+    // TODO: - Add user's guide for detailed info on all this
+    
     private var artistView: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("**Welcome to Harmoni!** We're so excited to support your artistic journey.")
             Text("Here's how it works: you share your music, listeners stream it, and you get paid automatically. No delay, no fuss.")
             Text("If you want, you can share a portion of each payout with your listeners. You can change this for any track, at any time.")
+            Text("If you want to listen to another artist's track, you pay a single Harmoney token.")
             Text("To help you get started, you'll be paid double for your first 10,000 streams. We're cheering you on!")
         }
         .padding(.horizontal, 24)
@@ -66,8 +69,8 @@ struct WelcomeView: View {
     private var listenerView: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("**Welcome to Harmoni!**")
-            Text("Here's how it works: every time you stream a track, you pay a tiny amount of Harmoney. Nearly 100% of this will go to the artist.")
-            Text("Some artists share a fraction of their payouts with their listeners (you) as a thank-you.")
+            Text("Here's how it works: every time you stream a track, you pay a single Harmoney token. 95% will go to the artist.")
+            Text("Some artists may elect to share a percentage of their payouts with their listeners (you) as a thank-you.")
             Text("As a gift, your first 25 streams are free. Totally on us! If you like what you hear, you can buy more tokens at any time.")
             Text("Thanks for joining. We hope you have a blast!")
         }
