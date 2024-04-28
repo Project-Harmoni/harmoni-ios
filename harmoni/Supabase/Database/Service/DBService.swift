@@ -17,7 +17,7 @@ protocol DBServiceProviding {
     /// Check if user is new
     func isNew(with id: UUID) async throws -> Bool
     /// Check if user is owner of album
-    func does(artist: UUID, own album: Int8) async throws -> Bool
+    func does(artist: UUID, own album: Int) async throws -> Bool
     /// Get user with id
     func getUser(with id: UUID) async throws -> UserDB?
     /// Get artist with `UUID`
@@ -37,11 +37,11 @@ protocol DBServiceProviding {
     /// Get albums by artist
     func albumsByArtist(with id: UUID) async throws -> [AlbumDB]
     /// Get songs on album
-    func songsOnAlbum(with id: Int8) async throws -> [SongDB]
+    func songsOnAlbum(with id: Int) async throws -> [SongDB]
     /// Get latest 20 songs
     func getLatestSongs() async throws -> [Song]
     /// Get tags on album
-    func tagsOnAlbum(with id: Int8) async throws -> [Tag]
+    func tagsOnAlbum(with id: Int) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
     /// Search by query (albums, artists, songs, tag)
@@ -67,11 +67,11 @@ protocol DBServiceProviding {
     func removeAlbumFromLibrary(_ album: AlbumDB) async throws
     
     // Like song
-    func likeSong(for user: String, song: Int8) async throws
+    func likeSong(for user: String, song: Int) async throws
     // Unlike song
-    func unlikeSong(for user: String, song: Int8) async throws
+    func unlikeSong(for user: String, song: Int) async throws
     // Get likes for song
-    func likeCountFor(song: Int8) async throws -> String
+    func likeCountFor(song: Int) async throws -> String
     // Get liked songs for user
     func likedSongsFor(user: String) async throws -> [Song]
     // Is song liked by user?
@@ -103,9 +103,9 @@ protocol DBServiceProviding {
 
     // Delete
     func deleteUser(with id: String) async throws
-    func deleteSong(with id: Int8?) async throws
-    func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws
-    func deleteAlbums(with ids: [Int8?], in storage: StorageProviding) async throws
+    func deleteSong(with id: Int?) async throws
+    func deleteAlbum(with id: Int?, in storage: StorageProviding) async throws
+    func deleteAlbums(with ids: [Int?], in storage: StorageProviding) async throws
 }
 
 struct DBService: DBServiceProviding {
@@ -133,7 +133,7 @@ struct DBService: DBServiceProviding {
         return user?.isNew ?? false
     }
 
-    func does(artist: UUID, own album: Int8) async throws -> Bool {
+    func does(artist: UUID, own album: Int) async throws -> Bool {
         try await Supabase.shared.client.database.does(artist: artist, own: album)
     }
     
@@ -177,11 +177,11 @@ struct DBService: DBServiceProviding {
         return try await Supabase.shared.client.database.getLatestSongs()
     }
     
-    func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
+    func songsOnAlbum(with id: Int) async throws -> [SongDB] {
         return try await Supabase.shared.client.database.songsOnAlbum(with: id)
     }
     
-    func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
+    func tagsOnAlbum(with id: Int) async throws -> [Tag] {
         return try await Supabase.shared.client.database.tagsOnAlbum(with: id)
     }
     
@@ -245,15 +245,15 @@ extension DBService {
  // MARK: - Like/Unlike Songs
 
 extension DBService {
-    func likeSong(for user: String, song: Int8) async throws {
+    func likeSong(for user: String, song: Int) async throws {
         try await Supabase.shared.client.database.likeSong(for: user, song: song)
     }
     
-    func unlikeSong(for user: String, song: Int8) async throws {
+    func unlikeSong(for user: String, song: Int) async throws {
         try await Supabase.shared.client.database.unlikeSong(for: user, song: song)
     }
     
-    func likeCountFor(song: Int8) async throws -> String {
+    func likeCountFor(song: Int) async throws -> String {
         try await Supabase.shared.client.database.likeCountFor(song: song)
     }
     
@@ -375,17 +375,17 @@ extension DBService {
         _ = try await Supabase.shared.client.database.deleteUser(with: id)
     }
     
-    func deleteSong(with id: Int8?) async throws {
+    func deleteSong(with id: Int?) async throws {
         guard let id else { return }
         _ = try await Supabase.shared.client.database.deleteSong(with: id)
     }
     
-    func deleteAlbum(with id: Int8?, in storage: StorageProviding) async throws {
+    func deleteAlbum(with id: Int?, in storage: StorageProviding) async throws {
         guard let id else { return }
         _ = try await Supabase.shared.client.database.deleteAlbum(with: id, in: storage)
     }
     
-    func deleteAlbums(with ids: [Int8?], in storage: StorageProviding) async throws {
+    func deleteAlbums(with ids: [Int?], in storage: StorageProviding) async throws {
         let ids = ids.compactMap { $0 }
         _ = try await Supabase.shared.client.database.deleteAlbums(with: ids, in: storage)
     }

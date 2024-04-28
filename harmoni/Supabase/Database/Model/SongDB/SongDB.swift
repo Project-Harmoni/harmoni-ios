@@ -8,7 +8,7 @@
 import Foundation
 
 struct SongDB: Codable, Identifiable, Hashable {
-    var id: Int8?
+    var id: Int?
     var albumName: String?
     var artistID: String
     var coverImagePath: String?

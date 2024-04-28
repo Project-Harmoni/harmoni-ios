@@ -8,8 +8,8 @@
 import Foundation
 
 struct SongTagDB: Codable {
-    var songID: Int8?
-    var tagID: Int8?
+    var songID: Int?
+    var tagID: Int?
     var createdAt: String?
     
     enum CodingKeys: String, CodingKey {

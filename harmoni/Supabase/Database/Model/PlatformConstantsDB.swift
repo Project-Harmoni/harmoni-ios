@@ -7,12 +7,12 @@
 
 import Foundation
 
-enum PlatformConstantsType: Int8 {
+enum PlatformConstantsType: Int {
     case minimumPaymentThreshold = 1
 }
 
 struct PlatformConstantsDB: Codable {
-    var id: Int8
+    var id: Int
     var name: String
     var value: String
     var type: PlatformConstantsType? {

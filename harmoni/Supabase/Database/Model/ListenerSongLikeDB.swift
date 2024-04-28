@@ -9,7 +9,7 @@ import Foundation
 
 struct ListenerSongLikeDB: Codable {
     var listenerID: String?
-    var songID: Int8?
+    var songID: Int?
     
     enum CodingKeys: String, CodingKey {
         case listenerID = "listener_id"

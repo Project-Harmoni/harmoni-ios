@@ -9,7 +9,7 @@ import Foundation
 
 struct TagUpdateDB: Codable {
     var name: String
-    var categoryID: Int8
+    var categoryID: Int
     var createdAt: String?
     
     enum CodingKeys: String, CodingKey {

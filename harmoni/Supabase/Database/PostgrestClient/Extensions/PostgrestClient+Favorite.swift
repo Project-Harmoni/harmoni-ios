@@ -9,14 +9,14 @@ import Foundation
 import Supabase
 
 extension PostgrestClient {
-    func likeSong(for user: String, song: Int8) async throws {
+    func likeSong(for user: String, song: Int) async throws {
         try await Supabase.shared.client.database
             .listenerSongLikes
             .insert(ListenerSongLikeDB(listenerID: user, songID: song))
             .execute()
     }
     
-    func unlikeSong(for user: String, song: Int8) async throws {
+    func unlikeSong(for user: String, song: Int) async throws {
         try await Supabase.shared.client.database
             .listenerSongLikes
             .delete()
@@ -25,7 +25,7 @@ extension PostgrestClient {
             .value
     }
     
-    func likeCountFor(song: Int8) async throws -> String {
+    func likeCountFor(song: Int) async throws -> String {
         let likes: [ListenerSongLikeDB] = try await listenerSongLikes
             .select()
             .eq(ListenerSongLikeDB.CodingKeys.songID.rawValue, value: Int(song))

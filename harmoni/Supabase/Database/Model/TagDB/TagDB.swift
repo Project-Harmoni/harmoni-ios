@@ -8,9 +8,9 @@
 import Foundation
 
 struct TagDB: Codable, Identifiable {
-    var id: Int8?
+    var id: Int?
     var name: String
-    var categoryID: Int8
+    var categoryID: Int
     var createdAt: String?
     
     enum CodingKeys: String, CodingKey {

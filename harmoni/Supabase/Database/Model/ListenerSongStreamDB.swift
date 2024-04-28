@@ -8,9 +8,9 @@
 import Foundation
 
 struct ListenerSongStreamDB: Codable {
-    var id: Int8?
+    var id: Int?
     var listenerID: String?
-    var songID: Int8?
+    var songID: Int?
     
     enum CodingKeys: String, CodingKey {
         case id = "listener_song_stream_id"

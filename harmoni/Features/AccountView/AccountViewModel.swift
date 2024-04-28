@@ -226,12 +226,8 @@ private extension AccountViewModel {
         do {
             // upload image to storage
             let imageLocation = try await storage.uploadImage(data, name: name)
-            // get image name and file extension
-            guard let resultPath = URL(string: imageLocation)?.lastPathComponent else {
-                return toggleError(true)
-            }
             // get public image url from storage
-            let imageURL = try storage.getImageURL(for: resultPath)
+            let imageURL = try storage.getImageURL(for: name)
             // update database with public image url
             try await upsertProfileImage(location: imageURL.absoluteString)
             

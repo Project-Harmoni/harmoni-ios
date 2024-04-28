@@ -10,7 +10,7 @@ import Foundation
 class AllTagsViewModel: ObservableObject {
     let isReadOnly: Bool
     let database: DBServiceProviding = DBService()
-    let albumID: Int8?
+    let albumID: Int?
     var tags: [Tag] = []
 
     @Published var genreTagsViewModel: TagListViewModel
@@ -23,7 +23,7 @@ class AllTagsViewModel: ObservableObject {
         moodViewModel: TagListViewModel = .init(category: .moods),
         instrumentViewModel: TagListViewModel = .init(category: .instruments),
         miscViewModel: TagListViewModel = .init(category: .miscellaneous),
-        albumID: Int8? = nil,
+        albumID: Int? = nil,
         isReadOnly: Bool = false,
         isEditing: Bool = false
     ) {

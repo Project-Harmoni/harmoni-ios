@@ -8,9 +8,9 @@
 import Foundation
 
 struct AddSongTag: Encodable {
-    var songID: Int8?
+    var songID: Int?
     var tagName: String
-    var tagCategoryID: Int8?
+    var tagCategoryID: Int?
     
     enum CodingKeys: String, CodingKey {
         case songID = "tagged_song_id"

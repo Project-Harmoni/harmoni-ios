@@ -26,7 +26,7 @@ class LibraryAlbumViewModel: ObservableObject {
         )
     }
     
-    var albumID: Int8? {
+    var albumID: Int? {
         guard let firstSong = item.songs.first else { return nil }
         return firstSong.album?.id
     }

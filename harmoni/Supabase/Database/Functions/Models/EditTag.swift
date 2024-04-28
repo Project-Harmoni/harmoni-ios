@@ -8,9 +8,9 @@
 import Foundation
 
 struct EditTag: Encodable {
-    var id: Int8?
+    var id: Int?
     var name: String
-    var categoryID: Int8?
+    var categoryID: Int?
     
     enum CodingKeys: String, CodingKey {
         case id = "param_tag_id"

@@ -8,9 +8,9 @@
 import Foundation
 
 struct BulkEditTag: Encodable {
-    var ids: [Int8]?
+    var ids: [Int]?
     var names: [String]
-    var categoryIDs: [Int8]?
+    var categoryIDs: [Int]?
     
     enum CodingKeys: String, CodingKey {
         case ids = "param_tag_id"

@@ -8,7 +8,7 @@
 import Foundation
 
 struct TagCategoryDB: Codable, Identifiable {
-    var id: Int8?
+    var id: Int?
     var name: String
     var createdAt: String?
     

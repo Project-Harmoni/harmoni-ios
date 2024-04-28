@@ -8,7 +8,7 @@
 import Foundation
 
 struct BulkDeleteTag: Encodable {
-    var id: [Int8]?
+    var id: [Int]?
     
     enum CodingKeys: String, CodingKey {
         case id = "param_tag_id"

@@ -9,7 +9,7 @@ import Foundation
 
 struct Tag: Identifiable, Equatable, Hashable {
     let id = UUID()
-    var serverID: Int8?
+    var serverID: Int?
     var name: String
     var category: TagCategory
 }

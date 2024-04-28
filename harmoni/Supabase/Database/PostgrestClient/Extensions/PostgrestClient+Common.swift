@@ -51,7 +51,7 @@ extension PostgrestClient {
         return try await artist(with: artistUUID)?.name
     }
     
-    func does(artist: UUID, own album: Int8) async throws -> Bool {
+    func does(artist: UUID, own album: Int) async throws -> Bool {
         let albums = try await albumsByArtist(with: artist)
         return albums.contains(where: { $0.id == album })
     }
@@ -82,7 +82,7 @@ extension PostgrestClient {
         return albums
     }
     
-    func albumIDForSong(_ song: SongDB) async throws -> Int8? {
+    func albumIDForSong(_ song: SongDB) async throws -> Int? {
         guard let id = song.id else { return nil }
         let albums: [SongAlbumDB] = try await songAlbums
             .select()
@@ -104,7 +104,7 @@ extension PostgrestClient {
         return albums.first
     }
     
-    func songsOnAlbum(with id: Int8) async throws -> [SongDB] {
+    func songsOnAlbum(with id: Int) async throws -> [SongDB] {
         let songID = SongAlbumDB.CodingKeys.songID.rawValue
         let albumID = SongAlbumDB.CodingKeys.albumID.rawValue
         let songs: [SongDB] = try await songs
@@ -143,20 +143,20 @@ extension PostgrestClient {
             .execute()
     }
     
-    func deleteSong(with id: Int8) async throws {
+    func deleteSong(with id: Int) async throws {
         _ = try await songs
             .delete()
             .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
             .execute()
     }
     
-    func deleteAlbums(with ids: [Int8], in storage: StorageProviding) async throws {
+    func deleteAlbums(with ids: [Int], in storage: StorageProviding) async throws {
         for id in ids {
             try await deleteAlbum(with: id, in: storage)
         }
     }
     
-    func deleteAlbum(with id: Int8, in storage: StorageProviding) async throws {
+    func deleteAlbum(with id: Int, in storage: StorageProviding) async throws {
         let albums: [AlbumDB] = try await albums
             .select()
             .eq(AlbumDB.CodingKeys.id.rawValue, value: Int(id))
@@ -189,7 +189,7 @@ extension PostgrestClient {
         }
     }
     
-    func tagsOnAlbum(with id: Int8) async throws -> [Tag] {
+    func tagsOnAlbum(with id: Int) async throws -> [Tag] {
         let songs = try await songsOnAlbum(with: id)
         let tagCategories = try await tagCategories()
         var tagSet: Set<Tag> = []
@@ -203,7 +203,7 @@ extension PostgrestClient {
         return Array(tagSet)
     }
     
-    private func tagsOnSong(with id: Int8, and tagCategories: [TagCategoryDB]?) async throws -> [Tag] {
+    private func tagsOnSong(with id: Int, and tagCategories: [TagCategoryDB]?) async throws -> [Tag] {
         let songID = SongTagDB.CodingKeys.songID.rawValue
         let tagID = SongTagDB.CodingKeys.tagID.rawValue
         let tagsDB: [TagDB] = try await tags

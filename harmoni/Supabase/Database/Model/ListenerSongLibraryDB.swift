@@ -8,9 +8,9 @@
 import Foundation
 
 struct ListenerSongLibraryDB: Codable {
-    var id: Int8?
+    var id: Int?
     var listenerID: String?
-    var songID: Int8?
+    var songID: Int?
     var addedOn: String?
     
     enum CodingKeys: String, CodingKey {

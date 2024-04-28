@@ -47,7 +47,7 @@ class MyUploadsViewModel: ObservableObject {
             guard let self else { return }
             self.isDeleting.toggle()
             do {
-                let albumsToDelete: [Int8?] = albums
+                let albumsToDelete: [Int?] = albums
                     .filter { album in
                         self.selectedAlbums.contains(where: { $0 == album.id })
                     }
