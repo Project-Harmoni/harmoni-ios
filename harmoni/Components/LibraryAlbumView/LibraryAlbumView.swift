@@ -115,11 +115,7 @@ struct LibraryAlbumView: View {
             }
         }
         .sheet(isPresented: $viewModel.isPresentingViewTags) {
-            if let allTagsViewModel = viewModel.allTagsViewModel {
-                AllTagsViewSheet(
-                    viewModel: allTagsViewModel
-                )
-            }
+            tags
         }
         .alert("Remove from Library", isPresented: $viewModel.isPresentingRemoveConfirm) {
             Button("Cancel", role: .cancel, action: {})
@@ -240,6 +236,29 @@ struct LibraryAlbumView: View {
                 Text(yearReleased)
             }
         }
+    }
+    
+    @ViewBuilder
+    private var tags: some View {
+        if let allTagsViewModel  {
+            AllTagsViewSheet(
+                viewModel: allTagsViewModel
+            )
+        }
+    }
+    
+    private var allTagsViewModel: AllTagsViewModel? {
+        guard let allTagsViewModel = viewModel.allTagsViewModel else { return nil }
+        return AllTagsViewModel(
+            genreViewModel: allTagsViewModel.genreTagsViewModel,
+            moodViewModel: allTagsViewModel.moodTagsViewModel,
+            instrumentViewModel: allTagsViewModel.instrumentsTagsViewModel,
+            miscViewModel: allTagsViewModel.miscTagsViewModel,
+            albumID: allTagsViewModel.albumID,
+            isReadOnly: allTagsViewModel.isReadOnly,
+            isEditing: false,
+            isAdmin: isAdmin
+        )
     }
 }
 

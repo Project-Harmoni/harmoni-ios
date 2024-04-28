@@ -14,6 +14,8 @@ protocol RPCProviding {
     func bulkEditTags(_ param: BulkEditTag) async throws
     func deleteTag(_ param: DeleteTag) async throws
     func bulkDeleteTags(_ param: BulkDeleteTag) async throws
+    func editTrack(_ param: EditTrack) async throws
+    func deleteTrack(_ param: DeleteTrack) async throws
 }
 
 struct RPCProvider: RPCProviding {
@@ -39,5 +41,13 @@ struct RPCProvider: RPCProviding {
     
     func bulkDeleteTags(_ param: BulkDeleteTag) async throws {
         _ = try await Supabase.shared.client.database.bulkDeleteTags(param)
+    }
+    
+    func editTrack(_ param: EditTrack) async throws {
+        _ = try await Supabase.shared.client.database.editTrack(param)
+    }
+    
+    func deleteTrack(_ param: DeleteTrack) async throws {
+        _ = try await Supabase.shared.client.database.deleteTrack(param)
     }
 }

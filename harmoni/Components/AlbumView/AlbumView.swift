@@ -159,7 +159,7 @@ struct AlbumView: View {
         }
         .sheet(isPresented: $viewModel.isPresentingViewTags) {
             AllTagsViewSheet(
-                viewModel: viewModel.allTagsViewModel
+                viewModel: allTagsViewModel
             )
         }
         .alert("Delete Album", isPresented: $viewModel.isPresentingDeleteConfirm) {
@@ -303,6 +303,20 @@ struct AlbumView: View {
                 Text(yearReleased)
             }
         }
+    }
+    
+    private var allTagsViewModel: AllTagsViewModel {
+        let allTagsViewModel = viewModel.allTagsViewModel
+        return AllTagsViewModel(
+            genreViewModel: allTagsViewModel.genreTagsViewModel,
+            moodViewModel: allTagsViewModel.moodTagsViewModel,
+            instrumentViewModel: allTagsViewModel.instrumentsTagsViewModel,
+            miscViewModel: allTagsViewModel.miscTagsViewModel,
+            albumID: allTagsViewModel.albumID,
+            isReadOnly: allTagsViewModel.isReadOnly,
+            isEditing: false,
+            isAdmin: isAdmin
+        )
     }
 }
 

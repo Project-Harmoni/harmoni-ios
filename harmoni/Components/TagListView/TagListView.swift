@@ -87,16 +87,16 @@ struct TagListView: View {
             isDisplayingEditTagAlert.toggle()
         } label: {
             Text(tag.name)
-                .foregroundStyle(viewModel.isReadOnly ? Color.primary : .blue)
+                .foregroundStyle(isDisabled ? Color.primary : .blue)
         }
         .buttonStyle(.bordered)
         .clipShape(RoundedRectangle(cornerRadius: 25))
-        .disabled(viewModel.isReadOnly)
+        .disabled(isDisabled)
     }
     
     @ViewBuilder
     private var createNewTag: some View {
-        if !viewModel.isReadOnly {
+        if !viewModel.isReadOnly && !viewModel.isAdmin {
             Button {
                 viewModel.newTagName = ""
                 isDisplayingCreateTagAlert.toggle()
@@ -112,6 +112,10 @@ struct TagListView: View {
     
     private var isSearching: Bool {
         viewModel.isSearching
+    }
+    
+    private var isDisabled: Bool {
+        viewModel.isReadOnly && !viewModel.isAdmin
     }
 }
 

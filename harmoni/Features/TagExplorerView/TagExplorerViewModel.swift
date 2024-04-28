@@ -17,7 +17,7 @@ class TagExplorerViewModel: ObservableObject {
             async let genreTags = self.getTags(for: .genres)
             async let moodTags = self.getTags(for: .moods)
             async let instrumentsTags = self.getTags(for: .instruments)
-            async let miscTags = self.getTags(for: .moods)
+            async let miscTags = self.getTags(for: .miscellaneous)
             
             self.tagExplorer = try await TagExplorer(
                 genreTags: genreTags,

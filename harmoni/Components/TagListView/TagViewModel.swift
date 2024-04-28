@@ -15,16 +15,25 @@ class TagListViewModel: ObservableObject {
     var onChanged: (([Tag]) -> Void)?
     var isReadOnly: Bool
     var isEditing: Bool
+    var isAdmin: Bool
     var isSearching: Bool = false
     let category: TagCategory
     private let database: DBServiceProviding = DBService()
     private let rpc: RPCProviding = RPCProvider()
     
-    init(tags: [Tag] = [], category: TagCategory, isReadOnly: Bool = false, isEditing: Bool = false, isSearching: Bool = false) {
+    init(
+        tags: [Tag] = [],
+        category: TagCategory,
+        isReadOnly: Bool = false,
+        isEditing: Bool = false,
+        isAdmin: Bool = false,
+        isSearching: Bool = false
+    ) {
         self.tags = tags
         self.category = category
         self.isReadOnly = isReadOnly
         self.isEditing = isEditing
+        self.isAdmin = isAdmin
         self.isSearching = isSearching
     }
     
@@ -46,7 +55,7 @@ class TagListViewModel: ObservableObject {
         guard !editedTagName.isEmpty else { return }
         tags[index].name = editedTagName
         
-        if isEditing {
+        if (isEditing || isAdmin) && !isSearching {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 do {
@@ -70,7 +79,7 @@ class TagListViewModel: ObservableObject {
         guard let index = tags.firstIndex(where: { $0 == selectedTag }) else { return }
         tags.remove(at: index)
         
-        if isEditing {
+        if (isEditing || isAdmin) && !isSearching {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 do {

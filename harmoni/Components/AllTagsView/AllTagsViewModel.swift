@@ -8,9 +8,9 @@
 import Foundation
 
 class AllTagsViewModel: ObservableObject {
-    let isReadOnly: Bool
     let database: DBServiceProviding = DBService()
     let albumID: Int?
+    var isReadOnly: Bool
     var tags: [Tag] = []
 
     @Published var genreTagsViewModel: TagListViewModel
@@ -25,7 +25,8 @@ class AllTagsViewModel: ObservableObject {
         miscViewModel: TagListViewModel = .init(category: .miscellaneous),
         albumID: Int? = nil,
         isReadOnly: Bool = false,
-        isEditing: Bool = false
+        isEditing: Bool = false,
+        isAdmin: Bool = false
     ) {
         self.albumID = albumID
         self.isReadOnly = isReadOnly
@@ -37,6 +38,7 @@ class AllTagsViewModel: ObservableObject {
         for tagViewModel in tagViewModels {
             tagViewModel.isReadOnly = isReadOnly
             tagViewModel.isEditing = isEditing
+            tagViewModel.isAdmin = isAdmin
         }
     }
     

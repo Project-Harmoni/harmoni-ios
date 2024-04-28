@@ -15,6 +15,8 @@ enum DBFunctions: String {
     case bulkEditTag = "bulk_edit_tag"
     case deleteTag = "delete_tag"
     case bulkDeleteTag = "bulk_delete_tag"
+    case editTrack = "edit_track"
+    case deleteTrack = "delete_tracks"
 }
 
 extension PostgrestClient {
@@ -66,6 +68,24 @@ extension PostgrestClient {
     func bulkDeleteTags(_ param: BulkDeleteTag) async throws {
         _ = try await Supabase.shared.client.database.rpc(
             DBFunctions.bulkDeleteTag.rawValue,
+            params: param
+        )
+        .execute()
+        .value
+    }
+    
+    func editTrack(_ param: EditTrack) async throws {
+        _ = try await Supabase.shared.client.database.rpc(
+            DBFunctions.editTrack.rawValue,
+            params: param
+        )
+        .execute()
+        .value
+    }
+    
+    func deleteTrack(_ param: DeleteTrack) async throws {
+        _ = try await Supabase.shared.client.database.rpc(
+            DBFunctions.deleteTrack.rawValue,
             params: param
         )
         .execute()

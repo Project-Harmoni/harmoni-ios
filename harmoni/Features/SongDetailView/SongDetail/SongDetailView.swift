@@ -11,6 +11,7 @@ import SwiftUI
 
 struct SongDetailView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.container) var container
     @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: SongDetailViewModel
@@ -103,7 +104,7 @@ struct SongDetailView: View {
                     }
                 } label: {
                     Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                 }
             }
         }
