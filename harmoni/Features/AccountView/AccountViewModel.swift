@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Kingfisher
 import PhotosUI
 import SwiftUI
 import Supabase
@@ -115,8 +116,6 @@ import Supabase
         bio = ""
         website = ""
         tokens = 0
-        nowPlayingManager?.isPlaying = false
-        nowPlayingManager?.song = nil
     }
 }
 
@@ -225,11 +224,13 @@ private extension AccountViewModel {
     func uploadProfileImage(_ data: Data, name: String) async throws {
         do {
             // upload image to storage
-            let imageLocation = try await storage.uploadImage(data, name: name)
+            let _ = try await storage.uploadImage(data, name: name)
             // get public image url from storage
             let imageURL = try storage.getImageURL(for: name)
             // update database with public image url
             try await upsertProfileImage(location: imageURL.absoluteString)
+            
+            KingfisherManager.shared.cache.clearCache()
             
             await MainActor.run { [weak self] in
                 // update image in view

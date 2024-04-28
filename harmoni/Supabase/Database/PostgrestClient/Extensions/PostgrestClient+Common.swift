@@ -170,11 +170,15 @@ extension PostgrestClient {
                 guard let songID = song.id else { continue }
                 // Delete cover art from storage
                 if let coverImagePath = song.coverImagePath, let url = URL(string: coverImagePath) {
-                    try await storage.deleteImage(name: url.lastPathComponent)
+                    try await storage.deleteImage(
+                        name: "\(song.artistID.uppercased())/\(url.lastPathComponent)"
+                    )
                 }
                 // Delete track from storage
                 if let filePath = song.filePath, let url = URL(string: filePath) {
-                    try await storage.deleteSong(name: url.lastPathComponent)
+                    try await storage.deleteSong(
+                        name: "\(song.artistID.uppercased())/\(url.lastPathComponent)"
+                    )
                 }
                 // Delete song on album
                 try await deleteSong(with: songID)

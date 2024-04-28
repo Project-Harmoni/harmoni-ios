@@ -177,8 +177,8 @@ struct SongDetailView: View {
         Button {
             nowPlayingManager.isPlaying.toggle()
             nowPlayingManager.isPlaying
-            ? AudioManager.shared.play()
-            : AudioManager.shared.pause()
+            ? nowPlayingManager.play()
+            : nowPlayingManager.pause()
         } label: {
             Image(
                 systemName: nowPlayingManager.isPlaying
@@ -191,6 +191,8 @@ struct SongDetailView: View {
         }
         .tint(.primary)
         .font(.system(size: 36))
+        .disabled(nowPlayingManager.isPlayingDisabled)
+        .opacity(nowPlayingManager.isPlayingDisabled ? 0.5 : 1)
     }
     
     private var volumeSlider: some View {

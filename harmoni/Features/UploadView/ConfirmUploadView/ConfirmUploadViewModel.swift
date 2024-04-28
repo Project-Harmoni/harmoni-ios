@@ -5,6 +5,7 @@
 //  Created by Kyle Stokes on 3/26/24.
 //
 
+import Kingfisher
 import UIKit
 
 enum UploadError: Error {
@@ -73,6 +74,7 @@ class ConfirmUploadViewModel: ObservableObject {
                 
                 self.isSaving.toggle()
                 self.isShowingCompletedToast.toggle()
+                KingfisherManager.shared.cache.clearCache()
             } catch {
                 dump(error)
                 self.isSaving.toggle()
@@ -87,7 +89,7 @@ class ConfirmUploadViewModel: ObservableObject {
         guard let store else { return self.isError.toggle() }
         for track in store.tracks {
             // upload track to storage
-            guard let filePath = try await self.upload(track: track) else {
+            guard let filePath = try await self.upload(track: track, userID: userID.uuidString) else {
                 return self.isError.toggle()
             }
             
@@ -107,7 +109,7 @@ class ConfirmUploadViewModel: ObservableObject {
         }
     }
     
-    private func upload(track: Track) async throws -> String? {
+    private func upload(track: Track, userID: String) async throws -> String? {
         let url = track.url
         #if !targetEnvironment(simulator)
                 guard url.startAccessingSecurityScopedResource() else { return nil }
@@ -117,7 +119,7 @@ class ConfirmUploadViewModel: ObservableObject {
         url.stopAccessingSecurityScopedResource()
         #endif
         try await deleteTracksIfNeeded()
-        guard let trackName = await nameForTrack(track) else { return nil }
+        guard let trackName = await nameForTrack(track, userID) else { return nil }
         // upload track to storage
         let _ = try await self.uploadTrack(trackData, trackName)
         // get public file url from storage
@@ -263,10 +265,10 @@ extension ConfirmUploadViewModel {
         }
     }
     
-    private func nameForTrack(_ track: Track) async -> String? {
+    private func nameForTrack(_ track: Track, _ userID: String) async -> String? {
         isTrackFileChanged || areTracksEmpty
         ? await store?.name(for: track)
-        : track.url.lastPathComponent
+        : "\(userID)/\(track.url.lastPathComponent)"
     }
     
     private func uploadCoverArt(data: Data, name: String) async throws -> String {
@@ -284,8 +286,11 @@ extension ConfirmUploadViewModel {
     private func deleteTracksIfNeeded() async throws {
         guard isTrackFileChanged, isEditing else { return }
         guard let tracks = store?.loadedTracks else { return }
+        guard let userID = await userProvider.currentUserID?.uuidString else { return }
         for track in tracks {
-            try await self.storage.deleteSong(name: track.url.lastPathComponent)
+            try await self.storage.deleteSong(
+                name: "\(userID)/\(track.url.lastPathComponent)"
+            )
             try await self.database.deleteSong(with: track.serverID)
         }
     }

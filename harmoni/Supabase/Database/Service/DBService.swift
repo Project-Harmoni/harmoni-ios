@@ -62,9 +62,9 @@ protocol DBServiceProviding {
     /// Add album to library
     func addAlbumToLibrary(for user: String, album: AlbumDB) async throws
     /// Remove song from library
-    func removeSongFromLibrary(_ song: SongDB) async throws
+    func removeSongFromLibrary(_ song: SongDB, _ user: String) async throws
     // Remove album from library
-    func removeAlbumFromLibrary(_ album: AlbumDB) async throws
+    func removeAlbumFromLibrary(_ album: AlbumDB, _ user: String) async throws
     
     // Like song
     func likeSong(for user: String, song: Int) async throws
@@ -75,7 +75,7 @@ protocol DBServiceProviding {
     // Get liked songs for user
     func likedSongsFor(user: String) async throws -> [Song]
     // Is song liked by user?
-    func isSongLiked(_ song: SongDB) async throws -> Bool
+    func isSongLiked(_ song: SongDB, _ user: String) async throws -> Bool
     
     // Recently played
     func getRecentlyPlayedFor(user: String) async throws -> [Song]
@@ -233,12 +233,12 @@ extension DBService {
         try await Supabase.shared.client.database.addAlbumToLibrary(for: user, album: album)
     }
     
-    func removeSongFromLibrary(_ song: SongDB) async throws {
-        try await Supabase.shared.client.database.removeSongFromLibrary(song)
+    func removeSongFromLibrary(_ song: SongDB, _ user: String) async throws {
+        try await Supabase.shared.client.database.removeSongFromLibrary(song, user)
     }
     
-    func removeAlbumFromLibrary(_ album: AlbumDB) async throws {
-        try await Supabase.shared.client.database.removeAlbumFromLibrary(album)
+    func removeAlbumFromLibrary(_ album: AlbumDB, _ user: String) async throws {
+        try await Supabase.shared.client.database.removeAlbumFromLibrary(album, user)
     }
 }
 
@@ -261,8 +261,8 @@ extension DBService {
         try await Supabase.shared.client.database.likedSongsFor(user: user)
     }
     
-    func isSongLiked(_ song: SongDB) async throws -> Bool {
-        try await Supabase.shared.client.database.isSongLiked(song)
+    func isSongLiked(_ song: SongDB, _ user: String) async throws -> Bool {
+        try await Supabase.shared.client.database.isSongLiked(song, user)
     }
 }
 

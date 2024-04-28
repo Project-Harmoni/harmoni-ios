@@ -65,11 +65,12 @@ extension PostgrestClient {
         return librarySongs
     }
     
-    func isSongLiked(_ song: SongDB) async throws -> Bool {
+    func isSongLiked(_ song: SongDB, _ user: String) async throws -> Bool {
         guard let id = song.id else { return false }
         let likes: [ListenerSongLikeDB] = try await listenerSongLikes
             .select()
             .eq(ListenerSongLikeDB.CodingKeys.songID.rawValue, value: Int(id))
+            .eq(ListenerSongLikeDB.CodingKeys.listenerID.rawValue, value: user)
             .execute()
             .value
         return likes.isNotEmpty

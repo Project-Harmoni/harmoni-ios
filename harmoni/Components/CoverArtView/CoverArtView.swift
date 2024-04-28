@@ -19,19 +19,24 @@ struct CoverArtView: View {
     
     @ViewBuilder
     private var coverArt: some View {
-        if let imagePath, let url = URL(string: imagePath) {
-            KFImage(url)
-                .placeholder {
+        RoundedRectangle(cornerRadius: cornerRadius)
+            .frame(width: size, height: size)
+            .foregroundStyle(.gray.tertiary)
+            .overlay {
+                if let imagePath, let url = URL(string: imagePath) {
+                    KFImage(url)
+                        .placeholder {
+                            coverArtPlaceholder
+                        }
+                        .cancelOnDisappear(true)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: size, height: size)
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                } else {
                     coverArtPlaceholder
                 }
-                .cancelOnDisappear(true)
-                .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .frame(width: size, height: size)
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-        } else {
-            coverArtPlaceholder
-        }
+            }
     }
     
     var coverArtPlaceholder: some View {

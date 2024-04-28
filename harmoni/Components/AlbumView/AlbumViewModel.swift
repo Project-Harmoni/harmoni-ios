@@ -65,7 +65,7 @@ class AlbumViewModel: ObservableObject {
             guard let currentUserID = await self.userProvider.currentUserID else { return }
             self.isLibraryActionTapped.toggle()
             self.isAddedToLibrary
-            ? try await self.database.removeAlbumFromLibrary(self.album)
+            ? try await self.database.removeAlbumFromLibrary(self.album, currentUserID.uuidString)
             : try await self.database.addAlbumToLibrary(
                 for: currentUserID.uuidString,
                 album: self.album

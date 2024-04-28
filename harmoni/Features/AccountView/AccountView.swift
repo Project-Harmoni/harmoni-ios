@@ -12,7 +12,6 @@ import Supabase
 import SwiftUI
 
 struct AccountView: View {
-    @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @Environment(\.isArtist) private var isArtist
     @Environment(\.isAdmin) private var isAdmin
     @StateObject private var viewModel = AccountViewModel()
@@ -32,7 +31,6 @@ struct AccountView: View {
         }
         .environmentObject(router)
         .task {
-            viewModel.nowPlayingManager = nowPlayingManager
             await viewModel.handleAccountData()
         }
     }

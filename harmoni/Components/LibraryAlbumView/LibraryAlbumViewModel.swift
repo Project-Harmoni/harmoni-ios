@@ -15,6 +15,7 @@ class LibraryAlbumViewModel: ObservableObject {
     @MainActor @Published var isRemoving: Bool = false
     @MainActor @Published var isRemoved: Bool = false
     private let database: DBServiceProviding = DBService()
+    private let userProvider: UserProviding = UserProvider()
     let item: LibraryItem
     var allTagsViewModel: AllTagsViewModel?
     
@@ -71,7 +72,8 @@ class LibraryAlbumViewModel: ObservableObject {
     func removeAlbum() async {
         do {
             guard let album = item.album else { return }
-            try await database.removeAlbumFromLibrary(album)
+            guard let userID = await userProvider.currentUserID?.uuidString else { return }
+            try await database.removeAlbumFromLibrary(album, userID)
         } catch {
             dump(error)
         }

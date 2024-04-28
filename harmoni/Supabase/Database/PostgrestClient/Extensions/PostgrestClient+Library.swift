@@ -150,22 +150,23 @@ extension PostgrestClient {
     }
     
     /// Remove song from library
-    func removeSongFromLibrary(_ song: SongDB) async throws {
+    func removeSongFromLibrary(_ song: SongDB, _ user: String) async throws {
         guard let id = song.id else { return }
         try await Supabase.shared.client.database
             .listenerSongLibrary
             .delete()
             .eq(SongDB.CodingKeys.id.rawValue, value: Int(id))
+            .eq(ListenerSongLibraryDB.CodingKeys.listenerID.rawValue, value: user)
             .execute()
             .value
     }
     
     // Remove album from library
-    func removeAlbumFromLibrary(_ album: AlbumDB) async throws {
+    func removeAlbumFromLibrary(_ album: AlbumDB, _ user: String) async throws {
         guard let id = album.id else { return }
         let songs: [SongDB] = try await songsOnAlbum(with: id)
         for song in songs {
-            try await removeSongFromLibrary(song)
+            try await removeSongFromLibrary(song, user)
         }
     }
 }

@@ -17,9 +17,10 @@ enum NowPlayingManagerState {
     case shuffle(songs: [SongDB])
 }
 
-class NowPlayingManager: ObservableObject {
+@MainActor class NowPlayingManager: ObservableObject {
     private var container = AppContainerViewModel.shared
     @Published var isPlaying: Bool = false
+    @Published var isPlayingDisabled: Bool = false
     @Published var artistName: String?
     @Published var coverImagePath: String?
     @Published var song: SongDB? {
@@ -119,10 +120,11 @@ class NowPlayingManager: ObservableObject {
     
     /// Play song if token balance is >= 1.
     private func play(_ song: SongDB?) {
+        isPlayingDisabled = false
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
-            guard let songID = song?.id else { return }
-            guard let userID = currentUserID?.uuidString else {
+            guard let _ = song?.id else { return }
+            guard let _ = currentUserID?.uuidString else {
                 // Preview song for anon users
                 return self.playPreview(for: song)
             }
@@ -131,20 +133,30 @@ class NowPlayingManager: ObservableObject {
                 self.startAudio(for: song)
                 
                 // Will check token balance and if payout required
-                let response = try await self.edge.playSong(
-                    request: .init(
-                        songID: String(songID),
-                        userID: userID
-                    )
-                )
-                
-                // Insufficient balance, show error alert
-                if let error = response?.error, error.contains("balance") {
-                    self.handleError()
-                }
+                try await self.checkTokenBalance()
             } catch {
                 self.handleError()
             }
+        }
+    }
+    
+    private func checkTokenBalance() async throws {
+        guard let songID = song?.id else { return }
+        guard let userID = currentUserID?.uuidString else {
+            // Preview song for anon users
+            return self.playPreview(for: song)
+        }
+        // Will check token balance and if payout required
+        let response = try await self.edge.playSong(
+            request: .init(
+                songID: String(songID),
+                userID: userID
+            )
+        )
+        
+        // Insufficient balance, show error alert
+        if let error = response?.error, error.contains("balance") {
+            self.handleError()
         }
     }
     
@@ -153,6 +165,7 @@ class NowPlayingManager: ObservableObject {
             title: "Insufficient Balance",
             message: "You need at least 1 token to play a song."
         )
+        isPlayingDisabled = true
         AudioManager.shared.stop()
     }
     
@@ -171,6 +184,14 @@ class NowPlayingManager: ObservableObject {
         guard let path = song?.filePath else { return }
         guard let url = URL(string: path) else { return }
         AudioManager.shared.startAudio(url: url)
+    }
+    
+    func play() {
+        AudioManager.shared.play()
+    }
+    
+    func pause() {
+        AudioManager.shared.pause()
     }
     
     func playNext() {
@@ -219,8 +240,8 @@ struct NowPlayingBar: View {
                 Button {
                     nowPlayingManager.isPlaying.toggle()
                     nowPlayingManager.isPlaying
-                    ? AudioManager.shared.play()
-                    : AudioManager.shared.pause()
+                    ? nowPlayingManager.play()
+                    : nowPlayingManager.pause()
                 } label: {
                     Image(
                         systemName: nowPlayingManager.isPlaying
@@ -229,6 +250,8 @@ struct NowPlayingBar: View {
                     )
                     .tint(.primary)
                 }
+                .disabled(nowPlayingManager.isPlayingDisabled)
+                .opacity(nowPlayingManager.isPlayingDisabled ? 0.5 : 1)
             }
             .contentShape(Rectangle())
             .onTapGesture {

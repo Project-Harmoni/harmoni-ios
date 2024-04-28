@@ -25,7 +25,8 @@ import Foundation
         Task.detached { @MainActor [weak self] in
             guard let self else { return }
             guard let song else { return }
-            self.isLiked = try await self.database.isSongLiked(song)
+            guard let currentUserID = await self.userProvider.currentUserID else { return }
+            self.isLiked = try await self.database.isSongLiked(song, currentUserID.uuidString)
         }
     }
     

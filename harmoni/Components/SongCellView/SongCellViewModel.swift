@@ -36,7 +36,7 @@ import Foundation
                 self.song.details,
                 userID.uuidString
             )
-            self.isLiked = try await self.database.isSongLiked(self.song.details)
+            self.isLiked = try await self.database.isSongLiked(self.song.details, userID.uuidString)
         }
     }
     
@@ -44,7 +44,7 @@ import Foundation
         do {
             guard let currentUserID = await self.userProvider.currentUserID else { return }
             self.isAddedToLibrary
-            ? try await self.database.removeSongFromLibrary(self.song.details)
+            ? try await self.database.removeSongFromLibrary(self.song.details, currentUserID.uuidString)
             : try await self.database.addSongToLibrary(
                 for: currentUserID.uuidString,
                 song: self.song.details

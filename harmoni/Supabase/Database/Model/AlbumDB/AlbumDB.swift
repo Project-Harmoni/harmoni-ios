@@ -37,7 +37,7 @@ extension AlbumDB {
     /// Name of image in storage bucket
     var coverImageStorageBucketName: String? {
         if let coverImagePath, let url = URL(string: coverImagePath) {
-            return url.lastPathComponent
+            return "\(artistID.uppercased())/\(url.lastPathComponent)"
         } else {
             return nil
         }

@@ -138,7 +138,7 @@ struct EditTrackPayoutView: View {
         Text("\(track.streamThreshold)")
             .font(.caption)
             .bold()
-        + Text(" streams / payout")
+        + Text(" streams / **\(track.payoutType.rawValue)** payout")
             .font(.caption2)
     }
     
