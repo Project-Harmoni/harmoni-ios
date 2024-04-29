@@ -12,6 +12,7 @@ import SwiftUI
 struct SongDetailView: View {
     @EnvironmentObject var nowPlayingManager: NowPlayingManager
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.isAdmin) var isAdmin
     @Environment(\.container) var container
     @Environment(\.currentUser) var currentUser
     @StateObject var viewModel: SongDetailViewModel
@@ -70,6 +71,20 @@ struct SongDetailView: View {
             viewModel.song = nowPlayingSong
             viewModel.checkState()
         }
+        .sheet(isPresented: $viewModel.isPresentingViewTags) {
+            AllTagsViewSheet(
+                viewModel:  AllTagsViewModel(
+                    genreViewModel: .init(tags: viewModel.tags.genres, category: .genres),
+                    moodViewModel: .init(tags: viewModel.tags.moods, category: .moods),
+                    instrumentViewModel: .init(tags: viewModel.tags.instruments, category: .instruments),
+                    miscViewModel: .init(tags: viewModel.tags.misc, category: .miscellaneous),
+                    albumID: nil,
+                    isReadOnly: !isAdmin,
+                    isEditing: false,
+                    isAdmin: isAdmin
+                )
+            )
+        }
     }
     
     private var coverArtContainer: some View {
@@ -97,14 +112,22 @@ struct SongDetailView: View {
             }
             .bold()
             Spacer()
-            if let _ = currentUser {
+            HStack {
                 Button {
-                    Task.detached { @MainActor in
-                        await viewModel.likeAction()
-                    }
+                    viewModel.isPresentingViewTags.toggle()
                 } label: {
-                    Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
+                    Image(systemName: "tag")
                         .foregroundStyle(colorScheme == .dark ? .white : .black)
+                }
+                if let _ = currentUser {
+                    Button {
+                        Task.detached { @MainActor in
+                            await viewModel.likeAction()
+                        }
+                    } label: {
+                        Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
+                            .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    }
                 }
             }
         }

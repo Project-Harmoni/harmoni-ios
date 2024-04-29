@@ -207,6 +207,15 @@ extension PostgrestClient {
         return Array(tagSet)
     }
     
+    func tagsOnSong(with id: Int) async throws -> [Tag] {
+        let tagCategories = try await tagCategories()
+        var tagSet: Set<Tag> = []
+        for tag in try await self.tagsOnSong(with: id, and: tagCategories) {
+            tagSet.insert(tag)
+        }
+        return Array(tagSet)
+    }
+    
     private func tagsOnSong(with id: Int, and tagCategories: [TagCategoryDB]?) async throws -> [Tag] {
         let songID = SongTagDB.CodingKeys.songID.rawValue
         let tagID = SongTagDB.CodingKeys.tagID.rawValue

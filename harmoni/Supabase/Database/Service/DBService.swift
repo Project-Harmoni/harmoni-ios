@@ -42,6 +42,8 @@ protocol DBServiceProviding {
     func getLatestSongs() async throws -> [Song]
     /// Get tags on album
     func tagsOnAlbum(with id: Int) async throws -> [Tag]
+    /// Get tags on song
+    func tagsOnSong(with id: Int) async throws -> [Tag]
     /// Check if user with `UUID` has completed birthday and role selection
     func checkRegistrationFinished(for id: UUID) async throws -> Bool
     /// Search by query (albums, artists, songs, tag)
@@ -183,6 +185,10 @@ struct DBService: DBServiceProviding {
     
     func tagsOnAlbum(with id: Int) async throws -> [Tag] {
         return try await Supabase.shared.client.database.tagsOnAlbum(with: id)
+    }
+    
+    func tagsOnSong(with id: Int) async throws -> [Tag] {
+        return try await Supabase.shared.client.database.tagsOnSong(with: id)
     }
     
     /// Check if user has birthday and role selected

@@ -11,8 +11,10 @@ import Foundation
     private let database: DBServiceProviding = DBService()
     private let userProvider: UserProviding = UserProvider()
     @Published var song: SongDB?
+    @Published var tags: [Tag] = []
     @Published var isLiked: Bool = false
     @Published var isPresentingImageToast: Bool = false
+    @Published var isPresentingViewTags: Bool = false
     @Published var imageToastSystemName: String = ""
     @Published var imageToastTitle: String = ""
     
@@ -27,6 +29,8 @@ import Foundation
             guard let song else { return }
             guard let currentUserID = await self.userProvider.currentUserID else { return }
             self.isLiked = try await self.database.isSongLiked(song, currentUserID.uuidString)
+            guard let songID = song.id else { return }
+            self.tags = try await self.database.tagsOnSong(with: songID)
         }
     }
     
