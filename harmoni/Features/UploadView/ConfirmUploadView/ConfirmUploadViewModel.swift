@@ -111,17 +111,19 @@ class ConfirmUploadViewModel: ObservableObject {
     
     private func upload(track: Track, userID: String) async throws -> String? {
         let url = track.url
-        #if !targetEnvironment(simulator)
-                guard url.startAccessingSecurityScopedResource() else { return nil }
-        #endif
-        let trackData = try Data(contentsOf: track.url)
-        #if !targetEnvironment(simulator)
-        url.stopAccessingSecurityScopedResource()
-        #endif
         try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track, userID) else { return nil }
         // upload track to storage
-        let _ = try await self.uploadTrack(trackData, trackName)
+        if isTrackFileChanged {
+            #if !targetEnvironment(simulator)
+                guard url.startAccessingSecurityScopedResource() else { return nil }
+            #endif
+            let trackData = try Data(contentsOf: track.url)
+            let _ = try await self.uploadTrack(trackData, trackName)
+            #if !targetEnvironment(simulator)
+                url.stopAccessingSecurityScopedResource()
+            #endif
+        }
         // get public file url from storage
         let trackURL = try self.storage.getMusicURL(for: trackName)
         return trackURL.absoluteString
