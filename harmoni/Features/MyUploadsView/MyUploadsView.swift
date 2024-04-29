@@ -18,7 +18,7 @@ struct MyUploadsView: View {
         uploads
             .task {
                 viewModel.currentUser = currentUser
-                await viewModel.getAlbums()
+                await viewModel.reload()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

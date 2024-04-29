@@ -97,7 +97,7 @@ struct AlbumView: View {
                             }
                         }
                     }
-                    Section {
+                    Section("Artist") {
                         if viewModel.isOwner {
                             Button {
                                 viewModel.isPresentingEdit.toggle()
@@ -129,13 +129,15 @@ struct AlbumView: View {
                         }
                     }
                     if isAdmin {
-                        Button {
-                            isDisplayingBlacklistRequest.toggle()
-                        } label: {
-                            HStack {
-                                Text("Country Blacklist")
-                                Spacer()
-                                Image(systemName: "slash.circle")
+                        Section("Admin") {
+                            Button {
+                                isDisplayingBlacklistRequest.toggle()
+                            } label: {
+                                HStack {
+                                    Text("Country Blacklist")
+                                    Spacer()
+                                    Image(systemName: "slash.circle")
+                                }
                             }
                         }
                     }

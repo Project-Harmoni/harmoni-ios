@@ -98,13 +98,15 @@ struct LibraryAlbumView: View {
                         }
                     }
                     if isAdmin {
-                        Button {
-                            viewModel.isDisplayingBlacklistRequest.toggle()
-                        } label: {
-                            HStack {
-                                Text("Country Blacklist")
-                                Spacer()
-                                Image(systemName: "slash.circle")
+                        Section("Admin") {
+                            Button {
+                                viewModel.isDisplayingBlacklistRequest.toggle()
+                            } label: {
+                                HStack {
+                                    Text("Country Blacklist")
+                                    Spacer()
+                                    Image(systemName: "slash.circle")
+                                }
                             }
                         }
                     }

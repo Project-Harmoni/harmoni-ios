@@ -9,11 +9,13 @@ import Foundation
 
 @MainActor class SongCellViewModel: ObservableObject {
     private let database: DBServiceProviding = DBService()
+    private let rpc: RPCProviding = RPCProvider()
     private let userProvider: UserProviding = UserProvider()
+    @Published var editedSongName: String = ""
     @Published var isAddedToLibrary: Bool = false
     @Published var isLiked: Bool = false
+    @Published var song: Song
     
-    var song: Song
     var queue: [Song] = []
     var isDetailed: Bool = true
     
@@ -25,6 +27,7 @@ import Foundation
         self.song = song
         self.queue = queue
         self.isDetailed = isDetailed
+        self.editedSongName = song.details.name ?? ""
         self.checkState()
     }
     
@@ -61,6 +64,28 @@ import Foundation
             self.isLiked
             ? try await self.database.unlikeSong(for: currentUserID.uuidString, song: songID)
             : try await self.database.likeSong(for: currentUserID.uuidString, song: songID)
+        } catch {
+            dump(error)
+        }
+    }
+    
+    func editSongName() async {
+        guard let songID = self.song.details.id else { return }
+        do {
+            try await self.rpc.editTrack(.init(id: songID, name: editedSongName))
+            song.details.name = editedSongName
+            if let songIndex = queue.firstIndex(where: { $0.id == song.id }) {
+                queue[songIndex].details.name = editedSongName
+            }
+        } catch {
+            dump(error)
+        }
+    }
+    
+    func deleteSong() async {
+        guard let songID = self.song.details.id else { return }
+        do {
+            try await self.rpc.deleteTrack(.init(id: songID))
         } catch {
             dump(error)
         }

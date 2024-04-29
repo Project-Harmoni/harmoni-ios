@@ -12,9 +12,11 @@ struct SongCellView: View {
     @Environment(\.container) var container
     @Environment(\.isAdmin) var isAdmin
     @Environment(\.currentUser) var currentUser
-    @ObservedObject var viewModel: SongCellViewModel
+    @StateObject var viewModel: SongCellViewModel
     @State private var isDisplayingCopyrightInfringementRequest: Bool = false
     @State private var isDisplayingBlacklistRequest: Bool = false
+    @State private var isDisplayingEditSongAlert: Bool = false
+    @State private var isDisplayingDeleteSongAlert: Bool = false
     
     var body: some View {
         song
@@ -28,6 +30,38 @@ struct SongCellView: View {
                     SendMailView.countryBlacklistRequest(for: "song " + viewModel.song.id.uuidString, from: email)
                 }
             }
+            .alert(
+                "Edit Song",
+                isPresented: $isDisplayingEditSongAlert
+            ) {
+                TextField("Edit name", text: $viewModel.editedSongName)
+                Button("Cancel", role: .cancel, action: {})
+                Button("Delete", role: .destructive, action: {
+                    isDisplayingDeleteSongAlert.toggle()
+                })
+                Button("Save", role: .none, action: {
+                    Task.detached { @MainActor in
+                        await viewModel.editSongName()
+                    }
+                })
+            } message: {}
+            .alert(
+                "Delete Song?",
+                isPresented: $isDisplayingDeleteSongAlert
+            ) {
+                Button("Cancel", role: .cancel, action: {})
+                Button("Delete", role: .destructive, action: {
+                    Task.detached { @MainActor in
+                        container.isPresentingLoadingToast(
+                            title: "Deleting"
+                        )
+                        await viewModel.deleteSong()
+                        container.isPresentingSuccessToast(
+                            title: "Deleted"
+                        ) {}
+                    }
+                })
+            } message: {}
     }
     
     private var song: some View {
@@ -125,13 +159,24 @@ struct SongCellView: View {
                 }
             }
             if isAdmin {
-                Button {
-                    isDisplayingBlacklistRequest.toggle()
-                } label: {
-                    HStack {
-                        Text("Country Blacklist")
-                        Spacer()
-                        Image(systemName: "slash.circle")
+                Section("Admin") {
+                    Button {
+                        isDisplayingBlacklistRequest.toggle()
+                    } label: {
+                        HStack {
+                            Text("Country Blacklist")
+                            Spacer()
+                            Image(systemName: "slash.circle")
+                        }
+                    }
+                    Button {
+                        isDisplayingEditSongAlert.toggle()
+                    } label: {
+                        HStack {
+                            Text("Edit Song")
+                            Spacer()
+                            Image(systemName: "pencil")
+                        }
                     }
                 }
             }
