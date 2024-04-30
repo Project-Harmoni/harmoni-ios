@@ -259,7 +259,7 @@ extension AccountViewModel {
             let purchase = try await self.edge.purchaseTokens(
                 request: .init(
                     userID: user.id.uuidString,
-                    tokenQuantity: 1000.toString
+                    tokenQuantity: 50.toString
                 )
             )
             
