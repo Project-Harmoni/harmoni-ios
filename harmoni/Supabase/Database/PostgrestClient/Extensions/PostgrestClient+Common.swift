@@ -77,6 +77,7 @@ extension PostgrestClient {
         let albums: [AlbumDB] = try await albums
             .select()
             .eq(AlbumDB.CodingKeys.artistID.rawValue, value: id)
+            .order(AlbumDB.CodingKeys.createdAt.rawValue, ascending: true)
             .execute()
             .value
         return albums
@@ -123,7 +124,7 @@ extension PostgrestClient {
     func getLatestSongs() async throws -> [Song] {
         let songs: [SongDB] = try await self.songs
             .select()
-            .order(SongDB.CodingKeys.createdAt.rawValue, ascending: false)
+            .order(SongDB.CodingKeys.createdAt.rawValue, ascending: true)
             .limit(30)
             .execute()
             .value

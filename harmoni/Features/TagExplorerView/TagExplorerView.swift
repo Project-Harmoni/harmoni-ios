@@ -37,6 +37,7 @@ struct TagExplorerView: View {
             }
         }
         .navigationTitle("Explore Tags")
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 

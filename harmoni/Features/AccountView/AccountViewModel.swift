@@ -207,7 +207,7 @@ private extension AccountViewModel {
         if let data = try? await item.loadTransferable(type: Data.self) {
             guard let jpegData = UIImage(data: data)?
                 .aspectFitToHeight()
-                .jpegData(compressionQuality: 0.2)
+                .jpegData(compressionQuality: 0.7)
             else {
                 return toggleError(true)
             }
@@ -252,14 +252,14 @@ private extension AccountViewModel {
 // MARK: - Purchase Tokens
 
 extension AccountViewModel {
-    func purchaseTokens() {
+    func purchaseTokens(_ amount: Int) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             guard let user = self.user else { return }
             let purchase = try await self.edge.purchaseTokens(
                 request: .init(
                     userID: user.id.uuidString,
-                    tokenQuantity: 50.toString
+                    tokenQuantity: amount.toString
                 )
             )
             

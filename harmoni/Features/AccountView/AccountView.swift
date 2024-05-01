@@ -95,23 +95,28 @@ struct AccountView: View {
                     .bold()
                     .padding()
                     .padding(.bottom, -16)
-                ForEach(["com.harmoni.test.1000.tokens"], id: \.self) { id in
-                    ProductView(id: id) {
-                        Image(systemName: "music.quarternote.3")
-                    }
-                    .productViewStyle(.compact)
-                    .padding(.horizontal)
+                ProductView(id: "com.harmoni.test.1000.tokens") {
+                    Image(systemName: "music.note")
                 }
+                .productViewStyle(.compact)
+                .padding(.horizontal)
+                ProductView(id: "com.harmoni.test.3000.tokens") {
+                    Image(systemName: "music.note")
+                }
+                .productViewStyle(.compact)
+                .padding(.horizontal)
             }
             .padding(.vertical)
             .presentationBackground(.thinMaterial)
             .presentationCornerRadius(24)
             .presentationDragIndicator(.visible)
-            .presentationDetents([.fraction(0.2)])
+            .presentationDetents([.fraction(0.3)])
         }
         .onInAppPurchaseCompletion { product, result in
             if case .success(.success(_)) = result {
-                viewModel.purchaseTokens()
+                // TODO: Clean-up
+                let amount: Int = product.id.contains("1000") ? 50 : 100
+                viewModel.purchaseTokens(amount)
             } else {
                 viewModel.isDisplayingTokenPurchase.toggle()
             }

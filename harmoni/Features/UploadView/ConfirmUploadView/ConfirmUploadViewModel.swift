@@ -110,11 +110,12 @@ class ConfirmUploadViewModel: ObservableObject {
     }
     
     private func upload(track: Track, userID: String) async throws -> String? {
+        guard let store else { return nil }
         let url = track.url
         try await deleteTracksIfNeeded()
         guard let trackName = await nameForTrack(track, userID) else { return nil }
         // upload track to storage
-        if isTrackFileChanged {
+        if !store.isEditing || isTrackFileChanged {
             #if !targetEnvironment(simulator)
                 guard url.startAccessingSecurityScopedResource() else { return nil }
             #endif
@@ -133,7 +134,7 @@ class ConfirmUploadViewModel: ObservableObject {
         if let albumCoverData {
             guard let jpegData = UIImage(data: albumCoverData)?
                 .aspectFitToHeight()
-                .jpegData(compressionQuality: 0.4)
+                .jpegData(compressionQuality: 0.7)
             else {
                 return nil
             }
