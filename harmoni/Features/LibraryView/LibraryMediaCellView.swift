@@ -22,6 +22,7 @@ struct LibraryMediaCellView: View {
             )
             if let albumName = song.details.albumName {
                 Text(albumName)
+                    .multilineTextAlignment(.leading)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
             }
             Text(song.artistName)
