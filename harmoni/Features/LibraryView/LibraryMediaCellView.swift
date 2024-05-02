@@ -24,9 +24,12 @@ struct LibraryMediaCellView: View {
                 Text(albumName)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .lineLimit(1)
+                    .padding(.trailing, 6)
             }
             Text(song.artistName)
                 .foregroundStyle(.gray)
+                .lineLimit(1)
         }
     }
 }
